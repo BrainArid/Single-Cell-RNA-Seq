@@ -1,0 +1,16 @@
+#!/bin/bash
+#PBS -N barand_moduleCompare
+#PBS -m ae
+#PBS -M arand.3@buckeyemail.osu.edu
+#PBS -l walltime=2:00:00
+#PBS -l mem=8G
+#PBS -l nodes=1:ppn=8
+#PBS -j oe
+
+cd ~/Single_Cell_RNASeq
+module load R-3.1.1
+module load gcc-4.5.2
+
+SCRIPT_DIR="Single-Cell-RNA-Seq/"
+
+Rscript ${SCRIPT_DIR}moduleOverlap.R ${ARGS} > out.Rout
