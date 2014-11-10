@@ -315,7 +315,7 @@ correlationHistogram <- function(data, method, breaks=100, file)
 {
   corrMat <- cor(x=t(data), method=method, use="complete");
   hist <- hist(x=corrMat,breaks=breaks,plot=FALSE);
-  write.table(x=corrMat,file=file,quote=FALSE,sep="\t");
+  write.cvs(x=corrMat,file=file);
   return(list(corrMat=corrMat, hist=hist));
 }
 
