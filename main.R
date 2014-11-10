@@ -105,8 +105,8 @@ if(args$dataFromRDS)
   Data$meta <- metaData[,indecies];
   
   #particion by primary cancer sample
-  Data$MGH26 <- as.matrix(Data$all[,Data$meta[7,]=="Single cell mRNA-seq_MGH26"])
-  Data$MGH26 <- as.matrix(Data$all[,Data$meta[7,]=="Single cell mRNA-seq_MGH26"])
+  Data$MGH26 <- as.matrix(Data$all[,grepl(x=colnames(Data$meta), pattern="^Single.cell.mRNA.seq_MGH26_")])
+  Data$MGH262 <- as.matrix(Data$all[,grepl(x=colnames(Data$meta), pattern="^Single.cell.mRNA.seq_MGH26.2_")])
   Data$MGH28 <- as.matrix(Data$all[,Data$meta[7,]=="Single cell mRNA-seq_MGH28"])
   Data$MGH29 <- as.matrix(Data$all[,Data$meta[7,]=="Single cell mRNA-seq_MGH29"])
   Data$MGH30 <- as.matrix(Data$all[,Data$meta[7,]=="Single cell mRNA-seq_MGH30"])
@@ -247,8 +247,8 @@ if(args$QCFlag)
   print("Outputing quality control figures:");
   
   #density_data <- data.frame();
-  dataSets<-list(Data$MGH26,Data$MGH28,Data$MGH29,Data$MGH30,Data$MGH31, Data$Samples, Data$CSC6, Data$CSC8);
-  dataSetNames <- c("MGH26", "MGH26", "MGH28", "MGH29", "MGH30", "MGH31","Samples","CSC6","CSC8");
+  dataSets<-list(Data$MGH26,Data$MGH262,Data$MGH28,Data$MGH29,Data$MGH30,Data$MGH31, Data$Samples, Data$CSC6, Data$CSC8);
+  dataSetNames <- c("MGH26", "MGH262", "MGH28", "MGH29", "MGH30", "MGH31","Samples","CSC6","CSC8");
   #breaks <- 100;
   for(i in 1:length(dataSets))
   {
@@ -258,55 +258,7 @@ if(args$QCFlag)
     png(filename=paste0(name,"_normalization_check.png"));
     boxplot(x=dataSet,names=seq(1,dim(dataSet)[2]), outcex=0.5, outpch=20, main="Patient box plots", xlab="Patient", ylab="expression value");
     dev.off();
-    
-
-   # print(paste0("Calculating correlation histogram for ", name));
-    #hist <- hist(x=dataSet,breaks=breaks,plot=FALSE);
-    #density_data <- data.frame(exp=c(density_data$exp, profile$hist$mids),
-       #                        density=c(density_data$density, profile$hist$counts/sum(profile$hist$counts)),
-       #                        method=c(density_data$method, rep(x = name, times=length(profile$hist$counts))),stringsAsFactors=FALSE);
-    #profile$corrMat<-NULL;
-    #print(paste0("\tTotal Hist counts: ", sum(profile$hist$counts)))
-    #print(paste0("\tNum genes: ", dim(dataSet)[1]))
   }
-  
-  #plot overlapping histogram of expression
-  print(paste0("Outputting comparative ", method, " histogram:"));
-  
-  # Density plots
-  
-  ggplot(data=density_data, aes(x=exp, y=density, group=method, colour=method)) + 
-    geom_line(size=1, aes(linetype=method)) +
-    ggtitle("Expression distribtion comparison");
-  ggsave("Comparative density of expression.png");
-  dev.off()
-  #plot means
-  source("CoexpressionNetworkRProject/plot2Groups.R");
-  
-  plot2Groups(rowMeans(Data$ma, na.rm = TRUE), log(rowMeans(Data$rs_DESeq, na.rm = TRUE)),main="Micro Array vs RNASeq DESeq gene means (97 paired patient samples)",xlab="Lowess Normalized MicroArray",ylab="Log RNASeq DEseq counts", file="Comp_gene_means_across_tech_DESeq.png", histA=TRUE, histB=TRUE);
-  plot2Groups(apply(Data$ma,1,median, na.rm = TRUE), apply(log(Data$rs_DESeq),1,median, na.rm = TRUE),main="Micro Array vs RNASeq DESeq gene medians (91 paired patient samples)",xlab="Lowess Normalized MicroArray",ylab="Log RNASeq DESeq counts", file="Comp_gene_medians_across_tech_DESeq.png", histA=TRUE, histB=TRUE);
-  plot2Groups(rowMeans(apply(Data$ma,MARGIN=2,FUN=rank), na.rm = TRUE), rowMeans(apply(Data$rs_DESeq,MARGIN=2,FUN=rank), na.rm = TRUE),main="Micro Array vs RNASeq DESeq gene mean ranks (97 paired patient samples)",xlab="Ranked Lowess Normalized MicroArray",ylab="Log RNASeq DESeq counts", file="Ranked Comp_gene_mean_rank_across_tech_DESeq.png");
-  plot2Groups(apply(apply(Data$ma,MARGIN=2,FUN=rank), 1,median, na.rm = TRUE), apply(apply(Data$rs_DESeq,MARGIN=2,FUN=rank),1,median, na.rm = TRUE),main="Micro Array vs RNASeq DESeq gene median ranks (97 paired patient samples)",xlab="Ranked Lowess Normalized MicroArray",ylab="Ranked Log RNASeq DESeq counts", file="Comp_gene_median_rank_across_tech_DESeq.png");
-  
-  plot2Groups(rowMeans(Data$ma, na.rm = TRUE), log(rowMeans(rsData_quant, na.rm = TRUE)),main="Micro Array vs RNASeq quant gene means (97 paired patient samples)",xlab="Lowess Normalized MicroArray",ylab="Log RNASeq quant counts", file="Comp_gene_means_across_tech_quant.png", histA=TRUE, histB=TRUE);
-  
-  #check normalizations with boxplots
-
-  png(filename="RNASeq Count normalization check.png");
-  boxplot(x=log(Data$rs_raw),names=seq(1,Data$conCount+Data$canCount), outcex=0.5, outpch=20, main="Patient box plots", xlab="Patient", ylab="log RNA seq counts");
-  dev.off();
-  png(filename="RNASeq RPKM normalization check.png");
-  boxplot(x=log(Data$rs_RPKM),names=seq(1,Data$conCount+Data$canCount), outcex=0.5, outpch=20, main="Patient box plots", xlab="Patient", ylab="log RNA seq RPKM");
-  dev.off();
-  png(filename="RNASeq DESeq normalization check.png");
-  boxplot(x=log(Data$rs_DESeq),names=seq(1,Data$conCount+Data$canCount), outcex=0.5, outpch=20, main="Patient box plots", xlab="Patient", ylab="log RNA seq DESeq normalized");
-  dev.off();
-  png(filename="RNASeq quantile normalization check.png");
-  boxplot(x=log(Data$rs_quant),names=seq(1,Data$conCount+Data$canCount), outcex=0.5, outpch=20, main="Patient box plots", xlab="Patient", ylab="log RNA seq quan normalized");
-  dev.off();
-  png(filename="RNASeq total ubiquitous normalization check.png");
-  boxplot(x=log(Data$rs_Ubi),names=seq(1,Data$conCount+Data$canCount), outcex=0.5, outpch=20, main="Patient box plots", xlab="Patient", ylab="log RNA seq total ubiquitous normalized");
-  dev.off();
 }
 
 #calculated correlation statistics
@@ -314,8 +266,9 @@ if(args$QCFlag)
 correlationHistogram <- function(data, method, breaks=100, file)
 {
   corrMat <- cor(x=t(data), method=method, use="complete");
+  corrMat[is.na(corrMat)]<-0;
   hist <- hist(x=corrMat,breaks=breaks,plot=FALSE);
-  write.cvs(x=corrMat,file=file);
+  write.csv(x=corrMat,file=file);
   return(list(corrMat=corrMat, hist=hist));
 }
 
@@ -328,14 +281,14 @@ for(method in c("spearman"))
   print("Constructing correlation matricies");
   
   density_data <- data.frame();
-  dataSets<-list(Data$MGH26,Data$MGH28,Data$MGH29,Data$MGH30,Data$MGH31, Data$Samples, Data$CSC6, Data$CSC8);
-  dataSetNames <- c("MGH26", "MGH28", "MGH29", "MGH30", "MGH31", "Samples", "CSC6", "CSC8");
+  dataSets<-list(Data$MGH26,Data$MGH262,Data$MGH28,Data$MGH29,Data$MGH30,Data$MGH31, Data$Samples, Data$CSC6, Data$CSC8);
+  dataSetNames <- c("MGH26", "MGH262",  "MGH28", "MGH29", "MGH30", "MGH31", "Samples", "CSC6", "CSC8");
   for(i in 1:length(dataSets))
   {
     dataSet = dataSets[[i]];
     name <- dataSetNames[i];
     print(paste0("Calculating correlation histogram for ", name));
-    profile <- correlationHistogram(data=dataSet, method=method, file=paste0("Data/coexpressionNetworks/", name,"_", method,"_int.txt"));
+    profile <- correlationHistogram(data=dataSet, method=method, file=paste0("../Data/coexpressionNetworks/", name,"_", method,"_int.txt"));
     density_data <- data.frame(cor=c(density_data$cor, profile$hist$mids),
                                density=c(density_data$density, profile$hist$counts/sum(profile$hist$counts)),
                                method=c(density_data$method, rep(x = name, times=length(profile$hist$counts))),stringsAsFactors=FALSE);
@@ -344,7 +297,7 @@ for(method in c("spearman"))
     print(paste0("\tNum genes: ", dim(Data[[i]])[1]))
   }
   
-    #plot overlapping histogram of PCC
+   #plot overlapping histogram of PCC
   print(paste0("Outputting comparative ", method, " histogram:"));
   
   # Density plots
