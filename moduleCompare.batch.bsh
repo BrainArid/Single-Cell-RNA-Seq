@@ -4,13 +4,18 @@ THRESHOLD="0.8"
 DIR="/home/barand/Single_Cell_RNASeq/Data/modules/"
 OUT_DIR="/home/barand/Single_Cell_RNASeq/Data/moduleComps/threshold_${THRESHOLD}/"
 CLUSTHEATMAP="FALSE"
+TUMORSBATCHES=( "MGH26" "MGH262" "MGH28" "MGH29" "MGH30" "MGH31" )
 
-for CFILE1 in /home/barand/Single_Cell_RNASeq/Data/modules/*
+mkdir 
+for BATCH in "${TUMORSBATCHES[@]}"
 do
-       for CFILE2 in /home/barand/Single_Cell_RNASeq/Data/modules/*
-       do
-               CFILE1=${CFILE1/\/home\/barand\/Single_Cell_RNASeq\/Data\/modules\//}
-               CFILE2=${CFILE2/\/home\/barand\/Single_Cell_RNASeq\/Data\/modules\//}
-               qsub CoexpressionNetworkRProject/moduleCompare.job -v ARGS="--dir=${DIR} --clustsFile1=${CFILE1} --clustsFile2=${CFILE2} --outDir=${OUT_DIR} --threshold=${THRESHOLD},--clustHeatMap=${CLUSTHEATMAP}"
-       done
+	for CFILE1 in /home/barand/Single_Cell_RNASeq/Data/modules/BATCH/*
+	do
+		   for CFILE2 in /home/barand/Single_Cell_RNASeq/Data/modules/Samples/*
+		   do
+				   CFILE1=${CFILE1/\/home\/barand\/Single_Cell_RNASeq\/Data\/modules\//}
+				   CFILE2=${CFILE2/\/home\/barand\/Single_Cell_RNASeq\/Data\/modules\//}
+				   qsub CoexpressionNetworkRProject/moduleCompare.job -v ARGS="--dir=${DIR} --clustsFile1=${CFILE1} --clustsFile2=${CFILE2} --outDir=${OUT_DIR} --threshold=${THRESHOLD},--clustHeatMap=${CLUSTHEATMAP}"
+		   done
+	done
 done

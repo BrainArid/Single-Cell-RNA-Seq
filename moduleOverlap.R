@@ -67,7 +67,7 @@ moduleOverlap <- function(dir, clustsFile1, clustsFile2, outDir, threshold, clus
   if(clustHeatMap)
   {
     p <- ggplot(gMat.m, aes(y=X1, x=X2)) + geom_tile(aes(y=X1,x=X2,fill = rgb(red = 0,green=value,blue=0)), colour = "black")+scale_fill_identity();
-    ggsave(filename = paste0(outDir, clustsFile1, "_VS_", clustsFile2, "_INTERSECT.png"),plot = p)
+    ggsave(filename = paste0(outDir, basename(clustsFile1), "_VS_", basename(clustsFile2), "_INTERSECT.png"),plot = p)
   }
   
   bMat.m <- melt(bMat)
@@ -80,7 +80,7 @@ moduleOverlap <- function(dir, clustsFile1, clustsFile2, outDir, threshold, clus
   if(clustHeatMap)
   {
     p <- ggplot(colMat.m, aes(y=X1, x=X2)) + geom_tile(aes(y=X1,x=X2,fill = rgb(red = r,green=g,blue=b)), colour = "black")+scale_fill_identity();
-    ggsave(filename = paste0(outDir, clustsFile1, "_VS_", clustsFile2, "_COMPOSITE.png"),plot = p)
+    ggsave(filename = paste0(outDir, basename(clustsFile1), "_VS_", basename(clustsFile2), "_COMPOSITE.png"),plot = p)
   }
   
   #list white tiles:
@@ -103,6 +103,10 @@ moduleOverlap <- function(dir, clustsFile1, clustsFile2, outDir, threshold, clus
     }
     
     #and thier profiles:
+    gSortedOrder <- order(matrix(data=unlist(commonModules$profiles),nrow=3,ncol=5,byrow=TRUE)[,4],decreasing=TRUE)
+    commonModules <- list(profiles=commonModules$profiles[gSortedOrder],
+                          clusts1=commonModules$clusts1[gSortedOrder],
+                          clusts2=commonModules$clusts2[gSortedOrder])
     return(commonModules);
   }
   return(NULL)
@@ -185,7 +189,7 @@ args$clustHeatMap <- initializeBooleanArg(arg=args$clustHeatMap, default=FALSE);
 
 commonModules <-moduleOverlap(args$dir, args$clustsFile1, args$clustsFile2, args$outDir, args$threshold, args$clustHeatMap);
 
-fileName<-paste0(args$outDir, args$clustsFile1, "_VS_", args$clustsFile2, "_MATCHING_MODULES.csv");
+fileName<-paste0(args$outDir, basename(args$clustsFile1), "_VS_", basename(args$clustsFile2), "_MATCHING_MODULES.csv");
 if(is.null(commonModules))
 {
   write("No consensus.",fileName);
@@ -196,7 +200,7 @@ if(is.null(commonModules))
     write(unlist(x[[index]]),file,ncolumns=ncolumns,append = TRUE, sep=sep);
   }
   
-  write(paste0(args$clustsFile1, ",", args$clustsFile2),fileName,append=FALSE);#FALSE to clear file contents
+  write(paste0(basename(args$clustsFile1), ",", basename(args$clustsFile2)),fileName,append=FALSE);#FALSE to clear file contents
   write(paste0("number of matching modules:,",length(commonModules[[1]])),fileName,append=TRUE);
   write("X1 index,X2 index,r,g,b",fileName,append=TRUE);
   for(i in 1:length(commonModules[[1]]))
