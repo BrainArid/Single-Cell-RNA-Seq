@@ -83,6 +83,9 @@ moduleOverlap <- function(dir, clustsFile1, clustsFile2, outDir, threshold, clus
     ggsave(filename = paste0(outDir, basename(clustsFile1), "_VS_", basename(clustsFile2), "_COMPOSITE.png"),plot = p)
   }
   
+  source("topGOEnrich.R");
+  geneID2GO <- topGo_get_geneID2GO();
+  
   #list white tiles:
   if(dim(colMat.m[colMat.m$r>threshold & colMat.m$g>threshold & colMat.m$b>threshold,])[1]>0)
   {
@@ -95,18 +98,45 @@ moduleOverlap <- function(dir, clustsFile1, clustsFile2, outDir, threshold, clus
     commonModules$profiles <- list();
     commonModules$clusts1 <- list();
     commonModules$clusts2 <- list();
+    commonModules$clusts1GO <- list();
+    commonModules$clusts2GO <- list();
+    
+    relativeRank <- function(L1, L2)
+    {      
+      l1 <- length(L1);
+      l2 <- length(L2);
+      m1<-match(L1,L2);
+      m2<-match(L2,L1);
+      
+      return(list(r1=m1-seq(from = 1,to = l1,1),r2=m2-seq(from = 1,to = l2,1)));
+    }
+    
     for(i in 1:length(x))
     {
       commonModules$profiles[i] <- list(colMat.m[colMat.m$X1==x[i] & colMat.m$X2==y[i],c("X1","X2","r","g","b")]);
-      commonModules$clusts1[i] <- list(clusts1[x[i],clusts1[x[i],]!=""])
-      commonModules$clusts2[i] <- list(clusts2[y[i],clusts2[y[i],]!=""])
+      commonModules$clusts1[i] <- list(clusts1[x[i],clusts1[x[i],]!=""]);
+      commonModules$clusts2[i] <- list(clusts2[y[i],clusts2[y[i],]!=""]);
+      commonModules$clusts1GO[i] <- list(topGOEnrich(genesOfInterest = commonModules$clusts1[[i]],geneID2GO = geneID2GO));
+      commonModules$clusts2GO[i] <- list(topGOEnrich(genesOfInterest = commonModules$clusts2[[i]],geneID2GO = geneID2GO));
+    
+      relativeClustsLocs <- relativeRank(L1 <- commonModules$clusts1GO[[i]]$BP[,1], L2 <- commonModules$clusts2GO[[i]]$BP[,1])
+      commonModules$clusts1GO[[i]]$BP <- cbind(commonModules$clusts1GO[[i]]$BP, relativeRank=relativeClustsLocs$r1);
+      commonModules$clusts2GO[[i]]$BP <- cbind(commonModules$clusts2GO[[i]]$BP, relativeRank=relativeClustsLocs$r2);
+      relativeClustsLocs <- relativeRank(L1 <- commonModules$clusts1GO[[i]]$MF[,1], L2 <- commonModules$clusts2GO[[i]]$MF[,1])
+      commonModules$clusts1GO[[i]]$MF <- cbind(commonModules$clusts1GO[[i]]$MF, relativeRank=relativeClustsLocs$r1);
+      commonModules$clusts2GO[[i]]$MF <- cbind(commonModules$clusts2GO[[i]]$MF, relativeRank=relativeClustsLocs$r2);
+      relativeClustsLocs <- relativeRank(L1 <- commonModules$clusts1GO[[i]]$CC[,1], L2 <- commonModules$clusts2GO[[i]]$CC[,1])
+      commonModules$clusts1GO[[i]]$CC <- cbind(commonModules$clusts1GO[[i]]$CC, relativeRank=relativeClustsLocs$r1);
+      commonModules$clusts2GO[[i]]$CC <- cbind(commonModules$clusts2GO[[i]]$CC, relativeRank=relativeClustsLocs$r2);
     }
     
     #and thier profiles:
-    gSortedOrder <- order(matrix(data=unlist(commonModules$profiles),nrow=3,ncol=5,byrow=TRUE)[,4],decreasing=TRUE)
+    gSortedOrder <- order(matrix(data=unlist(commonModules$profiles),nrow=length(commonModules$profiles),ncol=5,byrow=TRUE)[,4],decreasing=TRUE)
     commonModules <- list(profiles=commonModules$profiles[gSortedOrder],
                           clusts1=commonModules$clusts1[gSortedOrder],
-                          clusts2=commonModules$clusts2[gSortedOrder])
+                          clusts2=commonModules$clusts2[gSortedOrder],
+                          clusts1GO=commonModules$clusts1GO[gSortedOrder],
+                          clusts2GO=commonModules$clusts2GO[gSortedOrder])
     return(commonModules);
   }
   return(NULL)
@@ -195,16 +225,30 @@ if(is.null(commonModules))
   write("No consensus.",fileName);
 } else 
 {
-  unlistAndWrite <- function(x, index, file, append=TRUE, ncolumns=1000, sep=",")
+  unlistAndWrite <- function(x, index, file, append=TRUE, ncolumns=1000, sep=";")
   {
-    write(unlist(x[[index]]),file,ncolumns=ncolumns,append = TRUE, sep=sep);
+      write(unlist(x[[index]]),file,ncolumns=ncolumns,append = TRUE, sep=sep);
   }
   
-  write(paste0(basename(args$clustsFile1), ",", basename(args$clustsFile2)),fileName,append=FALSE);#FALSE to clear file contents
+  GOCharts1 <- commonModules$clusts1GO
+  GOCharts2 <- commonModules$clusts2GO
+  commonModules$clusts1GO <- NULL;
+  commonModules$clusts2GO <- NULL;
+  
+  write(paste0(basename(args$clustsFile1), ";", basename(args$clustsFile2)),fileName,append=FALSE);#FALSE to clear file contents
   write(paste0("number of matching modules:,",length(commonModules[[1]])),fileName,append=TRUE);
-  write("X1 index,X2 index,r,g,b",fileName,append=TRUE);
+  write("X1 index;X2 index;r;g;b",fileName,append=TRUE);
   for(i in 1:length(commonModules[[1]]))
   {
     lapply(commonModules, unlistAndWrite, i, fileName);
+    write(x = paste("\n",args$clustsFile1,";;;;;;;;;;",args$clustsFile2,"\n"),fileName,append = TRUE);
+    write(x = "BIOLOGICAL PROCESS",fileName,append = TRUE);
+    write.table(x=cbind(GOCharts1[[i]]$BP,x=rep(x="",times = length(GOCharts1[[i]]$BP[,1])),GOCharts2[[i]]$BP),file = fileName,append = TRUE,sep = ";",quote = FALSE,row.names = FALSE,col.names = TRUE);
+    write(x = "MOLECULAR FUNCTION",fileName,append = TRUE);
+    write.table(x=cbind(GOCharts1[[i]]$MF,x=rep(x="",times = length(GOCharts1[[i]]$MF[,1])),GOCharts2[[i]]$MF),file = fileName,append = TRUE,sep = ";",quote = FALSE,row.names = FALSE,col.names = TRUE);
+    write(x = "CELL CYCLE",fileName,append = TRUE);
+    write.table(x=cbind(GOCharts1[[i]]$CC,x=rep(x="",times = length(GOCharts1[[i]]$CC[,1])),GOCharts2[[i]]$CC),file = fileName,append = TRUE,sep = ";",quote = FALSE,row.names = FALSE,col.names = TRUE);
+    write(x = "\n",fileName,append = TRUE);
+
   }
 }
