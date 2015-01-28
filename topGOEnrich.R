@@ -7,7 +7,7 @@ topGo_get_geneID2GO <- function()
   #read geneOntologyAnnotation
   # currently this list contains doubled-up genes like: UNQ5830/PRO19650/PRO19816 and MNB/DYRK
   # if you don't have this file get it here: http://geneontology.org/page/download-annotations
-  temp <- read.table(file = "Data//Gene_GO_Annotation//gene_association.goa_human",blank.lines.skip = TRUE, comment.char = "!",header = FALSE,sep="\t",fill=TRUE)
+  temp <- read.table(file = "..//Data//Gene_GO_Annotation//gene_association.goa_human",blank.lines.skip = TRUE, comment.char = "!",header = FALSE,sep="\t",fill=TRUE)
   temp <- data.frame(Gene=temp[,3],GOTerm=temp[,5])
   allGenes <- unique(temp[,1])
   geneID2GO <- list()
