@@ -1,6 +1,7 @@
 moduleOverlap <- function(dir, clustsFile1, clustsFile2, outDir, threshold, clustHeatMap)
 {
   #setwd(dir);#setwd("/Users/Brian/Documents/Research/microArray v RNA Seq/BRCA/")
+  getwd()
   clusts1 <- read.table(file=paste0(dir,clustsFile1),sep = ",",stringsAsFactors = FALSE,fill = TRUE)
   clusts2 <- read.table(file=paste0(dir,clustsFile2),sep = ",",stringsAsFactors = FALSE,fill = TRUE)
   #remove any columns containing NAs
