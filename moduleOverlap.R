@@ -86,8 +86,8 @@ moduleOverlap <- function(dir, clustsFile1, clustsFile2, outDir, threshold, clus
   
   topGo_get_geneID2GO <- function()
   {
-    source("http://bioconductor.org/biocLite.R")
-    biocLite("topGO")
+    #source("http://bioconductor.org/biocLite.R")
+    #biocLite("topGO")
     library("topGO")
     
     #read geneOntologyAnnotation
