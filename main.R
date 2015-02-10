@@ -115,6 +115,7 @@ if(args$dataFromRDS)
   Data$CSC8 <- as.matrix(Data$all[,Data$meta[7,]=="Single cell mRNA-seq_CSC8"])
   Data$Population <- as.matrix(Data$all[,grepl(x=lapply(Data$meta[7,], as.character), pattern="Population mRNA-seq_MGH..")])
   Data$Samples <- as.matrix(cbind(Data$MGH26,Data$MGH28,Data$MGH29,Data$MGH30,Data$MGH31))
+  Data$Average <-apply(Data$MGH26,MARGIN=1,FUN=mean)[1-10]
   
   #hierarchical clustering
   Data$dist <- dist(x=t(Data$Samples),method="euclidian")

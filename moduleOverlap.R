@@ -310,6 +310,5 @@ if(is.null(commonModules))
     write(x = "CELL CYCLE",fileName,append = TRUE);
     write.table(x=cbind(GOCharts1[[i]]$CC,x=rep(x="",times = length(GOCharts1[[i]]$CC[,1])),GOCharts2[[i]]$CC),file = fileName,append = TRUE,sep = ";",quote = FALSE,row.names = FALSE,col.names = TRUE);
     write(x = "\n",fileName,append = TRUE);
-
   }
 }
