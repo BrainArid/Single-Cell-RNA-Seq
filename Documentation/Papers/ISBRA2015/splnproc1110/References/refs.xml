@@ -1,0 +1,516 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<b:Sources xmlns:b="http://schemas.openxmlformats.org/officeDocument/2006/bibliography" xmlns="http://schemas.openxmlformats.org/officeDocument/2006/bibliography" SelectedStyle="">
+<b:Source>
+<b:SourceType>Misc</b:SourceType>
+<b:Tag>XiangYFAUXiang</b:Tag>
+<b:Title>Predicting glioblastoma prognosis networks using weighted gene co-expression network analysis on TCGA data</b:Title>
+<b:Author>
+<b:Author>
+<b:NameList>
+<b:Person>
+<b:Last>Xiang Y FAU Xiang</b:Last>
+<b:First>Yang</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Zhang CQ FAU Zhang</b:Last>
+<b:First>Cun-Quan</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Huang K FAU Huang</b:Last>
+<b:First>Kun</b:First>
+</b:Person>
+</b:NameList>
+</b:Author>
+</b:Author>
+<b:Pages>--</b:Pages>
+<b:City>The Comprehensive Cancer Center Biomedical Informatics Shared Resource, The Ohio State University, Columbus, USA</b:City>
+<b:Issue>1471-2105 (Electronic)</b:Issue>
+<b:PublicationTitle>Predicting glioblastoma prognosis networks using weighted gene co-expression network analysis on TCGA data</b:PublicationTitle>
+<b:BIBTEX_Abstract>BACKGROUND: Using gene co-expression analysis, researchers were able to predict clusters of genes with consistent functions that are relevant to cancer development and prognosis. We applied a weighted gene co-expression network (WGCN) analysis algorithm on glioblastoma multiforme (GBM) data obtained from the TCGA project and predicted a set of gene co-expression networks which are related to GBM prognosis. METHODS: We modified the Quasi-Clique Merger algorithm (QCM algorithm) into edge-covering Quasi-Clique Merger algorithm (eQCM) for mining weighted sub-network in WGCN. Each sub-network is considered a set of features to separate patients into two groups using K-means algorithm. Survival times of the two groups are compared using log-rank test and Kaplan-Meier curves. Simulations using random sets of genes are carried out to determine the thresholds for log-rank test p-values for network selection. Sub-networks with p-values less than their corresponding thresholds were further merged into clusters based on overlap ratios (&gt;50%). The functions for each cluster are analyzed using gene ontology enrichment analysis. RESULTS: Using the eQCM algorithm, we identified 8,124 sub-networks in the WGCN, out of which 170 sub-networks show p-values less than their corresponding thresholds. They were then merged into 16 clusters. CONCLUSIONS: We identified 16 gene clusters associated with GBM prognosis using the eQCM algorithm. Our results not only confirmed previous findings including the importance of cell cycle and immune response in GBM, but also suggested important epigenetic events in GBM development and prognosis.</b:BIBTEX_Abstract>
+</b:Source>
+<b:Source>
+<b:SourceType>JournalArticle</b:SourceType>
+<b:Tag>Bao01112014</b:Tag>
+<b:Title>RNA-seq of 272 gliomas revealed a novel, recurrent PTPRZ1-MET fusion transcript in secondary glioblastomas</b:Title>
+<b:Year>2014</b:Year>
+<b:Author>
+<b:Author>
+<b:NameList>
+<b:Person>
+<b:Last>Bao</b:Last>
+<b:First>Zhao-Shi</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Chen</b:Last>
+<b:First>Hui-Min</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Yang</b:Last>
+<b:First>Ming-Yu</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Zhang</b:Last>
+<b:First>Chuan-Bao</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Yu</b:Last>
+<b:First>Kai</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Ye</b:Last>
+<b:First>Wan-Lu</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Hu</b:Last>
+<b:First>Bo-Qiang</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Yan</b:Last>
+<b:First>Wei</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Zhang</b:Last>
+<b:First>Wei</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Akers</b:Last>
+<b:First>Johnny</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Ramakrishnan</b:Last>
+<b:First>Valya</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Li</b:Last>
+<b:First>Jie</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Carter</b:Last>
+<b:First>Bob</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Liu</b:Last>
+<b:First>Yan-Wei</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Hu</b:Last>
+<b:First>Hui-Min</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Wang</b:Last>
+<b:First>Zheng</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Li</b:Last>
+<b:First>Ming-Yang</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Yao</b:Last>
+<b:First>Kun</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Qiu</b:Last>
+<b:First>Xiao-Guang</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Kang</b:Last>
+<b:First>Chun-Sheng</b:First>
+</b:Person>
+<b:Person>
+<b:Last>You</b:Last>
+<b:First>Yong-Ping</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Fan</b:Last>
+<b:First>Xiao-Long</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Song</b:Last>
+<b:Middle>Sonya</b:Middle>
+<b:First>Wei</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Li</b:Last>
+<b:First>Rui-Qiang</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Su</b:Last>
+<b:First>Xiao-Dong</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Chen</b:Last>
+<b:Middle>C.</b:Middle>
+<b:First>Clark</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Jiang</b:Last>
+<b:First>Tao</b:First>
+</b:Person>
+</b:NameList>
+</b:Author>
+</b:Author>
+<b:Pages>1765-1773</b:Pages>
+<b:Volume>24</b:Volume>
+<b:StandardNumber> DOI: 10.1101/gr.165126.113</b:StandardNumber>
+<b:JournalName>Genome Research</b:JournalName>
+<b:Issue>11</b:Issue>
+<b:URL>http://genome.cshlp.org/content/24/11/1765.abstract</b:URL>
+<b:BIBTEX_Abstract>Studies of gene rearrangements and the consequent oncogenic fusion proteins have laid the foundation for targeted cancer therapy. To identify oncogenic fusions associated with glioma progression, we catalogued fusion transcripts by RNA-seq of 272 gliomas. Fusion transcripts were more frequently found in high-grade gliomas, in the classical subtype of gliomas, and in gliomas treated with radiation/temozolomide. Sixty-seven in-frame fusion transcripts were identified, including three recurrent fusion transcripts: FGFR3-TACC3, RNF213-SLC26A11, and PTPRZ1-MET (ZM). Interestingly, the ZM fusion was found only in grade III astrocytomas (1/13; 7.7%) or secondary GBMs (sGBMs, 3/20; 15.0%). In an independent cohort of sGBMs, the ZM fusion was found in three of 20 (15%) specimens. Genomic analysis revealed that the fusion arose from translocation events involving introns 3 or 8 of PTPRZ and intron 1 of MET. ZM fusion transcripts were found in GBMs irrespective of isocitrate dehydrogenase 1 (IDH1) mutation status. sGBMs harboring ZM fusion showed higher expression of genes required for PIK3CA signaling and lowered expression of genes that suppressed RB1 or TP53 function. Expression of the ZM fusion was mutually exclusive with EGFR overexpression in sGBMs. Exogenous expression of the ZM fusion in the U87MG glioblastoma line enhanced cell migration and invasion. Clinically, patients afflicted with ZM fusion harboring glioblastomas survived poorly relative to those afflicted with non-ZM-harboring sGBMs (P &lt; 0.001). Our study profiles the shifting RNA landscape of gliomas during progression and reveled ZM as a novel, recurrent fusion transcript in sGBMs.</b:BIBTEX_Abstract>
+</b:Source>
+<b:Source>
+<b:SourceType>Misc</b:SourceType>
+<b:Tag>HuangDWFAUHuang</b:Tag>
+<b:Title>Bioinformatics enrichment tools: paths toward the comprehensive functional analysis of large gene lists</b:Title>
+<b:Author>
+<b:Author>
+<b:NameList>
+<b:Person>
+<b:Last>Huang DW FAU Huang</b:Last>
+<b:Middle>Wei</b:Middle>
+<b:First>Da</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Sherman BT FAU Sherman</b:Last>
+<b:Middle>T</b:Middle>
+<b:First>Brad</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Lempicki RA FAU Lempicki</b:Last>
+<b:Middle>A</b:Middle>
+<b:First>Richard</b:First>
+</b:Person>
+</b:NameList>
+</b:Author>
+</b:Author>
+<b:Pages>--</b:Pages>
+<b:Issue>1362-4962 (Electronic)</b:Issue>
+<b:PublicationTitle>Bioinformatics enrichment tools: paths toward the comprehensive functional analysis of large gene lists</b:PublicationTitle>
+<b:BIBTEX_Abstract>Functional analysis of large gene lists, derived in most cases from emerging high-throughput genomic, proteomic and bioinformatics scanning approaches, is still a challenging and daunting task. The gene-annotation enrichment analysis is a promising high-throughput strategy that increases the likelihood for investigators to identify biological processes most pertinent to their study. Approximately 68 bioinformatics enrichment tools that are currently available in the community are collected in this survey. Tools are uniquely categorized into three major classes, according to their underlying enrichment algorithms. The comprehensive collections, unique tool classifications and associated questions/issues will provide a more comprehensive and up-to-date view regarding the advantages, pitfalls and recent trends in a simpler tool-class level rather than by a tool-by-tool approach. Thus, the survey will help tool designers/developers and experienced end users understand the underlying algorithms and pertinent details of particular tool categories/tools, enabling them to make the best choices for their particular research interests.</b:BIBTEX_Abstract>
+</b:Source>
+<b:Source>
+<b:SourceType>JournalArticle</b:SourceType>
+<b:Tag>Langmead2009</b:Tag>
+<b:Title>Ultrafast and memory-efficient alignment of short DNA sequences to the human genome</b:Title>
+<b:Year>2009</b:Year>
+<b:Author>
+<b:Author>
+<b:NameList>
+<b:Person>
+<b:Last>Langmead</b:Last>
+<b:First>Ben</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Trapnell</b:Last>
+<b:First>Cole</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Pop</b:Last>
+<b:First>Mihai</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Salzberg</b:Last>
+<b:First>Steven</b:First>
+</b:Person>
+</b:NameList>
+</b:Author>
+</b:Author>
+<b:Pages>R25</b:Pages>
+<b:Volume>10</b:Volume>
+<b:StandardNumber> ISSN: 1465-6906 DOI: 10.1186/gb-2009-10-3-r25</b:StandardNumber>
+<b:JournalName>Genome Biology</b:JournalName>
+<b:Issue>3</b:Issue>
+<b:URL>http://genomebiology.com/2009/10/3/R25</b:URL>
+<b:BIBTEX_Abstract>Bowtie is an ultrafast, memory-efficient alignment program for aligning short DNA sequence reads to large genomes. For the human genome, Burrows-Wheeler indexing allows Bowtie to align more than 25 million reads per CPU hour with a memory footprint of approximately 1.3 gigabytes. Bowtie extends previous Burrows-Wheeler techniques with a novel quality-aware backtracking algorithm that permits mismatches. Multiple processor cores can be used simultaneously to achieve even greater alignment speeds. Bowtie is open source http://bowtie.cbcb.umd.edu webcite.</b:BIBTEX_Abstract>
+</b:Source>
+<b:Source>
+<b:SourceType>JournalArticle</b:SourceType>
+<b:Tag>Ramskold2012</b:Tag>
+<b:Title>Full-length mRNA-Seq from single-cell levels of RNA and individual circulating tumor cells</b:Title>
+<b:Year>2012</b:Year>
+<b:Author>
+<b:Author>
+<b:NameList>
+<b:Person>
+<b:Last>Ramskold</b:Last>
+<b:First>Daniel</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Luo</b:Last>
+<b:First>Shujun</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Wang</b:Last>
+<b:First>Yu-Chieh</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Li</b:Last>
+<b:First>Robin</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Deng</b:Last>
+<b:First>Qiaolin</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Faridani</b:Last>
+<b:Middle>R</b:Middle>
+<b:First>Omid</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Daniels</b:Last>
+<b:Middle>A</b:Middle>
+<b:First>Gregory</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Khrebtukova</b:Last>
+<b:First>Irina</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Loring</b:Last>
+<b:Middle>F</b:Middle>
+<b:First>Jeanne</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Laurent</b:Last>
+<b:Middle>C</b:Middle>
+<b:First>Louise</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Schroth</b:Last>
+<b:Middle>P</b:Middle>
+<b:First>Gary</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Sandberg</b:Last>
+<b:First>Rickard</b:First>
+</b:Person>
+</b:NameList>
+</b:Author>
+</b:Author>
+<b:Pages>777-782</b:Pages>
+<b:Volume>30</b:Volume>
+<b:StandardNumber> ISSN: 1087-0156</b:StandardNumber>
+<b:Publisher>Nature Publishing Group, a division of Macmillan Publishers Limited. All Rights Reserved.</b:Publisher>
+<b:JournalName>Nat Biotech</b:JournalName>
+<b:Issue>8</b:Issue>
+<b:Month>#aug#</b:Month>
+<b:URL>http://dx.doi.org/10.1038/nbt.2282</b:URL>
+</b:Source>
+<b:Source>
+<b:SourceType>JournalArticle</b:SourceType>
+<b:Tag>Li2011</b:Tag>
+<b:Title>RSEM: accurate transcript quantification from RNA-Seq data with or without a reference genome</b:Title>
+<b:Year>2011</b:Year>
+<b:Author>
+<b:Author>
+<b:NameList>
+<b:Person>
+<b:Last>Li</b:Last>
+<b:First>Bo</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Dewey</b:Last>
+<b:First>Colin</b:First>
+</b:Person>
+</b:NameList>
+</b:Author>
+</b:Author>
+<b:Pages>323</b:Pages>
+<b:Volume>12</b:Volume>
+<b:StandardNumber> ISSN: 1471-2105 DOI: 10.1186/1471-2105-12-323</b:StandardNumber>
+<b:JournalName>BMC Bioinformatics</b:JournalName>
+<b:Issue>1</b:Issue>
+<b:URL>http://www.biomedcentral.com/1471-2105/12/323</b:URL>
+<b:BIBTEX_Abstract>BACKGROUND:RNA-Seq is revolutionizing the way transcript abundances are measured. A key challenge in transcript quantification from RNA-Seq data is the handling of reads that map to multiple genes or isoforms. This issue is particularly important for quantification with de novo transcriptome assemblies in the absence of sequenced genomes, as it is difficult to determine which transcripts are isoforms of the same gene. A second significant issue is the design of RNA-Seq experiments, in terms of the number of reads, read length, and whether reads come from one or both ends of cDNA fragments.RESULTS:We present RSEM, an user-friendly software package for quantifying gene and isoform abundances from single-end or paired-end RNA-Seq data. RSEM outputs abundance estimates, 95% credibility intervals, and visualization files and can also simulate RNA-Seq data. In contrast to other existing tools, the software does not require a reference genome. Thus, in combination with a de novo transcriptome assembler, RSEM enables accurate transcript quantification for species without sequenced genomes. On simulated and real data sets, RSEM has superior or comparable performance to quantification methods that rely on a reference genome. Taking advantage of RSEM's ability to effectively use ambiguously-mapping reads, we show that accurate gene-level abundance estimates are best obtained with large numbers of short single-end reads. On the other hand, estimates of the relative frequencies of isoforms within single genes may be improved through the use of paired-end reads, depending on the number of possible splice forms for each gene.CONCLUSIONS:RSEM is an accurate and user-friendly software tool for quantifying transcript abundances from RNA-Seq data. As it does not rely on the existence of a reference genome, it is particularly useful for quantification with de novo transcriptome assemblies. In addition, RSEM has enabled valuable guidance for cost-efficient design of quantification experiments with RNA-Seq, which is currently relatively expensive.</b:BIBTEX_Abstract>
+</b:Source>
+<b:Source>
+<b:SourceType>JournalArticle</b:SourceType>
+<b:Tag>Zhang2012</b:Tag>
+<b:Title>Weighted Frequent Gene Co-expression Network Mining to Identify Genes Involved in Genome Stability</b:Title>
+<b:Year>2012</b:Year>
+<b:Author>
+<b:Author>
+<b:NameList>
+<b:Person>
+<b:Last>Zhang</b:Last>
+<b:Middle>and Lu, Kewei and Xiang, Yang and Islam, Muhtadi and Kotian, Shweta and Kais, Zeina and Lee, Cindy and Arora, Mansi and Liu, Hui-wen and Parvin, Jeffrey D. and Huang, Kun</b:Middle>
+<b:First>Jie</b:First>
+</b:Person>
+</b:NameList>
+</b:Author>
+</b:Author>
+<b:Pages>e1002656</b:Pages>
+<b:Volume>8</b:Volume>
+<b:StandardNumber> DOI: 10.1371/journal.pcbi.1002656</b:StandardNumber>
+<b:Publisher>Public Library of Science</b:Publisher>
+<b:JournalName>PLoS Comput Biol</b:JournalName>
+<b:Issue>8</b:Issue>
+<b:Month>08</b:Month>
+<b:URL>http://dx.doi.org/10.1371%2Fjournal.pcbi.1002656</b:URL>
+<b:BIBTEX_Abstract>&lt;title&gt;Author Summary&lt;/title&gt;&lt;p&gt;Proteins interact with each other in a network manner to precisely regulate complicated physiological functions of life. Diseases such as cancer may occur if the network regulations go wrong. In cancer research, network mining has been utilized to identify biomarkers, predict therapeutic targets, and discover new mechanisms for cancer development. Among these applications, the search for genes with similar expression patterns (co-expression) over different samples is particularly successful. However, few network mining approaches were systematically applied to different types of cancers to extract common cancer features. We carried out a systematic study to identify frequently co-expressed gene networks in multiple cancers and compared them with the gene networks found in multiple normal tissues. We found dramatic differences between networks from the two sources, with gene networks in cancer corresponding to specific traits of cancer. Specifically, the largest gene network in cancer contains many genes with cell cycle control and DNA stability functions. We thus predicted that a set of poorly studied genes in this network share similar functions and validated that most of these genes are involved in DNA break repair or proper cell division. To the best of our knowledge, this is the largest scale of such a study.&lt;/p&gt;</b:BIBTEX_Abstract>
+</b:Source>
+<b:Source>
+<b:SourceType>JournalArticle</b:SourceType>
+<b:Tag>Patel2014</b:Tag>
+<b:Title>Single-cell RNA-seq highlights intratumoral heterogeneity in primary glioblastoma</b:Title>
+<b:Year>2014</b:Year>
+<b:Author>
+<b:Author>
+<b:NameList>
+<b:Person>
+<b:Last>Patel</b:Last>
+<b:Middle>P.</b:Middle>
+<b:First>Anoop</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Tirosh</b:Last>
+<b:First>Itay</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Trombetta</b:Last>
+<b:Middle>J.</b:Middle>
+<b:First>John</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Shalek</b:Last>
+<b:Middle>K.</b:Middle>
+<b:First>Alex</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Gillespie</b:Last>
+<b:Middle>M.</b:Middle>
+<b:First>Shawn</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Wakimoto</b:Last>
+<b:First>Hiroaki</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Cahill</b:Last>
+<b:Middle>P.</b:Middle>
+<b:First>Daniel</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Nahed</b:Last>
+<b:Middle>V.</b:Middle>
+<b:First>Brian</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Curry</b:Last>
+<b:Middle>T.</b:Middle>
+<b:First>William</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Martuza</b:Last>
+<b:Middle>L.</b:Middle>
+<b:First>Robert</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Louis</b:Last>
+<b:Middle>N.</b:Middle>
+<b:First>David</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Rozenblatt-Rosen</b:Last>
+<b:First>Orit</b:First>
+</b:Person>
+<b:Person>
+<b:Last>SuvÃ </b:Last>
+<b:Middle>L.</b:Middle>
+<b:First>Mario</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Regev</b:Last>
+<b:First>Aviv</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Bernstein</b:Last>
+<b:Middle>E.</b:Middle>
+<b:First>Bradley</b:First>
+</b:Person>
+</b:NameList>
+</b:Author>
+</b:Author>
+<b:Pages>1396-1401</b:Pages>
+<b:Volume>344</b:Volume>
+<b:StandardNumber> DOI: 10.1126/science.1254257</b:StandardNumber>
+<b:JournalName>Science</b:JournalName>
+<b:Issue>6190</b:Issue>
+<b:URL>http://www.sciencemag.org/content/344/6190/1396.abstract</b:URL>
+<b:BIBTEX_Abstract>Human cancers are complex ecosystems composed of cells with distinct phenotypes, genotypes, and epigenetic states, but current models do not adequately reflect tumor composition in patients. We used single-cell RNA sequencing (RNA-seq) to profile 430 cells from five primary glioblastomas, which we found to be inherently variable in their expression of diverse transcriptional programs related to oncogenic signaling, proliferation, complement/immune response, and hypoxia. We also observed a continuum of stemness-related expression states that enabled us to identify putative regulators of stemness in vivo. Finally, we show that established glioblastoma subtype classifiers are variably expressed across individual cells within a tumor and demonstrate the potential prognostic implications of such intratumoral heterogeneity. Thus, we reveal previously unappreciated heterogeneity in diverse regulatory programs central to glioblastoma biology, prognosis, and therapy.</b:BIBTEX_Abstract>
+</b:Source>
+<b:Source>
+<b:SourceType>JournalArticle</b:SourceType>
+<b:Tag>Hu01062005</b:Tag>
+<b:Title>Mining coherent dense subgraphs across massive biological networks for functional discovery</b:Title>
+<b:Year>2005</b:Year>
+<b:Author>
+<b:Author>
+<b:NameList>
+<b:Person>
+<b:Last>Hu</b:Last>
+<b:First>Haiyan</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Yan</b:Last>
+<b:First>Xifeng</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Huang</b:Last>
+<b:First>Yu</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Han</b:Last>
+<b:First>Jiawei</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Zhou</b:Last>
+<b:Middle>Jasmine</b:Middle>
+<b:First>Xianghong</b:First>
+</b:Person>
+</b:NameList>
+</b:Author>
+</b:Author>
+<b:Pages>i213-i221</b:Pages>
+<b:Volume>21</b:Volume>
+<b:StandardNumber> DOI: 10.1093/bioinformatics/bti1049</b:StandardNumber>
+<b:JournalName>Bioinformatics</b:JournalName>
+<b:Issue>suppl 1</b:Issue>
+<b:URL>http://bioinformatics.oxfordjournals.org/content/21/suppl_1/i213.abstract</b:URL>
+<b:BIBTEX_Abstract>Motivation: The rapid accumulation of biological network data translates into an urgent need for computational methods for graph pattern mining. One important problem is to identify recurrent patterns across multiple networks to discover biological modules. However, existing algorithms for frequent pattern mining become very costly in time and space as the pattern sizes and network numbers increase. Currently, no efficient algorithm is available for mining recurrent patterns across large collections of genome-wide networks.Results: We developed a novel algorithm, CODENSE, to efficiently mine frequent coherent dense subgraphs across large numbers of massive graphs. Compared with previous methods, our approach is scalable in the number and size of the input graphs and adjustable in terms of exact or approximate pattern mining. Applying CODENSE to 39 co-expression networks derived from microarray datasets, we discovered a large number of functionally homogeneous clusters and made functional predictions for 169 uncharacterized yeast genes.Availability: http://zhoulab.usc.edu/CODENSE/Contact: xjzhou@usc.edu</b:BIBTEX_Abstract>
+</b:Source>
+<b:Source>
+<b:SourceType>JournalArticle</b:SourceType>
+<b:Tag>Huang2008</b:Tag>
+<b:Title>Systematic and integrative analysis of large gene lists using DAVID bioinformatics resources</b:Title>
+<b:Year>2008</b:Year>
+<b:Author>
+<b:Author>
+<b:NameList>
+<b:Person>
+<b:Last>Huang</b:Last>
+<b:Middle>Wei</b:Middle>
+<b:First>Da</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Sherman</b:Last>
+<b:Middle>T</b:Middle>
+<b:First>Brad</b:First>
+</b:Person>
+<b:Person>
+<b:Last>Lempicki</b:Last>
+<b:Middle>A</b:Middle>
+<b:First>Richard</b:First>
+</b:Person>
+</b:NameList>
+</b:Author>
+</b:Author>
+<b:Pages>44-57</b:Pages>
+<b:Volume>4</b:Volume>
+<b:StandardNumber> ISSN: 1754-2189</b:StandardNumber>
+<b:Publisher>Nature Publishing Group</b:Publisher>
+<b:JournalName>Nat. Protocols</b:JournalName>
+<b:Issue>1</b:Issue>
+<b:Month>#dec#</b:Month>
+<b:URL>http://dx.doi.org/10.1038/nprot.2008.211</b:URL>
+</b:Source>
+</b:Sources>

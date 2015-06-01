@@ -105,17 +105,17 @@ if(args$dataFromRDS)
   Data$meta <- metaData[,indecies];
   
   #particion by primary cancer sample
-  Data$MGH26 <- as.matrix(Data$all[,grepl(x=colnames(Data$meta), pattern="^Single.cell.mRNA.seq_MGH26_")])
-  Data$MGH262 <- as.matrix(Data$all[,grepl(x=colnames(Data$meta), pattern="^Single.cell.mRNA.seq_MGH26.2_")])
+  Data$MGH26 <- as.matrix(Data$all[,grepl(x=colnames(Data$meta), pattern="^Single.cell.mRNA.seq_MGH26")])
+  #Data$MGH262 <- as.matrix(Data$all[,grepl(x=colnames(Data$meta), pattern="^Single.cell.mRNA.seq_MGH26")])
   Data$MGH28 <- as.matrix(Data$all[,Data$meta[7,]=="Single cell mRNA-seq_MGH28"])
   Data$MGH29 <- as.matrix(Data$all[,Data$meta[7,]=="Single cell mRNA-seq_MGH29"])
   Data$MGH30 <- as.matrix(Data$all[,Data$meta[7,]=="Single cell mRNA-seq_MGH30"])
   Data$MGH31 <- as.matrix(Data$all[,Data$meta[7,]=="Single cell mRNA-seq_MGH31"])
   Data$CSC6 <- as.matrix(Data$all[,Data$meta[7,]=="Single cell mRNA-seq_CSC6"])
   Data$CSC8 <- as.matrix(Data$all[,Data$meta[7,]=="Single cell mRNA-seq_CSC8"])
-  Data$Population <- as.matrix(Data$all[,grepl(x=lapply(Data$meta[7,], as.character), pattern="Population mRNA-seq_MGH..")])
+  Data$Population <- as.matrix(Data$all[,grepl(x=lapply(Data$meta[7,], as.character), pattern="Population mRNA-seq_MGH..")])[,c(3,6,7,8,11)]
   Data$Samples <- as.matrix(cbind(Data$MGH26,Data$MGH28,Data$MGH29,Data$MGH30,Data$MGH31))
-  Data$Average <-apply(Data$MGH26,MARGIN=1,FUN=mean)[1-10]
+  Data$Average <-cbind(apply(Data$MGH26,MARGIN=1,FUN=mean),apply(Data$MGH28,MARGIN=1,FUN=mean),apply(Data$MGH29,MARGIN=1,FUN=mean),apply(Data$MGH30,MARGIN=1,FUN=mean),apply(Data$MGH31,MARGIN=1,FUN=mean));
   
   #hierarchical clustering
   Data$dist <- dist(x=t(Data$Samples),method="euclidian")
@@ -282,8 +282,8 @@ for(method in c("spearman"))
   print("Constructing correlation matricies");
   
   density_data <- data.frame();
-  dataSets<-list(Data$MGH26,Data$MGH262,Data$MGH28,Data$MGH29,Data$MGH30,Data$MGH31, Data$Samples, Data$CSC6, Data$CSC8);
-  dataSetNames <- c("MGH26", "MGH262",  "MGH28", "MGH29", "MGH30", "MGH31", "Samples", "CSC6", "CSC8");
+  dataSets<-list(Data$MGH26,Data$MGH28,Data$MGH29,Data$MGH30,Data$MGH31, Data$Samples, Data$Population, Data$Average);
+  dataSetNames <- c("MGH26", "MGH28", "MGH29", "MGH30", "MGH31", "Samples", "Population", "Average");
   for(i in 1:length(dataSets))
   {
     dataSet = dataSets[[i]];
@@ -314,8 +314,8 @@ for(method in c("spearman"))
   
   ##################################################################
   #coexpression networks direct comparison
-  maCorrMat <- cor(x=t(Data$ma), method=method, use="complete");
-  rsCorrMat <- cor(x=t(Data$rs_DESeq), method=method, use="complete");
+  #maCorrMat <- cor(x=t(Data$ma), method=method, use="complete");
+  #rsCorrMat <- cor(x=t(Data$rs_DESeq), method=method, use="complete");
   
   if(args$diffCoexFlag)
   {
