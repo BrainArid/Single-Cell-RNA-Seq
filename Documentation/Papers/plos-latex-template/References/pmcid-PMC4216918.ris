@@ -1,0 +1,48 @@
+TY  - JOUR
+DB  - PMC
+AU  - Bao, Zhao-Shi
+AU  - Chen, Hui-Min
+AU  - Yang, Ming-Yu
+AU  - Zhang, Chuan-Bao
+AU  - Yu, Kai
+AU  - Ye, Wan-Lu
+AU  - Hu, Bo-Qiang
+AU  - Yan, Wei
+AU  - Zhang, Wei
+AU  - Akers, Johnny
+AU  - Ramakrishnan, Valya
+AU  - Li, Jie
+AU  - Carter, Bob
+AU  - Liu, Yan-Wei
+AU  - Hu, Hui-Min
+AU  - Wang, Zheng
+AU  - Li, Ming-Yang
+AU  - Yao, Kun
+AU  - Qiu, Xiao-Guang
+AU  - Kang, Chun-Sheng
+AU  - You, Yong-Ping
+AU  - Fan, Xiao-Long
+AU  - Song, Wei Sonya
+AU  - Li, Rui-Qiang
+AU  - Su, Xiao-Dong
+AU  - Chen, Clark C
+AU  - Jiang, Tao
+T1  - RNA-seq of 272 gliomas revealed a novel, recurrent PTPRZ1-MET fusion transcript in secondary glioblastomas
+SN  - 1088-9051
+SN  - 1549-5469
+Y1  - 2014/11/
+PY  - 2013/10/27/received
+PY  - 2014/08/14/accepted
+AB  - Studies of gene rearrangements and the consequent oncogenic fusion proteins have laid the foundation for targeted cancer therapy. To identify oncogenic fusions associated with glioma progression, we catalogued fusion transcripts by RNA-seq of 272 gliomas. Fusion transcripts were more frequently found in high-grade gliomas, in the classical subtype of gliomas, and in gliomas treated with radiation/temozolomide. Sixty-seven in-frame fusion transcripts were identified, including three recurrent fusion transcripts: FGFR3-TACC3, RNF213-SLC26A11, and PTPRZ1-MET (ZM). Interestingly, the ZM fusion was found only in grade III astrocytomas (1/13; 7.7%) or secondary GBMs (sGBMs, 3/20; 15.0%). In an independent cohort of sGBMs, the ZM fusion was found in three of 20 (15%) specimens. Genomic analysis revealed that the fusion arose from translocation events involving introns 3 or 8 of PTPRZ and intron 1 of MET. ZM fusion transcripts were found in GBMs irrespective of isocitrate dehydrogenase 1 (IDH1) mutation status. sGBMs harboring ZM fusion showed higher expression of genes required for PIK3CA signaling and lowered expression of genes that suppressed RB1 or TP53 function. Expression of the ZM fusion was mutually exclusive with EGFR overexpression in sGBMs. Exogenous expression of the ZM fusion in the U87MG glioblastoma line enhanced cell migration and invasion. Clinically, patients afflicted with ZM fusion harboring glioblastomas survived poorly relative to those afflicted with non-ZM-harboring sGBMs (P < 0.001). Our study profiles the shifting RNA landscape of gliomas during progression and reveled ZM as a novel, recurrent fusion transcript in sGBMs. 
+SP  - 1765
+EP  - 1773
+VL  - 24
+IS  - 11
+DO  - 10.1101/gr.165126.113
+AN  - PMC4216918
+UR  - http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4216918/
+U1  - 25135958[pmid]
+J1  - Genome Res
+JF  - Genome Research
+PB  - Cold Spring Harbor Laboratory Press
+ER  - 

@@ -1,0 +1,26 @@
+LA  - eng
+AID - 10.1093/nar/gkn923 [doi]
+AID - gkn923 [pii]
+PMC - PMC2615629
+PMID- 19033363
+VI  - 37
+IP  - 1
+PG  - 1-13
+DP  - 2009 Jan
+DEP - 20081125
+PHST- 2008/09/10 [received]
+PHST- 2008/10/24 [revised]
+PHST- 2008/11/03 [accepted]
+IS  - 0305-1048 (Print)
+IS  - 1362-4962 (Electronic)
+TI  - Bioinformatics enrichment tools: paths toward the comprehensive functional analysis of large gene lists
+AB  - Functional analysis of large gene lists, derived in most cases from emerging high-throughput genomic, proteomic and bioinformatics scanning approaches, is still a challenging and daunting task. The gene-annotation enrichment analysis is a promising high-throughput strategy that increases the likelihood for investigators to identify biological processes most pertinent to their study. Approximately 68 bioinformatics enrichment tools that are currently available in the community are collected in this survey. Tools are uniquely categorized into three major classes, according to their underlying enrichment algorithms. The comprehensive collections, unique tool classifications and associated questions/issues will provide a more comprehensive and up-to-date view regarding the advantages, pitfalls and recent trends in a simpler tool-class level rather than by a tool-by-tool approach. Thus, the survey will help tool designers/developers and experienced end users understand the underlying algorithms and pertinent details of particular tool categories/tools, enabling them to make the best choices for their particular research interests. 
+AU  - Huang DW
+FAU - Huang, Da Wei
+AU  - Sherman BT
+FAU - Sherman, Brad T
+AU  - Lempicki RA
+FAU - Lempicki, Richard A
+TA  - Nucleic Acids Res
+JT  - Nucleic Acids Research
+SO  - Nucleic Acids Res. 2009 Jan;37(1):1-13. Epub 2008 Nov 25 doi:10.1093/nar/gkn923.

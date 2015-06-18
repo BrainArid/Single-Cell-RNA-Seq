@@ -1,0 +1,55 @@
+\begin{thebibliography}{1}
+
+\bibitem{Patel20062014}
+Patel AP, Tirosh I, Trombetta JJ, Shalek AK, Gillespie SM, Wakimoto H, et~al.
+\newblock Single-cell RNA-seq highlights intratumoral heterogeneity in primary
+  glioblastoma.
+\newblock Science. 2014;344(6190):1396--1401.
+\newblock Available from:
+  \url{http://www.sciencemag.org/content/344/6190/1396.abstract}.
+
+\bibitem{Bao2014}
+Bao ZS, Chen HM, Yang MY, Zhang CB, Yu K, Ye WL, et~al.
+\newblock RNA-seq of 272 gliomas revealed a novel, recurrent PTPRZ1-MET fusion
+  transcript in secondary glioblastomas.
+\newblock Genome Research. 2014 Aug;24(11):1765--1773.
+\newblock Available from:
+  \url{http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4216918/}.
+
+\bibitem{Ramskold2012}
+Ramskold D, Luo S, Wang YC, Li R, Deng Q, Faridani OR, et~al.
+\newblock Full-length mRNA-Seq from single-cell levels of RNA and individual
+  circulating tumor cells.
+\newblock Nat Biotech. 2012 Aug;30(8):777--782.
+\newblock Available from: \url{http://dx.doi.org/10.1038/nbt.2282}.
+
+\bibitem{Langmead2009}
+Langmead B, Trapnell C, Pop M, Salzberg S.
+\newblock Ultrafast and memory-efficient alignment of short DNA sequences to
+  the human genome.
+\newblock Genome Biology. 2009;10(3):R25.
+\newblock Available from: \url{http://genomebiology.com/2009/10/3/R25}.
+
+\bibitem{Li2011}
+Li B, Dewey C.
+\newblock RSEM: accurate transcript quantification from RNA-Seq data with or
+  without a reference genome.
+\newblock BMC Bioinformatics. 2011;12(1):323.
+\newblock Available from: \url{http://www.biomedcentral.com/1471-2105/12/323}.
+
+\bibitem{Hu2005}
+Hu H, Yan X, Huang Y, Han J, Zhou XJ.
+\newblock Mining coherent dense subgraphs across massive biological networks
+  for functional discovery.
+\newblock Bioinformatics. 2005;21(suppl 1):i213--i221.
+\newblock Available from:
+  \url{http://bioinformatics.oxfordjournals.org/content/21/suppl_1/i213.abstract}.
+
+\bibitem{Huang2008}
+Huang DW, Sherman BT, Lempicki RA.
+\newblock Systematic and integrative analysis of large gene lists using DAVID
+  bioinformatics resources.
+\newblock Nat Protocols. 2008 Dec;4(1):44--57.
+\newblock Available from: \url{http://dx.doi.org/10.1038/nprot.2008.211}.
+
+\end{thebibliography}

@@ -1,10 +1,13 @@
 \documentclass[11pt,twoside,a4paper]{article}
 \usepackage{amsmath}
 \usepackage{graphicx}
+\usepackage{rotating}
+\usepackage{tikz}
+\usepackage[backend=bibtex]{biblatex}
 %\usepackage{natbib}
 \begin{document}
 
-\title{Exploration of primary glioblastoma Single-cell RNA-seq co-expression networks}
+\title{Comparison of primary glioblastoma Single-cell and Tissue RNA-seq co-expression networks}
 \author{Brian Arand \and Raghu Machiraju \and Kun Huang}
 \maketitle
 
@@ -24,7 +27,7 @@ The isolation of individual cells’ transcriptome profiles has been largely a t
 \label{Workflow Figure}
 \end{figure}
 
-We analyzed two glioma datasets: GSE57872, the data presented by Patel et al. in Single-cell RNA-seq highlights intratumoral heterogeneity in primary glioblastoma (Patel, et al., 2014), and GSE48865, the data presented by Bao ZS et al. in RNA-seq of 272 gliomas revealed a novel, recurrent PTPRZ1-MET fusion transcript in secondary glioblastomas. GSE57872 consists of single-cell samples whereas GSE48865 consists of more-traditional population-of-cell (tissue) samples. After preprocessing each dataset independantly (steps explained in following sections), we step each dataset through a coexpression-network analysis workflow. This workflow has a number of parts: correlation calculation, network construction, module detection, and enrichment analysis. Necessary variations to this workflow per dataset are explained in sections to follow. 
+We analyzed two glioma datasets: GSE57872, the data presented in Single-cell RNA-seq highlights intratumoral heterogeneity in primary glioblastoma \cite{Patel}, and GSE48865, the data presented in RNA-seq of 272 gliomas revealed a novel, recurrent PTPRZ1-MET fusion transcript in secondary glioblastomas \cite{Bao}. GSE57872 consists of single-cell samples whereas GSE48865 consists of more-traditional, population-of-cell (or tissue) samples. After preprocessing each dataset independently (steps explained in following sections), we step each dataset through a coexpression-network analysis workflow. This workflow has a number of parts: correlation calculation, network construction, module detection, and enrichment analysis. Necessary variations to this workflow per dataset are explained in sections to follow. 
 
 \subsection{Single-Cell RNASeq Samples }
 
@@ -44,7 +47,7 @@ We analyzed GSE57872: the data presented by Patel et al. in Single-cell RNA-seq 
 \sum_{s} \log_2(x_{si} + 1)-y_i
 \end{equation}
 
-\subsubsection{Network Construction }
+\subsubsection{Network Construction}
 In our analysis, single-cell samples were grouped by tumor of origin, $t$. For each group, a gene-by-gene Spearman’s rank correlation matrix was calculated: 
 
 \begin{equation}\label{equation3}
@@ -52,7 +55,7 @@ In our analysis, single-cell samples were grouped by tumor of origin, $t$. For e
 \rho_{11t} & \ldots & \rho_{1kt} \\
 \vdots & \ddots & \vdots \\
 \rho_{k1t} & \ldots & \rho_{kkt}i \end{array} \right]
-\end{equation}
+\end{equation}%
 
 Where $\rho_{ijt}$ is the Spearman’s correlation between the $i^{th}$ and $j^{th}$ gene of tumor $t$. Co-expression matrices were then created by filtering at the same Spearman’s rank threshold, $c$, to produce binary matrices, $B_t$, per tumor. 
 
@@ -88,11 +91,11 @@ X=(V,E), where v_i,v_j \in V and (v_i,v_j) \in E \leftrightarrow f_ij \ge e
 CODENSE then reported the modules that meet some minimum density threshold, d. At the suggestion of the CODENSE authors and after analyzing the effect perturb-ing d has on the number and size of the resulting modules, we chose a minimum den-sity threshold of 0.6. We wanted to maximize our parameter d to ensure dense mod-ules to ensure their biological significant. Note that in figure 2, heightened values of d can produce can drastically affect the output number and size of modules. Our selection of d = 0.6 marks the upper limit of where this non-robust behavior starts in our selected parameter space sampling resolution. At the selected parameterization CODENSE reported 21 dense, first-order modules. These relatively high thresholds will guarantee that our resulting modules will be dense and highly representative of tumors as a whole rather than dominated by signal from just a single tumor of origin (see Figure 2).  We find that these are necessary steps in order to extract meaningful co-expression from data that is relatively noisy and will so few tumors of origin to work with.
 
 \subsection{Population Tissue Samples}
-Our population-tissue control comes from GEO accession GSE48865. 274 glioma tissue samples make up this dataset, of which, 59 were identified as primary, stage-4 glioblastoma tissue samples. We filtered out any reads from the 59 samples with more the 10% of its nucleotides designated as unknown bases, and any read with more than 50% of its bases having Sanger phred+33 quality scores less than 5. After filtering, we retained 1,388,064,773 reads in total. 
+Our population-tissue control comes from GEO accession GSE48865. 274 glioma tissue samples make up this dataset, of which, 59 were identified as primary, stage-4 glioblastoma tissue samples. We filtered out any reads from the 59 samples with more than 10\% of its nucleotides designated as unknown bases, and any read with more than 50\% of its bases having Sanger phred+33 quality scores less than 5. After filtering, we retained 1,388,064,773 reads in total. 
 
-Each filtered sample was then aligned to hg19 transcriptome (GRCh37) using bow-tie (version 1.1.1 with default parameters provided by RSEM) and TPM values per gene were estimated using RSEM (version 1.2.3). 73% of the reads were aligned suc-cessfully either uniquely or multi-mapped. 
+Each filtered sample was then aligned to hg19 transcriptome (GRCh37) using bow-tie (version 1.1.1 with default parameters provided by RSEM) and TPM values per gene were estimated using RSEM (version 1.2.3). 73\% of the reads were aligned successfully either uniquely or multi-mapped. 
 
-TPM values were adjusted again as in equation (2). Genes were then filtered to re-tain only those that were highly expressed across the 59 samples—the ith gene was filtered out if yi <= 4.5. We retained 6,932 genes after filtering.
+TPM values were adjusted again as in equation (2). Genes were then filtered to retain only those that were highly expressed across the 59 samples. The $i^{th}$ gene was filtered out if $y_{i} <= 4.5$. We retained 6,932 genes after filtering.
 \subsubsection{Network Construction}
 
 Spearman’s Rank correlation was calculated for all genes pair-wise. No further network aggregation step was required for this data set. 
@@ -116,6 +119,18 @@ Module sets derived from both the single-cell network and population tissue sam-
 \end{figure}
 
 \subsection{Population Module Enrichment}
+
+\begin{sidewaysfigure}
+	\centering
+	\begin{tikzpicture}[scale=4]
+        \fill[blue] (0,0) rectangle(2,1.5);  
+    \end{tikzpicture}
+	\caption{Parameterization space analysis.}
+	\label{Parameter Space Figure}
+\end{sidewaysfigure}
+
+Something something update...
+
 \section{Discussion}
 Compare with Yang paper
 Cell cycle and extra cellular matrix ontologies are less 

@@ -1,0 +1,2080 @@
+<?xml version='1.0'?>
+<!DOCTYPE art SYSTEM 'http://www.biomedcentral.com/xml/article.dtd'>
+<art><ui>1471-2105-12-323</ui><ji>1471-2105</ji><fm>
+<dochead>Software</dochead>
+<bibl>
+<title>
+<p>RSEM: accurate transcript quantification from RNA-Seq data with or without a reference genome</p>
+</title>
+<aug>
+<au id="A1"><snm>Li</snm><fnm>Bo</fnm><insr iid="I1"/><email>bli@cs.wisc.edu</email></au>
+<au ca="yes" id="A2"><snm>Dewey</snm><mi>N</mi><fnm>Colin</fnm><insr iid="I1"/><insr iid="I2"/><email>cdewey@biostat.wisc.edu</email></au>
+</aug>
+<insg>
+<ins id="I1"><p>Department of Computer Sciences, University of Wisconsin-Madison, Madison, WI, USA</p></ins>
+<ins id="I2"><p>Department of Biostatistics and Medical Informatics, University of Wisconsin-Madison, Madison, WI, USA</p></ins>
+</insg>
+<source>BMC Bioinformatics</source>
+<issn>1471-2105</issn>
+<pubdate>2011</pubdate>
+<volume>12</volume>
+<issue>1</issue>
+<fpage>323</fpage>
+<url>http://www.biomedcentral.com/1471-2105/12/323</url>
+<xrefbib><pubidlist><pubid idtype="doi">10.1186/1471-2105-12-323</pubid><pubid idtype="pmpid">21816040</pubid></pubidlist></xrefbib>
+</bibl>
+<history><rec><date><day>10</day><month>5</month><year>2011</year></date></rec><acc><date><day>4</day><month>8</month><year>2011</year></date></acc><pub><date><day>4</day><month>8</month><year>2011</year></date></pub></history>
+<cpyrt><year>2011</year><collab>Li and Dewey; licensee BioMed Central Ltd.</collab><note>This is an Open Access article distributed under the terms of the Creative Commons Attribution License (<url>http://creativecommons.org/licenses/by/2.0</url>), which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.</note></cpyrt>
+<abs>
+<sec>
+<st>
+<p>Abstract</p>
+</st>
+<sec>
+<st>
+<p>Background</p>
+</st>
+<p>RNA-Seq is revolutionizing the way transcript abundances are measured. A key challenge in transcript quantification from RNA-Seq data is the handling of reads that map to multiple genes or isoforms. This issue is particularly important for quantification with de novo transcriptome assemblies in the absence of sequenced genomes, as it is difficult to determine which transcripts are isoforms of the same gene. A second significant issue is the design of RNA-Seq experiments, in terms of the number of reads, read length, and whether reads come from one or both ends of cDNA fragments.</p>
+</sec>
+<sec>
+<st>
+<p>Results</p>
+</st>
+<p>We present RSEM, an user-friendly software package for quantifying gene and isoform abundances from single-end or paired-end RNA-Seq data. RSEM outputs abundance estimates, 95% credibility intervals, and visualization files and can also simulate RNA-Seq data. In contrast to other existing tools, the software does not require a reference genome. Thus, in combination with a de novo transcriptome assembler, RSEM enables accurate transcript quantification for species without sequenced genomes. On simulated and real data sets, RSEM has superior or comparable performance to quantification methods that rely on a reference genome. Taking advantage of RSEM's ability to effectively use ambiguously-mapping reads, we show that accurate gene-level abundance estimates are best obtained with large numbers of short single-end reads. On the other hand, estimates of the relative frequencies of isoforms within single genes may be improved through the use of paired-end reads, depending on the number of possible splice forms for each gene.</p>
+</sec>
+<sec>
+<st>
+<p>Conclusions</p>
+</st>
+<p>RSEM is an accurate and user-friendly software tool for quantifying transcript abundances from RNA-Seq data. As it does not rely on the existence of a reference genome, it is particularly useful for quantification with de novo transcriptome assemblies. In addition, RSEM has enabled valuable guidance for cost-efficient design of quantification experiments with RNA-Seq, which is currently relatively expensive.</p>
+</sec>
+</sec>
+</abs>
+</fm><bdy>
+<sec>
+<st>
+<p>Background</p>
+</st>
+<p>RNA-Seq is a powerful technology for analyzing transcriptomes that is predicted to replace microarrays <abbrgrp>
+<abbr bid="B1">1</abbr>
+</abbrgrp>. Leveraging recent advances in sequencing technology, RNA-Seq experiments produce millions of relatively short reads from the ends of cDNAs derived from fragments of sample RNA. The reads produced can be used for a number of transcriptome analyses, including transcript quantification <abbrgrp>
+<abbr bid="B2">2</abbr>
+<abbr bid="B3">3</abbr>
+<abbr bid="B4">4</abbr>
+<abbr bid="B5">5</abbr>
+<abbr bid="B6">6</abbr>
+<abbr bid="B7">7</abbr>
+</abbrgrp>, differential expression testing <abbrgrp>
+<abbr bid="B8">8</abbr>
+<abbr bid="B9">9</abbr>
+</abbrgrp>, reference-based gene annotation <abbrgrp>
+<abbr bid="B6">6</abbr>
+<abbr bid="B10">10</abbr>
+</abbrgrp>, and de novo transcript assembly <abbrgrp>
+<abbr bid="B11">11</abbr>
+<abbr bid="B12">12</abbr>
+</abbrgrp>. In this paper we focus on the task of transcript quantification, which is the estimation of relative abundances, at both the gene and isoform levels. After sequencing, the quantification task typically involves two steps: (1) the mapping of reads to a reference genome or transcript set, and (2) the estimation of gene and isoform abundances based on the read mappings.</p>
+<p>A major complication in quantification is the fact that RNA-Seq reads do not always map uniquely to a single gene or isoform. Previously, we have shown that properly taking read mapping uncertainty into account with a statistical model is critical for achieving the most accurate abundance estimates <abbrgrp>
+<abbr bid="B7">7</abbr>
+</abbrgrp>. In this paper, we present a user-friendly software package, RSEM (RNA-Seq by Expectation Maximization), which implements our quantification method and provides extensions to our original model. A key feature unique to RSEM is the lack of the requirement of a reference genome. Instead, it only requires the user to provide a set of reference transcript sequences, such as one produced by a de novo transcriptome assembler <abbrgrp>
+<abbr bid="B11">11</abbr>
+<abbr bid="B12">12</abbr>
+</abbrgrp>. Extensions to our original methodology include the modeling of paired-end (PE) and variable-length reads, fragment length distributions, and quality scores. In addition, a 95% credibility interval (CI) and posterior mean estimate (PME) are now computed for the abundance of each gene and isoform, along with a maximum likelihood (ML) estimate. Lastly, RSEM now enables visualization of its output through probabilistically-weighted read alignments and read depth plots.</p>
+<p>Through experiments with simulated and real RNA-Seq data, we find that RSEM has superior or comparable quantification accuracy to other related methods. With additional experiments, we obtained two surprising results regarding the value of PE data and quality score information for estimating transcript abundances. Although a PE read provides more information than a single-end (SE) read, our experiments indicate that for the same sequencing throughput (in terms of the number of bases sequenced), short SE reads allow for the best quantification accuracy at the gene-level. And while one would assume that quality scores provide valuable information for the proper mapping of reads, we find that for RNA-Seq reads with Illumina-like error profiles, a model that takes into account quality scores does not significantly improve quantification accuracy over a model that only uses read sequences.</p>
+<sec>
+<st>
+<p>Related work</p>
+</st>
+<p>A simple quantification method that was used in some initial RNA-Seq papers <abbrgrp>
+<abbr bid="B13">13</abbr>
+<abbr bid="B14">14</abbr>
+</abbrgrp> and that is still used today is to count the number of reads that map uniquely to each gene, possibly correcting a gene's count by the "mappability" of its sequence <abbrgrp>
+<abbr bid="B15">15</abbr>
+</abbrgrp> and its length. The major problems with this type of method are that it: (1) throws away data and produces biased estimates if "mappability" is not taken into account, (2) produces incorrect estimates for alternatively-spliced genes <abbrgrp>
+<abbr bid="B16">16</abbr>
+</abbrgrp>, and (3) does not extend well to the task of estimating isoform abundances. A couple of methods were later developed that addressed the first problem by "rescuing" reads that mapped to multiple genes ("multireads") <abbrgrp>
+<abbr bid="B17">17</abbr>
+<abbr bid="B18">18</abbr>
+</abbrgrp>. Some other methods addressed the latter two problems, but not the first, by modeling RNA-Seq data at the isoform level <abbrgrp>
+<abbr bid="B5">5</abbr>
+</abbrgrp>. Later, we developed the methodology behind RSEM, which addressed all of these issues by using a generative model of RNA-Seq reads and the EM algorithm to estimate abundances at both the isoform and gene levels <abbrgrp>
+<abbr bid="B7">7</abbr>
+</abbrgrp>. Since the publication of the RSEM methodology, a number of methods utilizing similar statistical methods have been developed <abbrgrp>
+<abbr bid="B3">3</abbr>
+<abbr bid="B4">4</abbr>
+<abbr bid="B6">6</abbr>
+<abbr bid="B19">19</abbr>
+<abbr bid="B20">20</abbr>
+<abbr bid="B21">21</abbr>
+<abbr bid="B22">22</abbr>
+</abbrgrp>.</p>
+<p>Of the methods developed, only RSEM and IsoEM are capable of fully handling reads that map ambiguously between both isoforms and genes, which the authors of both methods have shown is important for achieving the best estimation accuracies <abbrgrp>
+<abbr bid="B4">4</abbr>
+<abbr bid="B7">7</abbr>
+</abbrgrp>. In contrast with IsoEM, RSEM is capable of modeling non-uniform sequence-independent read start position distributions (RSPDs), such as 3'-biased distributions that are produced by some RNA-Seq protocols <abbrgrp>
+<abbr bid="B1">1</abbr>
+</abbrgrp>. In addition, RSEM can compute PME and 95% CIs, whereas IsoEM only produces ML estimates. Lastly, RSEM is the only statistical method that we are aware of that is designed to work without a whole genome sequence, which allows for RNA-Seq analysis of species for which only transcript sequences are available.</p>
+</sec>
+</sec>
+<sec>
+<st>
+<p>Implementation</p>
+</st>
+<p>A typical run of RSEM consists of just two steps. First, a set of reference transcript sequences are generated and preprocessed for use by later RSEM steps. Second, a set of RNA-Seq reads are aligned to the reference transcripts and the resulting alignments are used to estimate abundances and their credibility intervals. The two steps are carried out by the user-friendly scripts <monospace>rsem-prepare-reference</monospace> and <monospace>rsem-calculate-expression</monospace>. The steps of the RSEM workflow are diagrammed in Figure <figr fid="F1">1</figr> and described in more detail in the following sections.</p>
+<fig id="F1"><title><p>Figure 1</p></title><caption><p>The RSEM software workflow</p></caption><text>
+   <p><b>The RSEM software workflow</b>. The standard RSEM workflow (indicated by the solid arrows) consists of running just two programs (<monospace>rsem-prepare-reference</monospace> and <monospace>rsem-calculate-expression</monospace>), which automate the use of Bowtie for read alignment. Workflows with an alternative alignment program additionally use the steps connected by the dashed arrows. Two additional programs, <monospace>rsem-bam2wig</monospace> and <monospace>rsem-plot-model</monospace>, allow for visualizing the output of RSEM. RNA-Seq data can also be simulated with RSEM via the workflow indicated by the dotted arrows.</p>
+</text><graphic file="1471-2105-12-323-1" hint_layout="single"/></fig>
+<sec>
+<st>
+<p>Reference sequence preparation</p>
+</st>
+<p>RSEM is designed to work with reads aligned to transcript sequences, as opposed to whole genome sequences. There are several advantages to using transcript-level alignments. First, for eukaryotic samples, alignment of RNA-Seq reads to a genome is made complicated by splicing and polyadenylation. Reads that span splice junctions or that extend into poly(A) tails are challenging to align at the genome level, although there are tools available for aligning splice junction reads <abbrgrp>
+<abbr bid="B23">23</abbr>
+<abbr bid="B24">24</abbr>
+<abbr bid="B25">25</abbr>
+</abbrgrp>. Second, using transcript-level alignments easily allows for analyses of samples from species without sequenced genomes but with a decently characterized transcriptome (perhaps via RNA-Seq transcriptome assembly <abbrgrp>
+<abbr bid="B11">11</abbr>
+<abbr bid="B12">12</abbr>
+</abbrgrp>). Lastly, the total length of all possible transcripts is often much smaller than the length of the genome, allowing for faster alignment at the transcript-level.</p>
+<p>A set of transcripts may be specified to <monospace>rsem-prepare-reference</monospace> in one of two ways. The simplest approach is to supply a FASTA-formatted file of transcript sequences. For example, such a file could be obtained from a reference genome database, a de novo transcriptome assembler, or an EST database. Alternatively, using the <monospace>--gtf option</monospace>, a gene annotation file (in GTF format) and the full genome sequence (in FASTA format) may be supplied. For commonly-studied species, these files may be easily downloaded from databases such as the UCSC Genome Browser Database <abbrgrp>
+<abbr bid="B26">26</abbr>
+</abbrgrp> and Ensembl <abbrgrp>
+<abbr bid="B27">27</abbr>
+</abbrgrp>. If the quality of existing gene annotations is in question, one can use a reference-based RNA-Seq transcriptome assembler, such as Cufflinks <abbrgrp>
+<abbr bid="B28">28</abbr>
+</abbrgrp>, to provide an improved set of gene predictions in GTF format. When gene-level abundance estimates are desired, an additional file specifying which transcripts are from the same gene may be specified (via the <monospace>--transcript-to-gene-map</monospace> option), or, if a GTF file is provided, the "gene_id" attribute of each transcript may be used to determine gene membership. With either method of specifying transcripts, RSEM generates its own set of preprocessed transcript sequences for use by later steps. For poly(A) mRNA analysis, RSEM will append poly(A) tail sequences to reference transcripts to allow for more accurate read alignment (disabled with <monospace>--no-polyA</monospace>). The scripts for preparing the reference sequences need only be run once per reference transcriptome as the transcript sequences are preprocessed in a sample-independent manner.</p>
+</sec>
+<sec>
+<st>
+<p>Read mapping and abundance estimation</p>
+</st>
+<p>The <monospace>rsem-calculate-expression</monospace> script handles both the alignment of reads against reference transcript sequences and the calculation of relative abundances. By default, RSEM uses the Bowtie alignment program <abbrgrp>
+<abbr bid="B29">29</abbr>
+</abbrgrp> to align reads, with parameters specifically chosen for RNA-Seq quantification. Alternatively, users may manually run a different alignment program and provide alignments in SAM format <abbrgrp>
+<abbr bid="B30">30</abbr>
+</abbrgrp> to <monospace>rsem-calculate-expression</monospace>.</p>
+<p>When using an alternative aligner, care must be taken to set the aligner parameters appropriately so that RSEM may provide the best abundance estimates. First, and most critically, aligners must be configured to report all valid alignments of a read, and not just a single "best" alignment. Second, we recommend that aligners be configured so that only matches and mismatches within a short prefix (a "seed") of each read be considered when determining valid alignments. For example, by default, RSEM runs Bowtie to find all alignments of a read with at most two mismatches in its first 25 bases. The idea is to allow RSEM to decide which alignments are most likely to be correct, rather than giving the aligner this responsibility. Since RSEM uses a more detailed model of the RNA-Seq read generation process than those used by read aligners, this results in more accurate estimation. Lastly, in order to reduce RSEM's running time and memory usage, it is useful to configure aligners to suppress the reporting of alignments for reads with a large number (e.g., &gt; 200) of valid alignments.</p>
+<p>While the original RSEM package only supported fixed-length SE RNA-Seq reads without quality score information, the new package supports a wide variety of input data types. RSEM now supports both SE and PE reads and reads of variable lengths. Reads may be given in either FASTA or FASTQ format. If reads are given in FASTQ format, RSEM will use quality score data as part of its statistical model. If quality scores are not provided, RSEM uses a position-dependent error model that we described previously <abbrgrp>
+<abbr bid="B7">7</abbr>
+</abbrgrp>.</p>
+<p>After the alignment of reads, RSEM computes ML abundance estimates using the Expectation-Maximization (EM) algorithm for its statistical model (see Methods). A number of options are available to specify the model that is used by RSEM, which should be customized according to the RNA-Seq protocol that produced the input reads. For example, if a strand-specific protocol is used, the <monospace>--strand-specific</monospace> option should be specified. Otherwise, it is assumed that a read has equal probability of coming from the sense or antisense directions. The fragment length distribution is controlled by the <monospace>--fragment-length-</monospace> family of options, which are particularly important for SE analysis. For PE analysis, RSEM learns the fragment length distribution from the data. If the protocol produces read position distributions that are highly 5' or 3' biased, then the <monospace>--estimate-rspd</monospace> option should be specified so that RSEM can estimate a read start position distribution (RSPD), which may allow for more accurate abundance estimates <abbrgrp>
+<abbr bid="B7">7</abbr>
+</abbrgrp>.</p>
+<p>In addition to computing ML abundance estimates, RSEM can also use a Bayesian version of its model to produce a PME and 95% CI for the abundance of each gene and isoform. These values are computed by Gibbs sampling (see Methods) and can be obtained by specifying the <monospace>--calc-ci</monospace> option. The 95% CIs are valuable for assessing differential expression across samples, particularly for repetitive genes or isoforms because the CIs capture uncertainty due to both random sampling effects and read mapping ambiguity. We recommend using the CIs in combination with the results of differential expression tools, which currently do not take into account variance from multiread allocation. The PME values may be used in lieu of the ML estimates as they are very similar, but have the convenient property of generally being contained within the 95% CIs, which is sometimes not the case for small ML estimates.</p>
+<p>The primary output of RSEM consists of two files, one for isoform-level estimates, and the other for gene-level estimates. Abundance estimates are given in terms of two measures. The first is an estimate of the number of fragments that are derived from a given isoform or gene. We can only estimate this quantity because reads often do not map uniquely to a single transcript. This count is generally a non-integer value and is the expectation of the number of alignable and unfiltered fragments that are derived from a isoform or gene given the ML abundances. These (possibly rounded) counts may be used by a differential expression method such as edgeR <abbrgrp>
+<abbr bid="B9">9</abbr>
+</abbrgrp> or DESeq <abbrgrp>
+<abbr bid="B8">8</abbr>
+</abbrgrp>. The second measure of abundance is the estimated fraction of transcripts made up by a given isoform or gene. This measure can be used directly as a value between zero and one or can be multiplied by 10<sup>6 </sup>to obtain a measure in terms of transcripts per million (TPM). The transcript fraction measure is preferred over the popular RPKM <abbrgrp>
+<abbr bid="B18">18</abbr>
+</abbrgrp> and FPKM <abbrgrp>
+<abbr bid="B6">6</abbr>
+</abbrgrp> measures because it is independent of the mean expressed transcript length and is thus more comparable across samples and species <abbrgrp>
+<abbr bid="B7">7</abbr>
+</abbrgrp>.</p>
+</sec>
+<sec>
+<st>
+<p>Visualization</p>
+</st>
+<p>RSEM can produce output for two different visualizations of RNA-Seq data as tracks in genome browsers, such as the UCSC Genome Browser <abbrgrp>
+<abbr bid="B31">31</abbr>
+</abbrgrp>. When the --out-bam option is specified, RSEM maps read alignments from transcript to genomic coordinates and outputs the resulting alignments in BAM format <abbrgrp>
+<abbr bid="B30">30</abbr>
+</abbrgrp>. Each alignment in the BAM file is weighted (using the MAPQ field) by the probability that it is the true alignment, given the ML parameters learned by RSEM. Visualization of the BAM file in a genome browser enables a user to see all of the read alignments and the posterior probabilities assigned to them by RSEM. The BAM file can be further processed by the <monospace>rsem-bam2wig</monospace> program to produce a UCSC WIG-formatted file that gives the expected number of reads overlapping each genomic position, given the ML parameters. Wiggle visualizations are useful for looking at the distributions of reads across transcripts. An example of the BAM and WIG visualizations within the UCSC Genome Browser is shown in Figure <figr fid="F2">2</figr>. To produce either visualization, one must have provided a GTF-formatted annotation file to the reference preparation script so that read alignments can be mapped back to genomic coordinates.</p>
+<fig id="F2"><title><p>Figure 2</p></title><caption><p>RSEM visualizations in the UCSC Genome Browser</p></caption><text>
+   <p><b>RSEM visualizations in the UCSC Genome Browser</b>. Example visualizations of RSEM output from mouse RNA-Seq data set SRR065546 in the UCSC Genome Browser. (A) Simultaneous visualization of the wiggle output, which gives the expected read depth at each position in the genome, and the BAM output, which gives probabilistically-weighted read alignments. In the BAM track, paired reads are connected by a thin black line and the darkness of the read indicates the posterior probability of its alignment (black meaning high probability). (B) An example gene for which the expected read depth (top track) differs greatly from the read depth computed from uniquely-mapping reads only (bottom track).</p>
+</text><graphic file="1471-2105-12-323-2" hint_layout="double"/></fig>
+<p>To help with diagnosing potential issues in RNA-Seq data generation or quantification, RSEM additionally allows for visualization of the sequencing model it learns from a given sample. This is accomplished by running the <monospace>rsem-plot-model</monospace> program on the output of <monospace>rsem-calculate-expression</monospace>. A number of plots are produced by <monospace>rsem-plot-model</monospace>, including the learned fragment and read length distributions, RSPD, and sequencing error parameters. Three of the plots generated for the RNA-Seq data set from SRA experiment SRX018974 <abbrgrp>
+<abbr bid="B25">25</abbr>
+</abbrgrp> are shown in Additional file <supplr sid="S1">1</supplr>.</p>
+<suppl id="S1">
+<title>
+<p>Additional file 1</p>
+</title>
+<text>
+<p>
+<b>Example plots generated by rsem-plot-model</b>.</p>
+</text>
+<file name="1471-2105-12-323-S1.PDF">
+   <p>Click here for file</p>
+</file>
+</suppl>
+</sec>
+<sec>
+<st>
+<p>Simulation</p>
+</st>
+<p>RSEM additionally allows for the simulation of RNA-Seq data sets according to the generative model on which it is based (see Methods). Simulation is performed by the <monospace>rsem-simulate-reads</monospace> program, which takes as input abundance estimates, sequencing model parameters, and reference transcripts (as prepared by <monospace>rsem-prepare-reference</monospace>). Typically, the abundance estimates and sequencing model are obtained by running RSEM on a real data set, but they may also be set manually.</p>
+</sec>
+</sec>
+<sec>
+<st>
+<p>Results and Discussion</p>
+</st>
+<sec>
+<st>
+<p>Comparison to related tools</p>
+</st>
+<p>To evaluate RSEM, we compared its performance to a number of related quantification methods. We compared with IsoEM (v1.0.5) <abbrgrp>
+<abbr bid="B4">4</abbr>
+</abbrgrp>, Cufflinks (v1.0.1) <abbrgrp>
+<abbr bid="B6">6</abbr>
+</abbrgrp>, rQuant (v1.0) <abbrgrp>
+<abbr bid="B2">2</abbr>
+</abbrgrp>, and the original implementation of RSEM (v0.6) <abbrgrp>
+<abbr bid="B32">32</abbr>
+</abbrgrp>. MISO <abbrgrp>
+<abbr bid="B3">3</abbr>
+</abbrgrp>, which uses a similar probabilistic model as RSEM, IsoEM, and Cufflinks, was not included in the comparison because it currently only computes the relative frequencies of alternative splice forms for each gene, not global transcript fractions. To make the comparisons fair, we ran Cufflinks only in its quantification mode. That is, it was configured to compute abundance estimates for the set of gene annotations that we provided to all methods and was not allowed to predict novel transcripts. Cufflinks and rQuant both require alignments of reads to a genome sequence and we used TopHat <abbrgrp>
+<abbr bid="B24">24</abbr>
+</abbrgrp> for this purpose. TopHat was provided with the gene annotations and mean fragment length and was not allowed to predict novel splice junctions. For RSEM and IsoEM, which require alignments to transcript sequences, we used Bowtie <abbrgrp>
+<abbr bid="B29">29</abbr>
+</abbrgrp>. As there are limited "gold-standard" data with which to evaluate the accuracy of RNA-Seq quantification methods, we tested the methods on both simulated and real data. On the simulated data, we additionally measured the computational performance (in terms of time and memory) of the methods.</p>
+<sec>
+<st>
+<p>Simulated data</p>
+</st>
+<p>As there are no published RNA-Seq data simulators, we performed experiments with the simulator included in the RSEM software package. This simulator uses the simple and widely-used model of RNA-Seq fragments being sampled uniformly and independently across all possible start sites from transcripts in a sample. The model used for the simulation is identical to that explicitly assumed by Cufflinks and IsoEM, and implicitly used by rQuant. Therefore, our simulation experiment is a test of how well the various methods perform when the data is generated from the model that they assume. We initially attempted to use an unpublished external simulation software package, Flux Simulator <abbrgrp>
+<abbr bid="B33">33</abbr>
+</abbrgrp>, but several bugs in the software prevented us from using it for the purposes of this paper.</p>
+<p>We used the simulator to generate a set of 20 million RNA-Seq fragments in a non-strand-specific manner from the mouse transcriptome. Paired-end reads were simulated from these fragments, and a single-end read set was constructed by simply throwing out the second read of each pair. Two mouse reference transcript sets were used: the RefSeq annotation <abbrgrp>
+<abbr bid="B34">34</abbr>
+</abbrgrp> and the Ensembl annotation <abbrgrp>
+<abbr bid="B27">27</abbr>
+</abbrgrp> (see Methods). The RefSeq set is conservative with 20,852 genes and 1.2 isoforms per gene on average. In contrast, the Ensembl set has 22,329 genes and 3.4 isoforms per gene on average. We have made the simulation data for this experiment available on the RSEM website.</p>
+<p>For each simulation set, we computed abundance estimates with the tested methods and measured the accuracy of the transcript fraction estimates using the median percent error (MPE), error fraction (EF), and false positive (FP) statistics that we used previously <abbrgrp>
+<abbr bid="B7">7</abbr>
+</abbrgrp>. The MPE is the median of the percent errors of the estimated values from the true values. The 10% EF is the fraction of transcripts for which the percent error of the abundance estimate is greater than 10%. Lastly, the FP statistic is the fraction of transcripts with true abundance less than 1 TPM that are predicted to have abundance of at least 1 TPM. These statistics were calculated for three levels of estimates: (1) gene relative abundances, (2) global isoform relative abundances, and (3) within-gene isoform relative abundances.</p>
+<p>Figure <figr fid="F3">3</figr> gives the distributions of the errors of the abundance estimates from the five methods on the RefSeq simulated sets, using a style of plot introduced by <abbrgrp>
+<abbr bid="B4">4</abbr>
+</abbrgrp>. Table <tblr tid="T1">1</tblr> gives the MPE, 10% EF, and FP rates for the methods. The results for the Ensembl simulated sets are shown in Additional file <supplr sid="S2">2</supplr>. RSEM v0.6 and rQuant were only run on the SE data, as they do not handle PE data.</p>
+<fig id="F3"><title><p>Figure 3</p></title><caption><p>Accuracy of four RNA-Seq quantification methods</p></caption><text>
+   <p><b>Accuracy of four RNA-Seq quantification methods</b>. The percent error distributions of estimates from RSEM, IsoEM, Cufflinks, and rQuant on simulated RNA-Seq data. The error distributions of global isoform and gene estimates from PE data are shown in (A) and (B), respectively. Global isoform and gene estimate error distributions for SE data are shown in (C) and (D), respectively.</p>
+</text><graphic file="1471-2105-12-323-3" hint_layout="double"/></fig>
+<tbl id="T1"><title><p>Table 1</p></title><caption><p>Accuracy measures for quantification methods applied to simulated data</p></caption><tblbdy cols="7">
+      <r>
+         <c/>
+         <c ca="center" cspan="3">
+            <p>
+               <b>SE</b>
+            </p>
+         </c>
+         <c ca="center" cspan="3">
+            <p>
+               <b>PE</b>
+            </p>
+         </c>
+      </r>
+      <r>
+         <c ca="left">
+            <p>
+               <b>Method</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>MPE</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>SE 10% EF</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>FP</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>MPE</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>PE 10% EF</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>FP</b>
+            </p>
+         </c>
+      </r>
+      <r>
+         <c cspan="7">
+            <hr/>
+         </c>
+      </r>
+      <r>
+         <c ca="left">
+            <p>RSEM</p>
+         </c>
+         <c ca="center">
+            <p><b>3.1</b>/<b>4.1</b>/<b>7.1</b></p>
+         </c>
+         <c ca="center">
+            <p><b>14.1</b>/<b>25.1</b>/<b>44.1</b></p>
+         </c>
+         <c ca="center">
+            <p><b>0.9</b>/<b>1.7</b>/<b>12.0</b></p>
+         </c>
+         <c ca="center">
+            <p><b>3.1</b>/<b>4.0</b>/5.2</p>
+         </c>
+         <c ca="center">
+            <p><b>14.4</b>/<b>23.3</b>/35.7</p>
+         </c>
+         <c ca="center">
+            <p><b>1.0</b>/1.8/11.3</p>
+         </c>
+      </r>
+      <r>
+         <c ca="left">
+            <p>IsoEM</p>
+         </c>
+         <c ca="center">
+            <p>4.6/5.6/8.0</p>
+         </c>
+         <c ca="center">
+            <p>18.1/29.0/45.4</p>
+         </c>
+         <c ca="center">
+            <p>1.7/3.2/31.3</p>
+         </c>
+         <c ca="center">
+            <p>4.0/4.8/<b>5.1</b></p>
+         </c>
+         <c ca="center">
+            <p>16.9/25.5/<b>35.3</b></p>
+         </c>
+         <c ca="center">
+            <p>1.2/<b>1.7</b>/<b>11.1</b></p>
+         </c>
+      </r>
+      <r>
+         <c ca="left">
+            <p>Cufflinks</p>
+         </c>
+         <c ca="center">
+            <p>9.5/10.7/18.1</p>
+         </c>
+         <c ca="center">
+            <p>46.6/53.3/65.3</p>
+         </c>
+         <c ca="center">
+            <p>2.5/11.1/98.5</p>
+         </c>
+         <c ca="center">
+            <p>20.2/20.4/10.5</p>
+         </c>
+         <c ca="center">
+            <p>89.3/86.4/51.1</p>
+         </c>
+         <c ca="center">
+            <p>2.7/8.6/98.4</p>
+         </c>
+      </r>
+      <r>
+         <c ca="left">
+            <p>rQuant</p>
+         </c>
+         <c ca="center">
+            <p>8.9/12.6/43.9</p>
+         </c>
+         <c ca="center">
+            <p>44.4/58.9/89.0</p>
+         </c>
+         <c ca="center">
+            <p>7.0/16.9/99.1</p>
+         </c>
+         <c>
+            <p/>
+         </c>
+         <c>
+            <p/>
+         </c>
+         <c>
+            <p/>
+         </c>
+      </r>
+      <r>
+         <c ca="left">
+            <p>RSEM v0.6</p>
+         </c>
+         <c ca="center">
+            <p>10.1/11.2/10.4</p>
+         </c>
+         <c ca="center">
+            <p>50.5/56.0/50.7</p>
+         </c>
+         <c ca="center">
+            <p>1.4/2.9/39.5</p>
+         </c>
+         <c>
+            <p/>
+         </c>
+         <c>
+            <p/>
+         </c>
+         <c>
+            <p/>
+         </c>
+      </r>
+   </tblbdy><tblfn>
+      <p>Accuracy of five RNA-Seq quantification methods on simulated SE and PE data. Values are given as gene/global isoform/within-gene isoform.</p>
+   </tblfn></tbl>
+<suppl id="S2">
+<title>
+<p>Additional file 2</p>
+</title>
+<text>
+<p>
+<b>Accuracy of four RNA-Seq quantification methods with the Ensembl reference set</b>.</p>
+</text>
+<file name="1471-2105-12-323-S2.PDF">
+   <p>Click here for file</p>
+</file>
+</suppl>
+<p>For both PE and SE reads, RSEM and IsoEM outperform Cufflinks and rQuant. There are likely two major reasons for the gap in performance between these two pairs of methods. First, Cufflinks and rQuant do not fully handle reads that map to multiple genes ("gene multireads"). Cufflinks uses a "rescue"-like strategy for an initial fractional allocation of multireads, which is roughly equivalent to one iteration of the EM algorithm used by RSEM and IsoEM. As for rQuant, it is not clear from <abbrgrp>
+<abbr bid="B2">2</abbr>
+</abbrgrp> if and how this method handles gene multireads. A second reason for the performance gap is the fact that Cufflinks and rQuant require alignment of reads to the genome, not to a transcript set. As we discussed in the Implementation section, alignment of RNA-Seq reads to a genome sequence is challenging for eukaryotic species, whose RNA transcripts are spliced and polyadenylated.</p>
+<p>The relative performance of the methods was similar across the RefSeq and Ensembl sets, although Cufflinks had surprisingly poor accuracy on the Ensembl set. A closer examination of the Cufflinks results revealed that this method was producing abnormally high abundance estimates on a subset of transcripts. This subset consisted of transcripts that were shorter (excluding poly(A) tails) than the mean fragment length (280 bases), indicating that the current implementation of Cufflinks does not properly handle short transcripts.</p>
+<p>RSEM and IsoEM are comparable for PE data, but for SE data, RSEM is slightly more accurate. This relatively small improvement of RSEM over IsoEM is likely due to a more detailed implementation of poly(A) tail handling, which was not present in the original version of IsoEM and has only been recently introduced into its software. The improvement of the current version of RSEM over RSEM v0.6 is due to the modeling of fragment lengths for SE data, which was originally shown by <abbrgrp>
+<abbr bid="B4">4</abbr>
+</abbrgrp> to improve accuracy.</p>
+</sec>
+<sec>
+<st>
+<p>MAQC data</p>
+</st>
+<p>It is challenging to benchmark RNA-Seq quantification methods on real data as we rarely know the "true" transcript abundances in a sample. Currently, qRT-PCR appears to be the most popular technology for producing "gold standard" abundance measurements, although without careful experimental design and data analysis it can give inaccurate results <abbrgrp>
+<abbr bid="B35">35</abbr>
+</abbrgrp>. While RNA-Seq is generally accepted as being a more accurate quantification technology than microarrays <abbrgrp>
+<abbr bid="B1">1</abbr>
+</abbrgrp>, it remains to be seen whether it is also superior to qRT-PCR.</p>
+<p>For our tests we used data generated from samples used in the Microarray Quality Control (MAQC) Project <abbrgrp>
+<abbr bid="B36">36</abbr>
+</abbrgrp>, as has been done in a number of other studies of RNA-Seq quantification accuracy <abbrgrp>
+<abbr bid="B37">37</abbr>
+<abbr bid="B38">38</abbr>
+</abbrgrp>. The MAQC project evaluated a variety of microarray platforms and technologies, including TaqMan qRT-PCR, on two human RNA samples, one from brain tissue (HBR) and another from a mixture of tissue types (UHR). The TaqMan qRT-PCR measurements from this project consist of abundance values for a small subset (1,000) of genes, with four technical replicates on each of the two samples. Recently, three groups have generated RNA-Seq data on the two MAQC samples <abbrgrp>
+<abbr bid="B25">25</abbr>
+<abbr bid="B37">37</abbr>
+<abbr bid="B39">39</abbr>
+</abbrgrp>.</p>
+<p>We applied the quantification methods on each of the MAQC RNA-Seq data sets and compared their abundance predictions to the qRT-PCR values. All methods were provided with the human RefSeq gene annotation. As for the simulation experiments, Cufflinks was only run in quantification mode and TopHat was only allowed to map to splice junctions present in the annotation. Cufflinks and IsoEM were run with and without their sequence-specific bias correction modes, which can improve quantification accuracy for RNA-Seq libraries generated with a random hexamer priming protocol, which was used for all of the MAQC RNA-Seq data. We did not run RSEM with its position-specific bias correction (RSPD) as this is only appropriate for oligo-dT primed RNA-Seq libraries, which generally have a bias towards reads originating from the 3' end of transcripts.</p>
+<p>To assess the similarity of the RNA-Seq abundance predictions with the qRT-PCR measurements, we calculated the Pearson correlation of the logarithm of the abundance values. We used a log transformation to prevent the correlation values from being dominated by the most abundant transcripts. To avoid problems with zeros, correlation values were calculated for only those genes that were predicted to have non-zero abundance by qRT-PCR and all methods. We additionally computed the false positive (FP), true positive (TP), false negative (FN), and true negative (TN) counts for each method, where "positive" means non-zero predicted abundance and truth is determined by the qRT-PCR measurements.</p>
+<p>The correlation values for the tested methods on each of the MAQC RNA-Seq samples are shown in Table <tblr tid="T2">2</tblr>. In general, the methods gave comparable correlation values for each sample. Confirming the results of <abbrgrp>
+<abbr bid="B38">38</abbr>
+</abbrgrp>, the bias correction mode of Cufflinks gave predictions with higher correlation than the other methods, particularly on the HBR samples. Unlike Cufflinks, the bias correction mode of IsoEM did not have a significant effect on its correlation with the qRT-PCR values for these samples. Spearman and Pearson correlation values computed without log-transformed abundances yielded similar results (Additional file <supplr sid="S3">3</supplr>). The TP, FP, TN, and FN counts for the methods were also comparable (Additional file <supplr sid="S3">3</supplr>).</p>
+<tbl id="T2"><title><p>Table 2</p></title><caption><p>Correlation of quantification method predictions with MAQC qRT-PCR values</p></caption><tblbdy cols="9">
+      <r>
+         <c ca="center">
+            <p>
+               <b>SRA ID</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>Read type</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>Sample</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>RSEM</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>IsoEM</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>IsoEM (C)</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>Cufflinks</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>Cufflinks (C)</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>rQuant</b>
+            </p>
+         </c>
+      </r>
+      <r>
+         <c cspan="9">
+            <hr/>
+         </c>
+      </r>
+      <r>
+         <c ca="center">
+            <p>SRX016366</p>
+         </c>
+         <c ca="center">
+            <p>SE</p>
+         </c>
+         <c ca="center">
+            <p>HBR</p>
+         </c>
+         <c ca="center">
+            <p>0.69</p>
+         </c>
+         <c ca="center">
+            <p>0.68</p>
+         </c>
+         <c ca="center">
+            <p>0.68</p>
+         </c>
+         <c ca="center">
+            <p>0.71</p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>0.79</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>0.72</p>
+         </c>
+      </r>
+      <r>
+         <c ca="center">
+            <p>SRX003926</p>
+         </c>
+         <c ca="center">
+            <p>SE</p>
+         </c>
+         <c ca="center">
+            <p>HBR</p>
+         </c>
+         <c ca="center">
+            <p>0.68</p>
+         </c>
+         <c ca="center">
+            <p>0.67</p>
+         </c>
+         <c ca="center">
+            <p>0.67</p>
+         </c>
+         <c ca="center">
+            <p>0.7</p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>0.73</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>0.71</p>
+         </c>
+      </r>
+      <r>
+         <c ca="center">
+            <p>SRX018974</p>
+         </c>
+         <c ca="center">
+            <p>PE</p>
+         </c>
+         <c ca="center">
+            <p>HBR</p>
+         </c>
+         <c ca="center">
+            <p>0.69</p>
+         </c>
+         <c ca="center">
+            <p>0.69</p>
+         </c>
+         <c ca="center">
+            <p>0.69</p>
+         </c>
+         <c ca="center">
+            <p>0.69</p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>0.78</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>NA</p>
+         </c>
+      </r>
+      <r>
+         <c ca="center">
+            <p>SRX016368</p>
+         </c>
+         <c ca="center">
+            <p>SE</p>
+         </c>
+         <c ca="center">
+            <p>UHR</p>
+         </c>
+         <c ca="center">
+            <p>0.71</p>
+         </c>
+         <c ca="center">
+            <p>0.71</p>
+         </c>
+         <c ca="center">
+            <p>0.72</p>
+         </c>
+         <c ca="center">
+            <p>0.72</p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>0.77</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>0.72</p>
+         </c>
+      </r>
+      <r>
+         <c ca="center">
+            <p>SRX016369</p>
+         </c>
+         <c ca="center">
+            <p>SE</p>
+         </c>
+         <c ca="center">
+            <p>UHR</p>
+         </c>
+         <c ca="center">
+            <p>0.73</p>
+         </c>
+         <c ca="center">
+            <p>0.74</p>
+         </c>
+         <c ca="center">
+            <p>0.74</p>
+         </c>
+         <c ca="center">
+            <p>0.73</p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>0.76</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>0.74</p>
+         </c>
+      </r>
+      <r>
+         <c ca="center">
+            <p>SRX016370</p>
+         </c>
+         <c ca="center">
+            <p>SE</p>
+         </c>
+         <c ca="center">
+            <p>UHR</p>
+         </c>
+         <c ca="center">
+            <p>0.74</p>
+         </c>
+         <c ca="center">
+            <p>0.75</p>
+         </c>
+         <c ca="center">
+            <p>0.75</p>
+         </c>
+         <c ca="center">
+            <p>0.74</p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>0.77</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>0.75</p>
+         </c>
+      </r>
+      <r>
+         <c ca="center">
+            <p>SRX016371</p>
+         </c>
+         <c ca="center">
+            <p>SE</p>
+         </c>
+         <c ca="center">
+            <p>UHR</p>
+         </c>
+         <c ca="center">
+            <p>0.74</p>
+         </c>
+         <c ca="center">
+            <p>0.75</p>
+         </c>
+         <c ca="center">
+            <p>0.75</p>
+         </c>
+         <c ca="center">
+            <p>0.74</p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>0.77</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>0.75</p>
+         </c>
+      </r>
+      <r>
+         <c ca="center">
+            <p>SRX016372</p>
+         </c>
+         <c ca="center">
+            <p>SE</p>
+         </c>
+         <c ca="center">
+            <p>UHR</p>
+         </c>
+         <c ca="center">
+            <p>0.75</p>
+         </c>
+         <c ca="center">
+            <p>0.75</p>
+         </c>
+         <c ca="center">
+            <p>0.75</p>
+         </c>
+         <c ca="center">
+            <p>0.74</p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>0.77</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>0.76</p>
+         </c>
+      </r>
+      <r>
+         <c ca="center">
+            <p>SRX003927</p>
+         </c>
+         <c ca="center">
+            <p>SE</p>
+         </c>
+         <c ca="center">
+            <p>UHR</p>
+         </c>
+         <c ca="center">
+            <p>0.72</p>
+         </c>
+         <c ca="center">
+            <p>0.71</p>
+         </c>
+         <c ca="center">
+            <p>0.72</p>
+         </c>
+         <c ca="center">
+            <p>0.71</p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>0.74</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>0.72</p>
+         </c>
+      </r>
+   </tblbdy><tblfn>
+      <p>Correlation values (Pearson <it>r</it><sup>2 </sup>of log-transformed abundance values) were computed between the predictions of four methods and "gold-standard" values from qRT-PCR for nine different RNA-Seq data sets. IsoEM and Cufflinks were run with (C) and without their bias correction modes.</p>
+   </tblfn></tbl>
+<suppl id="S3">
+<title>
+<p>Additional file 3</p>
+</title>
+<text>
+<p>
+<b>Additional accuracy measures for RNA-Seq predictions vs. qRT-PCR values for MAQC samples</b>.</p>
+</text>
+<file name="1471-2105-12-323-S3.PDF">
+   <p>Click here for file</p>
+</file>
+</suppl>
+<p>The lack of a clear distinction between the methods (except for Cufflinks with bias correction enabled) on these data sets can be explained by a number of factors. First, qRT-PCR measurements are only available for 1,000 (5%) out of a total of 19,005 genes in the RefSeq set. After filtering for the qRT-PCR genes that were consistent in their annotation with RefSeq and had non-zero abundance (see Methods), only 716 could be used for correlation analysis. Second, this set of genes is biased towards single-isoform genes and genes that have relatively unique sequences, reducing the ability of these data to distinguish those methods that are better at isoform quantification or multiread handling. The mean number of isoforms per gene in this set is 1.1, compared to 1.7 for all genes (<it>p </it>&lt; 10<sup>&#8722;115</sup>, Mood's median test). Similarly, the mean "mappability" (see Methods) of genes in the set is 0.96, compared to 0.91 for all genes (<it>p </it>&lt; 10<sup>&#8722;6</sup>). Lastly, biases in the qRT-PCR values, perhaps due to variable amplification efficiencies <abbrgrp>
+<abbr bid="B35">35</abbr>
+</abbrgrp>, may have resulted in an inaccurate gold standard.</p>
+</sec>
+<sec>
+<st>
+<p>Running time and memory</p>
+</st>
+<p>In addition to comparing the accuracies of the quantification methods, we also measured their running times and memory usage. For this purpose, we used our simulated mouse RefSeq data set of 20 million fragments, which is comparable in size to data produced by a single lane of the Illumina Genome Analyzer IIx. Table <tblr tid="T3">3</tblr> lists the running times and peak memory usage for each method, on both SE and PE data. Additional file <supplr sid="S4">4</supplr> gives the corresponding values for the simulated mouse Ensembl data set. All methods were run on an 8-core 2.93 GHz Linux server with 32 GB of RAM and hyper-threading enabled. Alignment with Bowtie against a transcript sequence set and quantification with RSEM uses the least amount of memory, at around 1.1 GB. The peak memory usage for Cufflinks and rQuant is due to running TopHat for aligning reads to the genome. The quantification programs for these two methods required 0.4 and 1.6 GB of memory, respectively, on the RefSeq data set. IsoEM is the fastest method, but has the largest memory requirement, up to 14 GB. It should be noted that the running times of the methods are not completely comparable, as RSEM and Cufflinks compute CIs in addition to ML estimates, whereas the other methods only compute ML estimates.</p>
+<tbl id="T3"><title><p>Table 3</p></title><caption><p>Running time and memory usage of quantification methods on SE and PE data</p></caption><tblbdy cols="9">
+      <r>
+         <c>
+            <p/>
+         </c>
+         <c cspan="4" ca="center">
+            <p>
+               <b>SE</b>
+            </p>
+         </c>
+         <c cspan="4" ca="center">
+            <p>
+               <b>PE</b>
+            </p>
+         </c>
+      </r>
+      <r>
+         <c ca="center">
+            <p>
+               <b>Method</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>Alignment time</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>Quant. time</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>Total time</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>Peak Memory</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>Alignment time</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>Quant. time</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>Total time</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>Peak Memory</b>
+            </p>
+         </c>
+      </r>
+      <r>
+         <c cspan="9">
+            <hr/>
+         </c>
+      </r>
+      <r>
+         <c ca="center">
+            <p>RSEM</p>
+         </c>
+         <c ca="center">
+            <p>24</p>
+         </c>
+         <c ca="center">
+            <p>50</p>
+         </c>
+         <c ca="center">
+            <p>74</p>
+         </c>
+         <c ca="center">
+            <p>1.1</p>
+         </c>
+         <c ca="center">
+            <p>15</p>
+         </c>
+         <c ca="center">
+            <p>50</p>
+         </c>
+         <c ca="center">
+            <p>66</p>
+         </c>
+         <c ca="center">
+            <p>1.1</p>
+         </c>
+      </r>
+      <r>
+         <c ca="center">
+            <p>IsoEM</p>
+         </c>
+         <c ca="center">
+            <p>5</p>
+         </c>
+         <c ca="center">
+            <p>6</p>
+         </c>
+         <c ca="center">
+            <p>12</p>
+         </c>
+         <c ca="center">
+            <p>12</p>
+         </c>
+         <c ca="center">
+            <p>14</p>
+         </c>
+         <c ca="center">
+            <p>10</p>
+         </c>
+         <c ca="center">
+            <p>24</p>
+         </c>
+         <c ca="center">
+            <p>14</p>
+         </c>
+      </r>
+      <r>
+         <c ca="center">
+            <p>Cufflinks</p>
+         </c>
+         <c ca="center">
+            <p>33</p>
+         </c>
+         <c ca="center">
+            <p>3</p>
+         </c>
+         <c ca="center">
+            <p>36</p>
+         </c>
+         <c ca="center">
+            <p>2.0</p>
+         </c>
+         <c ca="center">
+            <p>60</p>
+         </c>
+         <c ca="center">
+            <p>6</p>
+         </c>
+         <c ca="center">
+            <p>66</p>
+         </c>
+         <c ca="center">
+            <p>2.0</p>
+         </c>
+      </r>
+      <r>
+         <c ca="center">
+            <p>rQuant</p>
+         </c>
+         <c ca="center">
+            <p>33</p>
+         </c>
+         <c ca="center">
+            <p>183</p>
+         </c>
+         <c ca="center">
+            <p>216</p>
+         </c>
+         <c ca="center">
+            <p>2.0</p>
+         </c>
+         <c>
+            <p/>
+         </c>
+         <c>
+            <p/>
+         </c>
+         <c>
+            <p/>
+         </c>
+         <c>
+            <p/>
+         </c>
+      </r>
+      <r>
+         <c ca="center">
+            <p>RSEM v0.6</p>
+         </c>
+         <c ca="center">
+            <p>9</p>
+         </c>
+         <c ca="center">
+            <p>22</p>
+         </c>
+         <c ca="center">
+            <p>31</p>
+         </c>
+         <c ca="center">
+            <p>1.1</p>
+         </c>
+         <c>
+            <p/>
+         </c>
+         <c>
+            <p/>
+         </c>
+         <c>
+            <p/>
+         </c>
+         <c>
+            <p/>
+         </c>
+      </r>
+   </tblbdy><tblfn>
+      <p>The alignment time, quantification time, total time, and peak memory usage of the tested quantification methods on SE and PE simulated data sets with 20 million fragments. Times are in minutes and memory is specified in GB.</p>
+   </tblfn></tbl>
+<suppl id="S4">
+<title>
+<p>Additional file 4</p>
+</title>
+<text>
+<p>
+<b>Running time and memory usage of quantification methods on SE and PE data with the Ensembl reference set</b>.</p>
+</text>
+<file name="1471-2105-12-323-S4.PDF">
+   <p>Click here for file</p>
+</file>
+</suppl>
+<p>The running time and memory required by RSEM scales linearly with the number of read alignments, which is generally proportional to the number of reads. Although the current version of RSEM has a parallelized EM algorithm, it is not faster than the original version for two reasons. First, the current version runs the EM algorithm for many more iterations to improve accuracy. On this data set, the current version ran for 4,802 iterations, compared to 643 for the older version. Second, the running time for the current version includes the time for computing 95% credibility intervals, which requires significant computation and was not a feature of the original version.</p>
+</sec>
+</sec>
+<sec>
+<st>
+<p>Experimental results</p>
+</st>
+<p>With RSEM extended to model PE data and reads with quality score information, we set out to determine whether these more complex data types allow for improvement in abundance estimation accuracy. To this end, we performed two sets of simulation experiments. With the first set of experiments we compared the performance of PE reads against that of SE reads. With the second, we tested whether quality scores provide information that improves estimation accuracy.</p>
+<sec>
+<st>
+<p>Paired vs. single end reads</p>
+</st>
+<p>We previously showed that for SE RNA-Seq protocols, the number of reads is more important than the length of reads for increasing the accuracy of gene-level abundance estimates <abbrgrp>
+<abbr bid="B7">7</abbr>
+</abbrgrp>. Given fixed sequencing throughput (in terms of the total number of bases), we found that the optimal read length was around 25 bases for SE RNA-Seq analysis in both mouse and maize. This result was confirmed by a later study <abbrgrp>
+<abbr bid="B4">4</abbr>
+</abbrgrp>. Recent studies have reached the conclusion that PE reads can offer improved estimation accuracy over SE reads, particularly for isoforms of alternatively-spliced genes <abbrgrp>
+<abbr bid="B3">3</abbr>
+<abbr bid="B4">4</abbr>
+</abbrgrp>. With RSEM now extended to model PE data, we decided to test these results with our own simulations.</p>
+<p>We simulated RNA-Seq data with four different configurations: (1) 20 million, 35 base SE reads, (2) 20 million, 70 base SE reads, (3) 20 million, 35 base PE reads, and (4) 40 million 35 base SE reads. The latter three configurations give the same throughput in terms of the number of bases sequenced, and thus are the most comparable in terms of cost, given a simple economic model in which one pays per sequenced base. We simulated for both human and mouse, and with both RefSeq and Ensembl annotations, to determine if the species or annotation set is a factor. In addition to simulating with different species and annotation sets for each configuration, we also simulated with and without sequencing error to assess whether variable read alignment sensitivity had an impact.</p>
+<p>Table <tblr tid="T4">4</tblr> gives the MPE, 10% EF, and FP of the RSEM estimates computed from the RefSeq simulated data sets (Additional file <supplr sid="S5">5</supplr> gives the corresponding values for the Ensembl sets). As expected, with the number of reads fixed, the 70 base reads gave better estimation accuracy than the 35 base reads. Confirming previous results <abbrgrp>
+<abbr bid="B3">3</abbr>
+<abbr bid="B4">4</abbr>
+</abbrgrp>, with the number of reads and total throughput fixed, PE reads improved estimation accuracy over SE reads (compare the PE accuracies with those of the SE 70 base accuracies). However, with the same sequencing throughput, short SE reads offered the highest estimation accuracy at the gene level. This result held across both species and regardless of whether reads contained sequencing errors. These results suggest that if the primary goal is the accurate estimation of gene abundances, then the sequencing of a large number of short SE reads is best. For example, given a choice between one Illumina lane of PE 35 base reads and two Illumina lanes of SE 35 base reads, our simulations show that the latter will provide the best overall quantification results for gene-level estimates. An additional advantage of using SE reads in this scenario is that two lanes of SE reads can be run in parallel whereas the two ends of a PE lane are currently generated one after the other. Thus, using short SE reads can save sequencing time. This result depends on the SE estimation procedure being provided with a fragment length distribution, as SE data is not easily used to automatically determine this distribution. However, this distribution can usually be obtained by other means ahead of time.</p>
+<tbl id="T4"><title><p>Table 4</p></title><caption><p>Accuracies obtained from RNA-Seq data sets with various properties</p></caption><tblbdy cols="9">
+      <r>
+         <c ca="left">
+            <p>
+               <b>Species</b>
+            </p>
+         </c>
+         <c ca="left">
+            <p>
+               <b>Seq. Error</b>
+            </p>
+         </c>
+         <c ca="left">
+            <p>
+               <b>Read type</b>
+            </p>
+         </c>
+         <c ca="left">
+            <p>
+               <b>Read length</b>
+            </p>
+         </c>
+         <c ca="left">
+            <p>
+               <b>Read number</b>
+            </p>
+            <p>
+               <b>(&#215;10<sup>6</sup>)</b>
+            </p>
+         </c>
+         <c ca="left">
+            <p>
+               <b>Throughput</b>
+            </p>
+            <p>
+               <b>(MB)</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>MPE</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>10% EF</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>FP</b>
+            </p>
+         </c>
+      </r>
+      <r>
+         <c cspan="9">
+            <hr/>
+         </c>
+      </r>
+      <r>
+         <c ca="left">
+            <p>M</p>
+         </c>
+         <c ca="left">
+            <p>N</p>
+         </c>
+         <c ca="left">
+            <p>SE</p>
+         </c>
+         <c ca="left">
+            <p>35</p>
+         </c>
+         <c ca="left">
+            <p>20</p>
+         </c>
+         <c ca="left">
+            <p>700</p>
+         </c>
+         <c ca="center">
+            <p>3.1/4.2/7.1</p>
+         </c>
+         <c ca="center">
+            <p>13.7/25.0/44.0</p>
+         </c>
+         <c ca="center">
+            <p>1.0/1.8/10.9</p>
+         </c>
+      </r>
+      <r>
+         <c ca="left">
+            <p>M</p>
+         </c>
+         <c ca="left">
+            <p>N</p>
+         </c>
+         <c ca="left">
+            <p>SE</p>
+         </c>
+         <c ca="left">
+            <p>70</p>
+         </c>
+         <c ca="left">
+            <p>20</p>
+         </c>
+         <c ca="left">
+            <p>1400</p>
+         </c>
+         <c ca="center">
+            <p>3.1/4.1/6.0</p>
+         </c>
+         <c ca="center">
+            <p>13.6/23.9/40.4</p>
+         </c>
+         <c ca="center">
+            <p>0.8/1.5/8.2</p>
+         </c>
+      </r>
+      <r>
+         <c ca="left">
+            <p>M</p>
+         </c>
+         <c ca="left">
+            <p>N</p>
+         </c>
+         <c ca="left">
+            <p>PE</p>
+         </c>
+         <c ca="left">
+            <p>35</p>
+         </c>
+         <c ca="left">
+            <p>20</p>
+         </c>
+         <c ca="left">
+            <p>1400</p>
+         </c>
+         <c ca="center">
+            <p>3.0/3.9/4.9</p>
+         </c>
+         <c ca="center">
+            <p>13.3/21.9/<b>34.2</b></p>
+         </c>
+         <c ca="center">
+            <p>1.1/1.8/13.4</p>
+         </c>
+      </r>
+      <r>
+         <c ca="left">
+            <p>M</p>
+         </c>
+         <c ca="left">
+            <p>N</p>
+         </c>
+         <c ca="left">
+            <p>SE</p>
+         </c>
+         <c ca="left">
+            <p>35</p>
+         </c>
+         <c ca="left">
+            <p>40</p>
+         </c>
+         <c ca="left">
+            <p>1400</p>
+         </c>
+         <c ca="center">
+            <p><b>2.3</b>/<b>3.1</b>/<b>4.8</b></p>
+         </c>
+         <c ca="center">
+            <p><b>8.4</b>/<b>18.5</b>/35.8</p>
+         </c>
+         <c ca="center">
+            <p><b>0.7</b>/<b>1.3</b>/<b>10.5</b></p>
+         </c>
+      </r>
+      <r>
+         <c cspan="9">
+            <hr/>
+         </c>
+      </r>
+      <r>
+         <c ca="left">
+            <p>M</p>
+         </c>
+         <c ca="left">
+            <p>Y</p>
+         </c>
+         <c ca="left">
+            <p>SE</p>
+         </c>
+         <c ca="left">
+            <p>35</p>
+         </c>
+         <c ca="left">
+            <p>20</p>
+         </c>
+         <c ca="left">
+            <p>700</p>
+         </c>
+         <c ca="center">
+            <p>3.1/4.2/6.9</p>
+         </c>
+         <c ca="center">
+            <p>14.1/25.2/43.0</p>
+         </c>
+         <c ca="center">
+            <p>1.1/1.9/13.2</p>
+         </c>
+      </r>
+      <r>
+         <c ca="left">
+            <p>M</p>
+         </c>
+         <c ca="left">
+            <p>Y</p>
+         </c>
+         <c ca="left">
+            <p>SE</p>
+         </c>
+         <c ca="left">
+            <p>70</p>
+         </c>
+         <c ca="left">
+            <p>20</p>
+         </c>
+         <c ca="left">
+            <p>1400</p>
+         </c>
+         <c ca="center">
+            <p>3.0/4.0/6.0</p>
+         </c>
+         <c ca="center">
+            <p>14.2/24.4/40.6</p>
+         </c>
+         <c ca="center">
+            <p>1.1/1.6/9.5</p>
+         </c>
+      </r>
+      <r>
+         <c ca="left">
+            <p>M</p>
+         </c>
+         <c ca="left">
+            <p>Y</p>
+         </c>
+         <c ca="left">
+            <p>PE</p>
+         </c>
+         <c ca="left">
+            <p>35</p>
+         </c>
+         <c ca="left">
+            <p>20</p>
+         </c>
+         <c ca="left">
+            <p>1400</p>
+         </c>
+         <c ca="center">
+            <p>3.0/3.9/5.1</p>
+         </c>
+         <c ca="center">
+            <p>14.0/22.9/<b>35.5</b></p>
+         </c>
+         <c ca="center">
+            <p>1.3/1.9/12.1</p>
+         </c>
+      </r>
+      <r>
+         <c ca="left">
+            <p>M</p>
+         </c>
+         <c ca="left">
+            <p>Y</p>
+         </c>
+         <c ca="left">
+            <p>SE</p>
+         </c>
+         <c ca="left">
+            <p>35</p>
+         </c>
+         <c ca="left">
+            <p>40</p>
+         </c>
+         <c ca="left">
+            <p>1400</p>
+         </c>
+         <c ca="center">
+            <p><b>2.2</b>/<b>3.0</b>/<b>5.0</b></p>
+         </c>
+         <c ca="center">
+            <p><b>8.5</b>/<b>18.4</b>/35.7</p>
+         </c>
+         <c ca="center">
+            <p><b>0.9</b>/<b>1.5</b>/<b>11.3</b></p>
+         </c>
+      </r>
+      <r>
+         <c cspan="9">
+            <hr/>
+         </c>
+      </r>
+      <r>
+         <c ca="left">
+            <p>H</p>
+         </c>
+         <c ca="left">
+            <p>N</p>
+         </c>
+         <c ca="left">
+            <p>SE</p>
+         </c>
+         <c ca="left">
+            <p>35</p>
+         </c>
+         <c ca="left">
+            <p>20</p>
+         </c>
+         <c ca="left">
+            <p>700</p>
+         </c>
+         <c ca="center">
+            <p>4.0/7.8/14.3</p>
+         </c>
+         <c ca="center">
+            <p>20.2/43.5/58.6</p>
+         </c>
+         <c ca="center">
+            <p>3.6/8.0/21.6</p>
+         </c>
+      </r>
+      <r>
+         <c ca="left">
+            <p>H</p>
+         </c>
+         <c ca="left">
+            <p>N</p>
+         </c>
+         <c ca="left">
+            <p>SE</p>
+         </c>
+         <c ca="left">
+            <p>70</p>
+         </c>
+         <c ca="left">
+            <p>20</p>
+         </c>
+         <c ca="left">
+            <p>1400</p>
+         </c>
+         <c ca="center">
+            <p>3.9/7.3/11.9</p>
+         </c>
+         <c ca="center">
+            <p>19.3/41.0/54.4</p>
+         </c>
+         <c ca="center">
+            <p>3.5/7.0/17.3</p>
+         </c>
+      </r>
+      <r>
+         <c ca="left">
+            <p>H</p>
+         </c>
+         <c ca="left">
+            <p>N</p>
+         </c>
+         <c ca="left">
+            <p>PE</p>
+         </c>
+         <c ca="left">
+            <p>35</p>
+         </c>
+         <c ca="left">
+            <p>20</p>
+         </c>
+         <c ca="left">
+            <p>1400</p>
+         </c>
+         <c ca="center">
+            <p>3.7/6.2/<b>9.0</b></p>
+         </c>
+         <c ca="center">
+            <p>17.0/36.4/<b>47.3</b></p>
+         </c>
+         <c ca="center">
+            <p>3.7/6.4/<b>14.0</b></p>
+         </c>
+      </r>
+      <r>
+         <c ca="left">
+            <p>H</p>
+         </c>
+         <c ca="left">
+            <p>N</p>
+         </c>
+         <c ca="left">
+            <p>SE</p>
+         </c>
+         <c ca="left">
+            <p>35</p>
+         </c>
+         <c ca="left">
+            <p>40</p>
+         </c>
+         <c ca="left">
+            <p>1400</p>
+         </c>
+         <c ca="center">
+            <p><b>2.9</b>/<b>5.7</b>/10.1</p>
+         </c>
+         <c ca="center">
+            <p><b>13.4</b>/<b>35.4</b>/50.3</p>
+         </c>
+         <c ca="center">
+            <p><b>2.7</b>/<b>6.3</b>/20.3</p>
+         </c>
+      </r>
+      <r>
+         <c cspan="9">
+            <hr/>
+         </c>
+      </r>
+      <r>
+         <c ca="left">
+            <p>H</p>
+         </c>
+         <c ca="left">
+            <p>Y</p>
+         </c>
+         <c ca="left">
+            <p>SE</p>
+         </c>
+         <c ca="left">
+            <p>35</p>
+         </c>
+         <c ca="left">
+            <p>20</p>
+         </c>
+         <c ca="left">
+            <p>700</p>
+         </c>
+         <c ca="center">
+            <p>3.9/7.7/14.8</p>
+         </c>
+         <c ca="center">
+            <p>19.5/43.2/59.3</p>
+         </c>
+         <c ca="center">
+            <p>3.9/8.1/20.8</p>
+         </c>
+      </r>
+      <r>
+         <c ca="left">
+            <p>H</p>
+         </c>
+         <c ca="left">
+            <p>Y</p>
+         </c>
+         <c ca="left">
+            <p>SE</p>
+         </c>
+         <c ca="left">
+            <p>70</p>
+         </c>
+         <c ca="left">
+            <p>20</p>
+         </c>
+         <c ca="left">
+            <p>1400</p>
+         </c>
+         <c ca="center">
+            <p>3.8/7.2/12.4</p>
+         </c>
+         <c ca="center">
+            <p>19.2/40.8/55.2</p>
+         </c>
+         <c ca="center">
+            <p>3.9/7.1/17.7</p>
+         </c>
+      </r>
+      <r>
+         <c ca="left">
+            <p>H</p>
+         </c>
+         <c ca="left">
+            <p>Y</p>
+         </c>
+         <c ca="left">
+            <p>PE</p>
+         </c>
+         <c ca="left">
+            <p>35</p>
+         </c>
+         <c ca="left">
+            <p>20</p>
+         </c>
+         <c ca="left">
+            <p>1400</p>
+         </c>
+         <c ca="center">
+            <p>3.8/6.5/<b>9.2</b></p>
+         </c>
+         <c ca="center">
+            <p>19.0/37.8/<b>48.2</b></p>
+         </c>
+         <c ca="center">
+            <p>4.2/6.4/<b>13.9</b></p>
+         </c>
+      </r>
+      <r>
+         <c ca="left">
+            <p>H</p>
+         </c>
+         <c ca="left">
+            <p>Y</p>
+         </c>
+         <c ca="left">
+            <p>SE</p>
+         </c>
+         <c ca="left">
+            <p>35</p>
+         </c>
+         <c ca="left">
+            <p>40</p>
+         </c>
+         <c ca="left">
+            <p>1400</p>
+         </c>
+         <c ca="center">
+            <p><b>2.9</b>/<b>5.6</b>/10.3</p>
+         </c>
+         <c ca="center">
+            <p><b>12.8</b>/<b>35.5</b>/50.8</p>
+         </c>
+         <c ca="center">
+            <p><b>3.0</b>/<b>6.3</b>/18.8</p>
+         </c>
+      </r>
+   </tblbdy><tblfn>
+      <p>Accuracy of abundance estimates from RNA-Seq data sets varying in species (H = human, M = mouse), sequencing error, type (SE or PE) of reads, number of reads, and length of reads. Values are given as gene/global isoform/within-gene isoform.</p>
+   </tblfn></tbl>
+<suppl id="S5">
+<title>
+<p>Additional file 5</p>
+</title>
+<text>
+<p>
+<b>Accuracies obtained from RNA-Seq data sets with various properties and the Ensembl reference set</b>.</p>
+</text>
+<file name="1471-2105-12-323-S5.PDF">
+   <p>Click here for file</p>
+</file>
+</suppl>
+<p>On the other hand, if the primary interest is in the relative frequencies of alternative splicing events within single genes, then PE data can provide more accurate estimates, depending on the transcript set. The result that the PE data show a larger accuracy improvement over SE data for the human RefSeq simulations is explained by the fact that the human RefSeq annotation has more isoforms per gene on average (1.6) than the mouse RefSeq annotation (1.2). This is further supported by the results of the simulations using the Ensembl annotations, which have significantly more isoforms per gene on average (6.3 for human and 3.4 for mouse). Thus, for species with genes that undergo a large number of alternative splicing events, PE data will likely be better for inferring the relative frequencies of these events. Although the results for gene-level and within-gene isoform-level estimates are clear, those for global isoform-level estimates are mixed. In some simulation sets, SE data performs better than PE data (with the same throughput), and in others, the opposite is true. This is explained by the fact that the global abundance of an isoform is the product of its gene's abundance and its within-gene abundance. Thus, one can improve global isoform abundance accuracy by producing better abundance estimates at either of the other two levels. Global isoform-level estimates are improved by SE data through more accurate gene-level estimates and by PE data through more accurate within-gene isoform estimates.</p>
+<p>Overall, we suggest that researchers carefully consider the objectives of their RNA-Seq experiments before deciding on sequencing parameters, such as read length and number of reads. While one may be inclined to produce long and PE reads, it may be more cost efficient to use a larger number of SE reads if the only goal is quantification of gene abundances. If the goal is instead to analyze within-gene isoform frequencies or to perform non-quantification tasks such as transcriptome assembly, then PE reads should be preferred. To determine the optimal sequencing strategy for quantification with a particular transcript set, the RSEM simulation tool can be used.</p>
+</sec>
+<sec>
+<st>
+<p>The value of quality scores for RNA-Seq quantification</p>
+</st>
+<p>We performed simulation experiments to determine if the use of quality scores (rather than just the read sequences themselves) improves the accuracy of quantification with RNA-Seq data. Two SE simulations were performed, each with a different sequencing error model. The simulations used the mouse RefSeq transcript set as a reference. In the first simulation, an error was introduced at a given read position according to the theoretical probability of an error given the quality score at that position. That is, the probability that an error was introduced at a position with Phred quality score <it>q </it>was 10<sup>&#8722;<it>q</it>/10</sup>. In the second simulation, the probability of a sequencing error given a quality score <it>q </it>was determined from the training data (we call this the "empirical" model). For the two simulated data sets, we estimated abundances with RSEM using two different models: one that takes the quality scores into account (the "quality score" model), and a second that uses our original error model, which does not take into account quality scores and instead estimates a sequencing error model that is position and base-dependent (the "profile" model). The MPE, 10% EF, and FP statistics were calculated for the abundance estimates of the two RSEM models on the two simulated data sets (Table <tblr tid="T5">5</tblr>). We found that even when sequencing errors followed the theoretical probabilities given by the quality scores, the accuracy of the quality score model was practically indistinguishable from that of the profile model. Simulations with the Ensembl transcript set gave similar results (Additional file <supplr sid="S6">6</supplr>). This indicates that for the purposes of quantification from RNA-Seq data, quality scores from Illumina-generated reads provide little additional information. This does not suggest that sequencing errors do not need to be modeled, however. Instead, these results suggest that an effective sequencing error model can be learned from the read sequences alone. We stress that these results are only for the task of quantification. Applications such as SNP detection will certainly need to take quality score information into account.</p>
+<tbl id="T5"><title><p>Table 5</p></title><caption><p>The effect of quality score modeling on quantification accuracy</p></caption><tblbdy cols="5">
+      <r>
+         <c ca="center">
+            <p>
+               <b>Simulation model</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>Estimation model</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>MPE</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>10% EF</b>
+            </p>
+         </c>
+         <c ca="center">
+            <p>
+               <b>FP</b>
+            </p>
+         </c>
+      </r>
+      <r>
+         <c cspan="5">
+            <hr/>
+         </c>
+      </r>
+      <r>
+         <c ca="center">
+            <p>theoretical</p>
+         </c>
+         <c ca="center">
+            <p>quality</p>
+         </c>
+         <c ca="center">
+            <p>3.1/4.1/7.2</p>
+         </c>
+         <c ca="center">
+            <p>13.8/25.2/43.5</p>
+         </c>
+         <c ca="center">
+            <p>1.0/1.8/11.6</p>
+         </c>
+      </r>
+      <r>
+         <c ca="center">
+            <p>theoretical</p>
+         </c>
+         <c ca="center">
+            <p>profile</p>
+         </c>
+         <c ca="center">
+            <p>3.1/4.1/7.2</p>
+         </c>
+         <c ca="center">
+            <p>13.9/25.3/43.6</p>
+         </c>
+         <c ca="center">
+            <p>1.0/1.8/11.7</p>
+         </c>
+      </r>
+      <r>
+         <c ca="center">
+            <p>empirical</p>
+         </c>
+         <c ca="center">
+            <p>quality</p>
+         </c>
+         <c ca="center">
+            <p>3.1/4.0/7.0</p>
+         </c>
+         <c ca="center">
+            <p>14.2/25.3/43.0</p>
+         </c>
+         <c ca="center">
+            <p>1.2/2.0/11.4</p>
+         </c>
+      </r>
+      <r>
+         <c ca="center">
+            <p>empirical</p>
+         </c>
+         <c ca="center">
+            <p>profile</p>
+         </c>
+         <c ca="center">
+            <p>3.1/4.1/7.0</p>
+         </c>
+         <c ca="center">
+            <p>14.3/25.4/43.2</p>
+         </c>
+         <c ca="center">
+            <p>1.1/2.0/11.2</p>
+         </c>
+      </r>
+   </tblbdy><tblfn>
+      <p>Accuracy of abundance estimates from RNA-Seq data sets with different combinations of sequencing error models for simulation and estimation. Values are given as gene/global isoform/within-gene isoform.</p>
+   </tblfn></tbl>
+<suppl id="S6">
+<title>
+<p>Additional file 6</p>
+</title>
+<text>
+<p>
+<b>The effect of quality score modeling on quantification accuracy with the Ensembl reference set</b>.</p>
+</text>
+<file name="1471-2105-12-323-S6.PDF">
+   <p>Click here for file</p>
+</file>
+</suppl>
+</sec>
+</sec>
+</sec>
+<sec>
+<st>
+<p>Conclusions</p>
+</st>
+<p>We have presented RSEM, a software package for performing gene and isoform level quantification from RNA-Seq data. Through simulations and evaluations with real data, we have shown that RSEM has superior or comparable performance to other quantification methods. Unlike other tools, RSEM does not require a reference genome and thus should be useful for quantification with de novo transcriptome assemblies. The software package has a number of other useful features for RNA-Seq researchers including visualization outputs and CI estimates. In addition, the software is user-friendly, typically requiring at most two commands to estimate abundances from raw RNA-Seq reads and uses reference transcript files in standard formats. Lastly, RSEM's simulation module is valuable for determining optimal sequencing strategies for quantification experiments. Taking advantage of this module, we have determined that a large number of short SE reads is best for gene-level quantification, while PE reads may improve within-gene isoform frequencies for the mouse and human transcript sets.</p>
+<p>RSEM will continue to be developed to remain up to date with the latest sequencing technologies and research about details of the RNA-Seq protocol. Future work will include incorporating additional biases into the model, such as sequence-specific read position preferences <abbrgrp>
+<abbr bid="B38">38</abbr>
+<abbr bid="B40">40</abbr>
+</abbrgrp> and transcript-specific read distributions <abbrgrp>
+<abbr bid="B41">41</abbr>
+</abbrgrp>. We also intend to add support for color-space reads generated by ABI SOLiD sequencers and indels within read alignments.</p>
+</sec>
+<sec>
+<st>
+<p>Availability and requirements</p>
+</st>
+<p indent="1">&#8226; <b>Project name: </b>RSEM</p>
+<p indent="1">&#8226; <b>Project home page</b>: <url>http://deweylab.biostat.wisc.edu/rsem</url>
+</p>
+<p indent="1">&#8226; <b>Operating systems: </b>Any POSIX-compatible platform (e.g., Linux, Mac OS X, Cygwin)</p>
+<p indent="1">&#8226; <b>Programming languages: </b>C++, Perl</p>
+<p indent="1">&#8226; <b>Other requirements: </b>Pthreads; Bowtie <abbrgrp>
+<abbr bid="B29">29</abbr>
+</abbrgrp> for the default alignment mode of <monospace>rsem-calculate-expression</monospace>; R for <monospace>rsem-plot-model</monospace>.</p>
+<p indent="1">&#8226; <b>License: </b>GNU GPL.</p>
+</sec>
+<sec>
+<st>
+<p>Methods</p>
+</st>
+<sec>
+<st>
+<p>Statistical model</p>
+</st>
+<p>The statistical model used by RSEM can be represented by the directed graphical model shown in Figure <figr fid="F4">4</figr>. Compared to our original statistical model <abbrgrp>
+<abbr bid="B7">7</abbr>
+</abbrgrp>, this model has been extended in four ways. First, PE reads are now modeled, using a pair of observed random variables, <it>R</it>
+<sup>1 </sup>and <it>R</it>
+<sup>2</sup>. For the case of SE reads, <it>R</it>
+<sup>2 </sup>is treated as a latent random variable. Second, the length of the fragment from which a read or pair of reads is derived is now modeled and is represented by the latent random variable <it>F</it>. The distribution of <it>F </it>is specified using a global fragment length distribution <it>&#955;<sub>F</sub>
+</it>, which is truncated and normalized given that a fragment is derived from a specific transcript of finite length. That is, <inline-formula>
+<graphic file="1471-2105-12-323-i1.gif"/>
+</inline-formula> where <it>&#8467;</it>
+<it>
+<sub>i </sub>
+</it>is the length of transcript <it>i</it>. The use of a fragment length distribution for RNA-Seq quantification was first introduced by <abbrgrp>
+<abbr bid="B6">6</abbr>
+</abbrgrp> for paired-end data and later described by <abbrgrp>
+<abbr bid="B4">4</abbr>
+</abbrgrp> for single-end data.</p>
+<fig id="F4"><title><p>Figure 4</p></title><caption><p>The directed graphical model used by RSEM</p></caption><text>
+   <p><b>The directed graphical model used by RSEM</b>. The model consists of <it>N </it>sets of random variables, one per sequenced RNA-Seq fragment. For fragment <it>n</it>, its parent transcript, length, start position, and orientation are represented by the latent variables <it>G<sub>n</sub></it>, <it>F<sub>n</sub></it>, <it>S<sub>n </sub></it>and <it>O<sub>n </sub></it>respectively. For PE data, the observed variables (shaded circles), are the read lengths (<inline-formula><graphic file="1471-2105-12-323-i2.gif"/></inline-formula> and <inline-formula><graphic file="1471-2105-12-323-i3.gif"/></inline-formula>), quality scores (<inline-formula><graphic file="1471-2105-12-323-i4.gif"/></inline-formula> and <inline-formula><graphic file="1471-2105-12-323-i5.gif"/></inline-formula>), and sequences (<inline-formula><graphic file="1471-2105-12-323-i6.gif"/></inline-formula> and <inline-formula><graphic file="1471-2105-12-323-i7.gif"/></inline-formula>). For SE data, <inline-formula><graphic file="1471-2105-12-323-i3.gif"/></inline-formula>, <inline-formula><graphic file="1471-2105-12-323-i5.gif"/></inline-formula>, and <inline-formula><graphic file="1471-2105-12-323-i7.gif"/></inline-formula> are unobserved. The primary parameters of the model are given by the vector <it>&#952;</it>, which represents the prior probabilities of a fragment being derived from each transcript.</p>
+</text><graphic file="1471-2105-12-323-4" hint_layout="single"/></fig>
+<p>A third extension allows the lengths of reads to vary (such as for 454 data). The length of a read is represented by the observed random variable <it>L </it>(or <it>L</it>
+<sup>1 </sup>and <it>L</it>
+<sup>2 </sup>for PE reads). Similar to the fragment length model, the distribution of <it>L </it>is specified using a global read length distribution <it>&#955;<sub>R</sub>
+</it>, which is truncated and normalized given a specific fragment length. In symbols, <inline-formula>
+<graphic file="1471-2105-12-323-i8.gif"/>
+</inline-formula>. Lastly, the quality scores for a read are now used to model the probability of that read's sequence. The quality score string for a read is represented by the random variable <it>Q</it>. For the purposes of quantification, we do not specify a distribution for the <it>Q </it>random variables, as they are observed and not dependent on any of the other random variables (i.e., we are only interested in the conditional likelihood of the reads given their quality scores). Rather than rely on the theoretical probabilities of errors implied by the quality scores, we use an empirical error function, <it>&#949;</it>. Given that read position <it>i </it>has quality score <it>q<sub>i </sub>
+</it>and is derived from the reference character <it>c</it>, the conditional probability of the read character <it>r<sub>i </sub>
+</it>is <it>P</it>(<it>r<sub>i</sub>|q<sub>i</sub>, c</it>) = <it>&#949;</it>(<it>r<sub>i</sub>, q<sub>i</sub>, c</it>). If quality scores are not available or reliable, then our position and reference character-dependent error model <abbrgrp>
+<abbr bid="B7">7</abbr>
+</abbrgrp> may be used.</p>
+</sec>
+<sec>
+<st>
+<p>Expectation-Maximation</p>
+</st>
+<p>Given a set of RNA-Seq data, RSEM's primary goal is to compute the ML values of the parameters, <it>&#952;</it>, of the model presented in the previous section, where <it>&#952;<sub>i </sub>
+</it>represents the probability that a fragment is derived from transcript <it>i </it>(with <it>&#952;</it>
+<sub>0 </sub>representing the "noise" transcript from which reads that have no alignments may be derived). Once estimated, the <it>&#952; </it>values are converted to transcript fractions (which we denote by <it>&#964;</it>) using the equation <inline-formula>
+<graphic file="1471-2105-12-323-i9.gif"/>
+</inline-formula> where <inline-formula>
+<graphic file="1471-2105-12-323-i10.gif"/>
+</inline-formula> is the effective length of transcript <it>i </it>
+<abbrgrp>
+<abbr bid="B6">6</abbr>
+</abbrgrp>, given by <inline-formula>
+<graphic file="1471-2105-12-323-i11.gif"/>
+</inline-formula> for poly(A)- transcripts and <inline-formula>
+<graphic file="1471-2105-12-323-i12.gif"/>
+</inline-formula> for poly(A)+ transcripts, where <it>&#8467;</it>
+<it>
+<sub>A </sub>
+</it>is the length of a poly(A) tail. The effective length can be thought of as the mean number of positions from which a fragment may start within the sequence of transcript <it>i</it>.</p>
+<p>RSEM computes approximate ML estimates for <it>&#952; </it>using the EM algorithm (for details, see <abbrgrp>
+<abbr bid="B7">7</abbr>
+</abbrgrp>). The estimates are approximate because alignments are used to restrict the possible positions from which reads may be derived. During the first 20 iterations (and every 100 iterations) of EM, the parameters of the fragment length, RSPD, and sequencing error distributions are updated along with <it>&#952;</it>. During all other iterations, only the <it>&#952; </it>parameters are updated. This estimation strategy is an improvement over the original implementation of RSEM, which estimated all parameters other than <it>&#952; </it>before EM using uniquely-mapping reads. The algorithm is stopped when all <it>&#952;<sub>i </sub>
+</it>with value &#8805; 10<sup>&#8722;7 </sup>have a relative change of less than 10<sup>&#8722;3</sup>. After convergence, RSEM outputs the ML <it>&#964; </it>values, as well as the expected value of the number of RNA-Seq fragments derived from each transcript, given the ML parameters.</p>
+<p>To speed up inference, reads with a large number (at least 200, by default) of alignments are filtered out. We additionally filter out reads that are likely to be derived from poly(A) tails, as aligners may not always detect that these reads have many alignments. Due to the alignment approximation and this filtering strategy, a straightforward application of the EM procedure described will lead to biased abundance estimates for transcripts that contain highly-repetitive sequences (including poly(A) tails). Therefore, we apply a slight modification to our ML estimator to adjust for this bias. For transcript <it>i</it>, we calculate a value <it>m<sub>i</sub>
+</it>, which is the probability that a read (fragment) generated from transcript <it>i </it>will not have a large number of alignments. In general, the value of <it>m<sub>i </sub>
+</it>depends on the fragment length distribution, the read length distribution, the RSPD, the strand-specificity of the protocol, and the length of a poly(A) tail. During the maximization step of EM, our modification is to set <it>&#952;<sub>i </sub>
+</it>to be proportional to <it>c<sub>i</sub>
+</it>/(<it>Nm<sub>i</sub>
+</it>), where <it>c<sub>i </sub>
+</it>is the expected number of fragments derived from transcript <it>i </it>and <it>N </it>is the total number of unfiltered fragments.</p>
+</sec>
+<sec>
+<st>
+<p>Gibbs sampling</p>
+</st>
+<p>In addition to computing ML estimates, RSEM uses a Bayesian version of its model to compute PME and 95% CIs of abundances. In the Bayesian model, the <it>&#952; </it>parameters are treated as latent random variables with a Dirichlet prior distribution. The parameters of the Dirichlet distribution (<it>&#945;</it>) are set to one, which makes the prior equivalent to a uniform distribution and the maximum a posteriori estimates of <it>&#952; </it>equal to the ML estimates.</p>
+<p>RSEM computes PMEs and 95% CIs with a two-stage sampling process. First, a standard application of the collapsed Gibbs sampling algorithm <abbrgrp>
+<abbr bid="B42">42</abbr>
+</abbrgrp> is used to obtain a sampled set of count vectors, where each vector represents the number of fragments that are mapped to each transcript. During each round of the Gibbs sampling algorithm, the true mapping of each fragment is resampled given the current mappings of all other fragments. The initial mapping of each fragment is sampled according to the ML parameters computed by the EM algorithm. The algorithm is run to sample 1000 count vectors.</p>
+<p>The second stage of the sampling process involves sampling values of <it>&#952; </it>given each count vector sampled from the first stage. Given a count vector, <it>c</it>, a <it>&#952; </it>vector is sampled from its posterior distribution, which is simply a Dirichlet distribution with <it>&#945;<sub>i </sub>
+</it>= <it>c<sub>i </sub>
+</it>+ 1. For each count vector, 50 <it>&#952; </it>vectors are sampled, resulting in 50,000 total samples for <it>&#952;</it>. The <it>&#952; </it>samples are converted to transcript fractions (<it>&#964;</it>) and then summarized to produce a PME and 95% CI for the abundance of each transcript.</p>
+<p>To validate the CIs generated by RSEM, we simulated an RNA-Seq data set with the mouse RefSeq annotation and estimated CIs with RSEM from 50% credibility up to 95% credibility. We then computed the fraction of transcripts for which the true abundances fell within the credibility intervals, out of all transcripts with abundance at least 1 TPM (Table <tblr tid="T6">6</tblr>). The results indicate that the 95% credibility intervals are reasonably accurate and that these intervals are tight (since the fraction of correctly predicted transcript levels goes down in step with the credibility level). CIs estimated from data simulated with the mouse Ensembl annotation were less accurate (Additional file <supplr sid="S7">7</supplr>). We investigated why the CIs were less accurate on this set and found that many of the CIs were biased downward due to the Dirichlet prior and the larger number of transcripts in the Ensembl set. Although the CIs for the Ensembl set did not perform as well as those for the RefSeq set, we expect that they are still useful for comparing abundances across samples, as the biases in the CIs should be consistent. However, these results suggest that further work is needed to develop prior distributions that can better handle the large numbers of transcripts with zero abundance that are typical of RNA-Seq data sets.</p>
+<tbl id="T6"><title><p>Table 6</p></title><caption><p>Accuracy of RSEM's credibility interval estimates</p></caption><tblbdy cols="3">
+      <r>
+         <c ca="left">
+            <p>
+               <b>Credibility level</b>
+            </p>
+         </c>
+         <c ca="left">
+            <p>
+               <b>Isoforms with true abundance </b>
+            </p>
+            <p>
+               <b>within estimated CI (%)</b>
+            </p>
+         </c>
+         <c ca="left">
+            <p>
+               <b>Genes with true abundance </b>
+            </p>
+            <p>
+               <b>within estimated CI (%)</b>
+            </p>
+         </c>
+      </r>
+      <r>
+         <c cspan="3">
+            <hr/>
+         </c>
+      </r>
+      <r>
+         <c ca="left">
+            <p>95</p>
+         </c>
+         <c ca="left">
+            <p>93.1</p>
+         </c>
+         <c ca="left">
+            <p>94.3</p>
+         </c>
+      </r>
+      <r>
+         <c ca="left">
+            <p>90</p>
+         </c>
+         <c ca="left">
+            <p>87.7</p>
+         </c>
+         <c ca="left">
+            <p>89.0</p>
+         </c>
+      </r>
+      <r>
+         <c ca="left">
+            <p>85</p>
+         </c>
+         <c ca="left">
+            <p>82.6</p>
+         </c>
+         <c ca="left">
+            <p>83.9</p>
+         </c>
+      </r>
+      <r>
+         <c ca="left">
+            <p>80</p>
+         </c>
+         <c ca="left">
+            <p>77.3</p>
+         </c>
+         <c ca="left">
+            <p>78.6</p>
+         </c>
+      </r>
+      <r>
+         <c ca="left">
+            <p>75</p>
+         </c>
+         <c ca="left">
+            <p>72.1</p>
+         </c>
+         <c ca="left">
+            <p>73.4</p>
+         </c>
+      </r>
+      <r>
+         <c ca="left">
+            <p>70</p>
+         </c>
+         <c ca="left">
+            <p>67.0</p>
+         </c>
+         <c ca="left">
+            <p>68.4</p>
+         </c>
+      </r>
+      <r>
+         <c ca="left">
+            <p>65</p>
+         </c>
+         <c ca="left">
+            <p>62.0</p>
+         </c>
+         <c ca="left">
+            <p>63.5</p>
+         </c>
+      </r>
+      <r>
+         <c ca="left">
+            <p>60</p>
+         </c>
+         <c ca="left">
+            <p>57.0</p>
+         </c>
+         <c ca="left">
+            <p>58.5</p>
+         </c>
+      </r>
+      <r>
+         <c ca="left">
+            <p>55</p>
+         </c>
+         <c ca="left">
+            <p>52.0</p>
+         </c>
+         <c ca="left">
+            <p>53.4</p>
+         </c>
+      </r>
+      <r>
+         <c ca="left">
+            <p>50</p>
+         </c>
+         <c ca="left">
+            <p>46.9</p>
+         </c>
+         <c ca="left">
+            <p>48.4</p>
+         </c>
+      </r>
+   </tblbdy><tblfn>
+      <p>Accuracies of credibility intervals computed by RSEM for credibility levels ranging from 50% to 95%.</p>
+   </tblfn></tbl>
+<suppl id="S7">
+<title>
+<p>Additional file 7</p>
+</title>
+<text>
+<p>
+<b>Accuracy of RSEM's credibility interval estimates with the Ensembl reference set</b>.</p>
+</text>
+<file name="1471-2105-12-323-S7.PDF">
+   <p>Click here for file</p>
+</file>
+</suppl>
+</sec>
+<sec>
+<st>
+<p>Reference sequences</p>
+</st>
+<p>Two sources were used for reference transcript set annotations: the RefSeq gene annotations from the UCSC Genome Browser Database <abbrgrp>
+<abbr bid="B26">26</abbr>
+</abbrgrp> and the Ensembl release 63 annotations <abbrgrp>
+<abbr bid="B27">27</abbr>
+</abbrgrp>. The genome versions used for the RefSeq annotations of human and mouse were build 36.1 (UCSC hg18) and build 37 (UCSC mm9), respectively. For the Ensembl human annotation, build 37 (UCSC hg19) was used instead. Both the RefSeq and Ensembl annotations were filtered to remove non-coding genes and genes located on non-standard chromosomes (e.g., chr1_random and chr5_h2_hap1). In addition, we identified a small fraction of RefSeq genes that were located at multiple, non-overlapping positions and renamed them so that each gene originated from a unique locus.</p>
+</sec>
+<sec>
+<st>
+<p>Simulation</p>
+</st>
+<p>The generative statistical model used by RSEM is easily used to simulate RNA-Seq data. In addition to the primary parameters of the model (e.g., abundances, fragment and read length distributions, and sequencing error model parameters), quality score information must be provided to simulate reads. For the purposes of the simulations in this paper, we used a first-order Markov chain model of quality scores to generate quality score strings for each read. The parameters of the simulation model were learned from real RNA-Seq data sets from the Sequence Read Archive (SRA). The mouse simulation parameters were learned from SRA accession SRX026632, which consists of ~ 4.2 million PE 35 base reads sequenced from a library of poly(A)+ RNA from C2C12 mouse myoblasts <abbrgrp>
+<abbr bid="B3">3</abbr>
+</abbrgrp>. For the human simulations, we learned parameters from SRA accession SRX016368, which consists of ~ 93 million SE 35 base reads sequenced from a MAQC UHR sample <abbrgrp>
+<abbr bid="B37">37</abbr>
+</abbrgrp>. As the human data were SE reads, RSEM was provided with a fragment length distribution with <it>&#956; </it>= 200 and <it>&#963; </it>= 29 in order to learn the other model parameters. However, for the simulations, both human and mouse data were generated with a fragment length distribution with <it>&#956; </it>= 280 and <it>&#963; </it>= 17, which was used in <abbrgrp>
+<abbr bid="B3">3</abbr>
+</abbrgrp> for similar simulations. Lastly, to model the fact that the mRNAs have poly(A) tails, we appended 125 As to the end of each transcript.</p>
+</sec>
+<sec>
+<st>
+<p>MAQC validation</p>
+</st>
+<p>TaqMan qRT-PCR measurements were downloaded from the Gene Expression Omnibus (GEO) (Platform GPL4097). For each sample, the abundance of a gene was taken as the mean of the values that passed the detection threshold for all probes assigned to the gene across all technical replicates. Following <abbrgrp>
+<abbr bid="B37">37</abbr>
+</abbrgrp>, a gene was considered expressed if 75% of its probes passed the detection threshold. The RefSeq transcript accessions listed for each gene in the GEO record were compared to the RefSeq accessions for each gene in the genome annotation. Only those genes for which the GEO accessions were a superset of the annotation accessions were kept. This was done to ensure that the RNA-Seq estimates were comparable to the values for the qRT-PCR probes, which are only guaranteed to correspond to the accessions given in the GEO record. This filtering resulted in a set of 716 genes, 656 and 618 of which were detected in UHR and HBR, respectively.</p>
+<p>To analyze how representative the filtered qRT-PCR genes were of the entire human RefSeq gene set, we computed the "mappability" of each gene. For each isoform we generated all possible 35 base reads from its sequences and aligned them to the entire transcript set with Bowtie, allowing at most two mismatches. The mappability of an isoform was computed as the fraction of reads derived from it that only aligned with isoforms of its gene. The mappability of a gene was then computed as the mean of its isoform mappabilities.</p>
+</sec>
+</sec>
+<sec>
+<st>
+<p>List of abbreviations</p>
+</st>
+<p>PE: paired-end; SE: single-end; ML: maximum likelihood; PME: posterior mean estimate; CI: credibility interval; MPE: median percent error; EF: error fraction; FP: false positive; RSPD: read start position distribution</p>
+</sec>
+<sec>
+<st>
+<p>Authors' contributions</p>
+</st>
+<p>BL wrote the RSEM software, co-developed the methodology and experiments, carried out the computational experiments, and helped to draft the manuscript. CD co-developed the methodology and experiments, and wrote the manuscript. All authors read and approved the final manuscript.</p>
+</sec>
+</bdy><bm>
+<ack>
+<sec>
+<st>
+<p>Acknowledgements and Funding</p>
+</st>
+<p>We thank Victor Ruotti, Ron Stewart, Angela Elwell, and Jennifer Bolin for feedback on the software and for valuable discussions regarding RNA-Seq protocols. We also thank the reviewers of this manuscript for their constructive comments. BL was partially funded by Dr. James Thomson's MacArthur Professorship and by Morgridge Institute for Research support for Computation and Informatics in Biology and Medicine. CD was partially supported by NIH grant 1R01HG005232-01A1.</p>
+</sec>
+</ack>
+<refgrp><bibl id="B1"><title><p>RNA-Seq: a revolutionary tool for transcriptomics</p></title><aug><au><snm>Wang</snm><fnm>Z</fnm></au><au><snm>Gerstein</snm><fnm>M</fnm></au><au><snm>Snyder</snm><fnm>M</fnm></au></aug><source>Nature Reviews Genetics</source><pubdate>2009</pubdate><volume>10</volume><fpage>57</fpage><lpage>63</lpage><xrefbib><pubidlist><pubid idtype="doi">10.1038/nrg2484</pubid><pubid idtype="pmcid">2949280</pubid><pubid idtype="pmpid" link="fulltext">19015660</pubid></pubidlist></xrefbib></bibl><bibl id="B2"><title><p>rQuant.web: a tool for RNA-Seq-based transcript quantitation</p></title><aug><au><snm>Bohnert</snm><fnm>R</fnm></au><au><snm>R&#228;tsch</snm><fnm>G</fnm></au></aug><source>Nucleic Acids Research</source><pubdate>2010</pubdate><issue>38 Web Server</issue><fpage>W348</fpage><lpage>51</lpage></bibl><bibl id="B3"><title><p>Analysis and design of RNA sequencing experiments for identifying isoform regulation</p></title><aug><au><snm>Katz</snm><fnm>Y</fnm></au><au><snm>Wang</snm><fnm>ET</fnm></au><au><snm>Airoldi</snm><fnm>EM</fnm></au><au><snm>Burge</snm><fnm>CB</fnm></au></aug><source>Nature Methods</source><pubdate>2010</pubdate><volume>7</volume><issue>12</issue><fpage>1009</fpage><lpage>15</lpage><xrefbib><pubidlist><pubid idtype="doi">10.1038/nmeth.1528</pubid><pubid idtype="pmcid">3037023</pubid><pubid idtype="pmpid" link="fulltext">21057496</pubid></pubidlist></xrefbib></bibl><bibl id="B4"><title><p>Estimation of alternative splicing isoform frequencies from RNA-Seq data</p></title><aug><au><snm>Nicolae</snm><fnm>M</fnm></au><au><snm>Mangul</snm><fnm>S</fnm></au><au><snm>M&#259;ndoiu</snm><fnm>I</fnm></au><au><snm>Zelikovsky</snm><fnm>A</fnm></au></aug><source>Algorithms in Bioinformatics, Lecture Notes in Computer Science</source><publisher>Liverpool, UK: Springer Berlin/Heidelberg</publisher><editor>Moulton V, Singh M</editor><pubdate>2010</pubdate><fpage>202</fpage><lpage>214</lpage></bibl><bibl id="B5"><title><p>Statistical inferences for isoform expression in RNA-Seq</p></title><aug><au><snm>Jiang</snm><fnm>H</fnm></au><au><snm>Wong</snm><fnm>WH</fnm></au></aug><source>Bioinformatics</source><pubdate>2009</pubdate><volume>25</volume><issue>8</issue><fpage>1026</fpage><lpage>1032</lpage><xrefbib><pubidlist><pubid idtype="doi">10.1093/bioinformatics/btp113</pubid><pubid idtype="pmcid">2666817</pubid><pubid idtype="pmpid" link="fulltext">19244387</pubid></pubidlist></xrefbib></bibl><bibl id="B6"><title><p>Transcript assembly and quantification by RNA-Seq reveals unannotated transcripts and isoform switching during cell differentiation</p></title><aug><au><snm>Trapnell</snm><fnm>C</fnm></au><au><snm>Williams</snm><fnm>B</fnm></au><au><snm>Pertea</snm><fnm>G</fnm></au><au><snm>Mortazavi</snm><fnm>A</fnm></au><au><snm>Kwan</snm><fnm>G</fnm></au><au><snm>van Baren</snm><fnm>M</fnm></au><au><snm>Salzberg</snm><fnm>S</fnm></au><au><snm>Wold</snm><fnm>B</fnm></au><au><snm>Pachter</snm><fnm>L</fnm></au></aug><source>Nature Biotechnology</source><pubdate>2010</pubdate><volume>28</volume><issue>5</issue><fpage>511</fpage><lpage>515</lpage><xrefbib><pubidlist><pubid idtype="doi">10.1038/nbt.1621</pubid><pubid idtype="pmcid">3146043</pubid><pubid idtype="pmpid" link="fulltext">20436464</pubid></pubidlist></xrefbib></bibl><bibl id="B7"><title><p>RNA-Seq gene expression estimation with read mapping uncertainty</p></title><aug><au><snm>Li</snm><fnm>B</fnm></au><au><snm>Ruotti</snm><fnm>V</fnm></au><au><snm>Stewart</snm><fnm>RM</fnm></au><au><snm>Thomson</snm><fnm>JA</fnm></au><au><snm>Dewey</snm><fnm>CN</fnm></au></aug><source>Bioinformatics</source><pubdate>2010</pubdate><volume>26</volume><issue>4</issue><fpage>493</fpage><lpage>500</lpage><xrefbib><pubidlist><pubid idtype="doi">10.1093/bioinformatics/btp692</pubid><pubid idtype="pmcid">2820677</pubid><pubid idtype="pmpid" link="fulltext">20022975</pubid></pubidlist></xrefbib></bibl><bibl id="B8"><title><p>Differential expression analysis for sequence count data</p></title><aug><au><snm>Anders</snm><fnm>S</fnm></au><au><snm>Huber</snm><fnm>W</fnm></au></aug><source>Genome Biology</source><pubdate>2010</pubdate><volume>11</volume><issue>10</issue><fpage>R106.</fpage><xrefbib><pubid idtype="pmpid" link="fulltext">20979621</pubid></xrefbib></bibl><bibl id="B9"><title><p>edgeR: a Bioconductor package for differential expression analysis of digital gene expression data</p></title><aug><au><snm>Robinson</snm><fnm>MD</fnm></au><au><snm>McCarthy</snm><fnm>DJ</fnm></au><au><snm>Smyth</snm><fnm>GK</fnm></au></aug><source>Bioinformatics</source><pubdate>2010</pubdate><volume>26</volume><fpage>139</fpage><lpage>40</lpage><xrefbib><pubidlist><pubid idtype="doi">10.1093/bioinformatics/btp616</pubid><pubid idtype="pmcid">2796818</pubid><pubid idtype="pmpid" link="fulltext">19910308</pubid></pubidlist></xrefbib></bibl><bibl id="B10"><title><p>Ab initio reconstruction of cell type-specific transcriptomes in mouse reveals the conserved multi-exonic structure of lincRNAs</p></title><aug><au><snm>Guttman</snm><fnm>M</fnm></au><au><snm>Garber</snm><fnm>M</fnm></au><au><snm>Levin</snm><fnm>JZ</fnm></au><au><snm>Donaghey</snm><fnm>J</fnm></au><au><snm>Robinson</snm><fnm>J</fnm></au><au><snm>Adiconis</snm><fnm>X</fnm></au><au><snm>Fan</snm><fnm>L</fnm></au><au><snm>Koziol</snm><fnm>MJ</fnm></au><au><snm>Gnirke</snm><fnm>A</fnm></au><au><snm>Nusbaum</snm><fnm>C</fnm></au><au><snm>Rinn</snm><fnm>JL</fnm></au><au><snm>Lander</snm><fnm>ES</fnm></au><au><snm>Regev</snm><fnm>A</fnm></au></aug><source>Nature Biotechnology</source><pubdate>2010</pubdate><volume>28</volume><issue>5</issue><fpage>503</fpage><lpage>510</lpage><xrefbib><pubidlist><pubid idtype="doi">10.1038/nbt.1633</pubid><pubid idtype="pmcid">2868100</pubid><pubid idtype="pmpid" link="fulltext">20436462</pubid></pubidlist></xrefbib></bibl><bibl id="B11"><title><p>De novo assembly and analysis of RNA-seq data</p></title><aug><au><snm>Robertson</snm><fnm>G</fnm></au><au><snm>Schein</snm><fnm>J</fnm></au><au><snm>Chiu</snm><fnm>R</fnm></au><au><snm>Corbett</snm><fnm>R</fnm></au><au><snm>Field</snm><fnm>M</fnm></au><au><snm>Jackman</snm><fnm>SD</fnm></au><au><snm>Mungall</snm><fnm>K</fnm></au><au><snm>Lee</snm><fnm>S</fnm></au><au><snm>Okada</snm><fnm>HM</fnm></au><au><snm>Qian</snm><fnm>JQ</fnm></au><au><snm>Griffith</snm><fnm>M</fnm></au><au><snm>Raymond</snm><fnm>A</fnm></au><au><snm>Thiessen</snm><fnm>N</fnm></au><au><snm>Cezard</snm><fnm>T</fnm></au><au><snm>Butterfield</snm><fnm>YS</fnm></au><au><snm>Newsome</snm><fnm>R</fnm></au><au><snm>Chan</snm><fnm>SK</fnm></au><au><snm>She</snm><fnm>R</fnm></au><au><snm>Varhol</snm><fnm>R</fnm></au><au><snm>Kamoh</snm><fnm>B</fnm></au><au><snm>Prabhu</snm><fnm>AL</fnm></au><au><snm>Tam</snm><fnm>A</fnm></au><au><snm>Zhao</snm><fnm>Y</fnm></au><au><snm>Moore</snm><fnm>RA</fnm></au><au><snm>Hirst</snm><fnm>M</fnm></au><au><snm>Marra</snm><fnm>MA</fnm></au><au><snm>Jones</snm><fnm>SJM</fnm></au><au><snm>Hoodless</snm><fnm>PA</fnm></au><au><snm>Birol</snm><fnm>I</fnm></au></aug><source>Nature Methods</source><pubdate>2010</pubdate><volume>7</volume><issue>11</issue><fpage>909</fpage><lpage>12</lpage><xrefbib><pubidlist><pubid idtype="doi">10.1038/nmeth.1517</pubid><pubid idtype="pmpid" link="fulltext">20935650</pubid></pubidlist></xrefbib></bibl><bibl id="B12"><title><p>Full-length transcriptome assembly from RNA-Seq data without a reference genome</p></title><aug><au><snm>Grabherr</snm><fnm>MG</fnm></au><au><snm>Haas</snm><fnm>BJ</fnm></au><au><snm>Yassour</snm><fnm>M</fnm></au><au><snm>Levin</snm><fnm>JZ</fnm></au><au><snm>Thompson</snm><fnm>Da</fnm></au><au><snm>Amit</snm><fnm>I</fnm></au><au><snm>Adiconis</snm><fnm>X</fnm></au><au><snm>Fan</snm><fnm>L</fnm></au><au><snm>Raychowdhury</snm><fnm>R</fnm></au><au><snm>Zeng</snm><fnm>Q</fnm></au><au><snm>Chen</snm><fnm>Z</fnm></au><au><snm>Mauceli</snm><fnm>E</fnm></au><au><snm>Hacohen</snm><fnm>N</fnm></au><au><snm>Gnirke</snm><fnm>A</fnm></au><au><snm>Rhind</snm><fnm>N</fnm></au><au><snm>di Palma</snm><fnm>F</fnm></au><au><snm>Birren</snm><fnm>BW</fnm></au><au><snm>Nusbaum</snm><fnm>C</fnm></au><au><snm>Lindblad-Toh</snm><fnm>K</fnm></au><au><snm>Friedman</snm><fnm>N</fnm></au><au><snm>Regev</snm><fnm>A</fnm></au></aug><source>Nature Biotechnology</source><pubdate>2011</pubdate><volume>29</volume><issue>7</issue><fpage>644</fpage><lpage>52</lpage><xrefbib><pubidlist><pubid idtype="doi">10.1038/nbt.1883</pubid><pubid idtype="pmpid" link="fulltext">21572440</pubid></pubidlist></xrefbib></bibl><bibl id="B13"><title><p>The Transcriptional Landscape of the Yeast Genome Defined by RNA Sequencing</p></title><aug><au><snm>Nagalakshmi</snm><fnm>U</fnm></au><au><snm>Wang</snm><fnm>Z</fnm></au><au><snm>Waern</snm><fnm>K</fnm></au><au><snm>Shou</snm><fnm>C</fnm></au><au><snm>Raha</snm><fnm>D</fnm></au><au><snm>Gerstein</snm><fnm>M</fnm></au><au><snm>Snyder</snm><fnm>M</fnm></au></aug><source>Science</source><pubdate>2008</pubdate><volume>320</volume><issue>5881</issue><fpage>1344</fpage><lpage>1349</lpage><xrefbib><pubidlist><pubid idtype="doi">10.1126/science.1158441</pubid><pubid idtype="pmcid">2951732</pubid><pubid idtype="pmpid" link="fulltext">18451266</pubid></pubidlist></xrefbib></bibl><bibl id="B14"><title><p>RNA-seq: an assessment of technical reproducibility and comparison with gene expression arrays</p></title><aug><au><snm>Marioni</snm><fnm>JC</fnm></au><au><snm>Mason</snm><fnm>CE</fnm></au><au><snm>Mane</snm><fnm>SM</fnm></au><au><snm>Stephens</snm><fnm>M</fnm></au><au><snm>Gilad</snm><fnm>Y</fnm></au></aug><source>Genome Research</source><pubdate>2008</pubdate><volume>18</volume><issue>9</issue><fpage>1509</fpage><lpage>17</lpage><xrefbib><pubidlist><pubid idtype="doi">10.1101/gr.079558.108</pubid><pubid idtype="pmcid">2527709</pubid><pubid idtype="pmpid" link="fulltext">18550803</pubid></pubidlist></xrefbib></bibl><bibl id="B15"><title><p>Profiling the HeLa S3 transcriptome using randomly primed cDNA and massively parallel short-read sequencing</p></title><aug><au><snm>Morin</snm><fnm>R</fnm></au><au><snm>Bainbridge</snm><fnm>M</fnm></au><au><snm>Fejes</snm><fnm>A</fnm></au><au><snm>Hirst</snm><fnm>M</fnm></au><au><snm>Krzywinski</snm><fnm>M</fnm></au><au><snm>Pugh</snm><fnm>T</fnm></au><au><snm>McDonald</snm><fnm>H</fnm></au><au><snm>Varhol</snm><fnm>R</fnm></au><au><snm>Jones</snm><fnm>S</fnm></au><au><snm>Marra</snm><fnm>M</fnm></au></aug><source>BioTechniques</source><pubdate>2008</pubdate><volume>45</volume><fpage>81</fpage><lpage>94</lpage><xrefbib><pubidlist><pubid idtype="doi">10.2144/000112900</pubid><pubid idtype="pmpid" link="fulltext">18611170</pubid></pubidlist></xrefbib></bibl><bibl id="B16"><title><p>Isoform abundance inference provides a more accurate estimation of gene expression levels in RNA-seq</p></title><aug><au><snm>Wang</snm><fnm>X</fnm></au><au><snm>Wu</snm><fnm>Z</fnm></au><au><snm>Zhang</snm><fnm>X</fnm></au></aug><source>Journal of Bioinformatics and Computational Biology</source><pubdate>2010</pubdate><volume>8</volume><issue>Suppl 1</issue><fpage>177</fpage><lpage>92</lpage><xrefbib><pubid idtype="pmpid" link="fulltext">21155027</pubid></xrefbib></bibl><bibl id="B17"><title><p>A rescue strategy for multimapping short sequence tags refines surveys of transcriptional activity by CAGE</p></title><aug><au><snm>Faulkner</snm><fnm>GJ</fnm></au><au><snm>Forrest</snm><fnm>ARR</fnm></au><au><snm>Chalk</snm><fnm>AM</fnm></au><au><snm>Schroder</snm><fnm>K</fnm></au><au><snm>Hayashizaki</snm><fnm>Y</fnm></au><au><snm>Carninci</snm><fnm>P</fnm></au><au><snm>Hume</snm><fnm>DA</fnm></au><au><snm>Grimmond</snm><fnm>SM</fnm></au></aug><source>Genomics</source><pubdate>2008</pubdate><volume>91</volume><issue>3</issue><fpage>281</fpage><lpage>8</lpage><xrefbib><pubidlist><pubid idtype="doi">10.1016/j.ygeno.2007.11.003</pubid><pubid idtype="pmpid" link="fulltext">18178374</pubid></pubidlist></xrefbib></bibl><bibl id="B18"><title><p>Mapping and quantifying mammalian transcriptomes by RNA-Seq</p></title><aug><au><snm>Mortazavi</snm><fnm>A</fnm></au><au><snm>Williams</snm><fnm>BA</fnm></au><au><snm>McCue</snm><fnm>K</fnm></au><au><snm>Schaeffer</snm><fnm>L</fnm></au><au><snm>Wold</snm><fnm>B</fnm></au></aug><source>Nature Methods</source><pubdate>2008</pubdate><volume>5</volume><issue>7</issue><fpage>621</fpage><lpage>8</lpage><xrefbib><pubidlist><pubid idtype="doi">10.1038/nmeth.1226</pubid><pubid idtype="pmpid" link="fulltext">18516045</pubid></pubidlist></xrefbib></bibl><bibl id="B19"><title><p>Inference of isoforms from short sequence reads</p></title><aug><au><snm>Feng</snm><fnm>J</fnm></au><au><snm>Li</snm><fnm>W</fnm></au><au><snm>Jiang</snm><fnm>T</fnm></au></aug><source>Journal of Computational Biology</source><pubdate>2011</pubdate><volume>18</volume><issue>3</issue><fpage>305</fpage><lpage>21</lpage><xrefbib><pubidlist><pubid idtype="doi">10.1089/cmb.2010.0243</pubid><pubid idtype="pmpid" link="fulltext">21385036</pubid></pubidlist></xrefbib></bibl><bibl id="B20"><title><p>Accurate Estimation of Expression Levels of Homologous Genes in RNA-seq Experiments</p></title><aug><au><snm>Pa&#351;aniuc</snm><fnm>B</fnm></au><au><snm>Zaitlen</snm><fnm>N</fnm></au><au><snm>Halperin</snm><fnm>E</fnm></au></aug><source>Journal of Computational Biology</source><pubdate>2011</pubdate><volume>18</volume><issue>3</issue><fpage>459</fpage><lpage>68</lpage><xrefbib><pubidlist><pubid idtype="doi">10.1089/cmb.2010.0259</pubid><pubid idtype="pmpid" link="fulltext">21385047</pubid></pubidlist></xrefbib></bibl><bibl id="B21"><title><p>Prediction of alternative isoforms from exon expression levels in RNA-Seq experiments</p></title><aug><au><snm>Richard</snm><fnm>H</fnm></au><au><snm>Schulz</snm><fnm>MH</fnm></au><au><snm>Sultan</snm><fnm>M</fnm></au><au><snm>N&#252;rnberger</snm><fnm>A</fnm></au><au><snm>Schrinner</snm><fnm>S</fnm></au><au><snm>Balzereit</snm><fnm>D</fnm></au><au><snm>Dagand</snm><fnm>E</fnm></au><au><snm>Rasche</snm><fnm>A</fnm></au><au><snm>Lehrach</snm><fnm>H</fnm></au><au><snm>Vingron</snm><fnm>M</fnm></au><au><snm>Haas</snm><fnm>SA</fnm></au><au><snm>Yaspo</snm><fnm>ML</fnm></au></aug><source>Nucleic Acids Research</source><pubdate>2010</pubdate><volume>38</volume><issue>10</issue><fpage>e112.</fpage><xrefbib><pubidlist><pubid idtype="pmcid">2879520</pubid><pubid idtype="pmpid" link="fulltext">20150413</pubid></pubidlist></xrefbib></bibl><bibl id="B22"><title><p>Methods for allocating ambiguous short-reads</p></title><aug><au><snm>Taub</snm><fnm>M</fnm></au><au><snm>Lipson</snm><fnm>D</fnm></au><au><snm>Speed</snm><fnm>TP</fnm></au></aug><source>Communications in Information and Systems</source><pubdate>2010</pubdate><volume>10</volume><issue>2</issue><fpage>69</fpage><lpage>82</lpage></bibl><bibl id="B23"><title><p>Optimal spliced alignments of short sequence reads</p></title><aug><au><snm>De Bona</snm><fnm>F</fnm></au><au><snm>Ossowski</snm><fnm>S</fnm></au><au><snm>Schneeberger</snm><fnm>K</fnm></au><au><snm>Ratsch</snm><fnm>G</fnm></au></aug><source>Bioinformatics</source><pubdate>2008</pubdate><volume>24</volume><issue>16</issue><fpage>i174</fpage><lpage>180</lpage><xrefbib><pubidlist><pubid idtype="doi">10.1093/bioinformatics/btn300</pubid><pubid idtype="pmpid" link="fulltext">18689821</pubid></pubidlist></xrefbib></bibl><bibl id="B24"><title><p>TopHat: discovering splice junctions with RNA-Seq</p></title><aug><au><snm>Trapnell</snm><fnm>C</fnm></au><au><snm>Pachter</snm><fnm>L</fnm></au><au><snm>Salzberg</snm><fnm>SL</fnm></au></aug><source>Bioinformatics</source><pubdate>2009</pubdate><volume>25</volume><issue>9</issue><fpage>1105</fpage><lpage>11</lpage><xrefbib><pubidlist><pubid idtype="doi">10.1093/bioinformatics/btp120</pubid><pubid idtype="pmcid">2672628</pubid><pubid idtype="pmpid" link="fulltext">19289445</pubid></pubidlist></xrefbib></bibl><bibl id="B25"><title><p>Detection of splice junctions from paired-end RNA-seq data by SpliceMap</p></title><aug><au><snm>Au</snm><fnm>KF</fnm></au><au><snm>Jiang</snm><fnm>H</fnm></au><au><snm>Lin</snm><fnm>L</fnm></au><au><snm>Xing</snm><fnm>Y</fnm></au><au><snm>Wong</snm><fnm>WH</fnm></au></aug><source>Nucleic Acids Research</source><pubdate>2010</pubdate><volume>38</volume><issue>14</issue><fpage>4570</fpage><lpage>8</lpage><xrefbib><pubidlist><pubid idtype="doi">10.1093/nar/gkq211</pubid><pubid idtype="pmcid">2919714</pubid><pubid idtype="pmpid" link="fulltext">20371516</pubid></pubidlist></xrefbib></bibl><bibl id="B26"><title><p>The UCSC Genome Browser database: update 2011</p></title><aug><au><snm>Fujita</snm><fnm>PA</fnm></au><au><snm>Rhead</snm><fnm>B</fnm></au><au><snm>Zweig</snm><fnm>AS</fnm></au><au><snm>Hinrichs</snm><fnm>AS</fnm></au><au><snm>Karolchik</snm><fnm>D</fnm></au><au><snm>Cline</snm><fnm>MS</fnm></au><au><snm>Goldman</snm><fnm>M</fnm></au><au><snm>Barber</snm><fnm>GP</fnm></au><au><snm>Clawson</snm><fnm>H</fnm></au><au><snm>Coelho</snm><fnm>A</fnm></au><au><snm>Diekhans</snm><fnm>M</fnm></au><au><snm>Dreszer</snm><fnm>TR</fnm></au><au><snm>Giardine</snm><fnm>BM</fnm></au><au><snm>Harte</snm><fnm>RA</fnm></au><au><snm>Hillman-Jackson</snm><fnm>J</fnm></au><au><snm>Hsu</snm><fnm>F</fnm></au><au><snm>Kirkup</snm><fnm>V</fnm></au><au><snm>Kuhn</snm><fnm>RM</fnm></au><au><snm>Learned</snm><fnm>K</fnm></au><au><snm>Li</snm><fnm>CH</fnm></au><au><snm>Meyer</snm><fnm>LR</fnm></au><au><snm>Pohl</snm><fnm>A</fnm></au><au><snm>Raney</snm><fnm>BJ</fnm></au><au><snm>Rosenbloom</snm><fnm>KR</fnm></au><au><snm>Smith</snm><fnm>KE</fnm></au><au><snm>Haussler</snm><fnm>D</fnm></au><au><snm>Kent</snm><fnm>WJ</fnm></au></aug><source>Nucleic Acids Research</source><pubdate>2011</pubdate><issue>39 Database</issue><fpage>D876</fpage><lpage>82</lpage></bibl><bibl id="B27"><title><p>Ensembl 2011</p></title><aug><au><snm>Flicek</snm><fnm>P</fnm></au><au><snm>Amode</snm><fnm>MR</fnm></au><au><snm>Barrell</snm><fnm>D</fnm></au><au><snm>Beal</snm><fnm>K</fnm></au><au><snm>Brent</snm><fnm>S</fnm></au><au><snm>Chen</snm><fnm>Y</fnm></au><au><snm>Clapham</snm><fnm>P</fnm></au><au><snm>Coates</snm><fnm>G</fnm></au><au><snm>Fairley</snm><fnm>S</fnm></au><au><snm>Fitzgerald</snm><fnm>S</fnm></au><au><snm>Gordon</snm><fnm>L</fnm></au><au><snm>Hendrix</snm><fnm>M</fnm></au><au><snm>Hourlier</snm><fnm>T</fnm></au><au><snm>Johnson</snm><fnm>N</fnm></au><au><snm>K&#228;h&#228;ri</snm><fnm>A</fnm></au><au><snm>Keefe</snm><fnm>D</fnm></au><au><snm>Keenan</snm><fnm>S</fnm></au><au><snm>Kinsella</snm><fnm>R</fnm></au><au><snm>Kokocinski</snm><fnm>F</fnm></au><au><snm>Kulesha</snm><fnm>E</fnm></au><au><snm>Larsson</snm><fnm>P</fnm></au><au><snm>Longden</snm><fnm>I</fnm></au><au><snm>McLaren</snm><fnm>W</fnm></au><au><snm>Overduin</snm><fnm>B</fnm></au><au><snm>Pritchard</snm><fnm>B</fnm></au><au><snm>Riat</snm><fnm>HS</fnm></au><au><snm>Rios</snm><fnm>D</fnm></au><au><snm>Ritchie</snm><fnm>GRS</fnm></au><au><snm>Ruffier</snm><fnm>M</fnm></au><au><snm>Schuster</snm><fnm>M</fnm></au><au><snm>Sobral</snm><fnm>D</fnm></au><au><snm>Spudich</snm><fnm>G</fnm></au><au><snm>Tang</snm><fnm>YA</fnm></au><au><snm>Trevanion</snm><fnm>S</fnm></au><au><snm>Vandrovcova</snm><fnm>J</fnm></au><au><snm>Vilella</snm><fnm>AJ</fnm></au><au><snm>White</snm><fnm>S</fnm></au><au><snm>Wilder</snm><fnm>SP</fnm></au><au><snm>Zadissa</snm><fnm>A</fnm></au><au><snm>Zamora</snm><fnm>J</fnm></au><au><snm>Aken</snm><fnm>BL</fnm></au><au><snm>Birney</snm><fnm>E</fnm></au><au><snm>Cunningham</snm><fnm>F</fnm></au><au><snm>Dunham</snm><fnm>I</fnm></au><au><snm>Durbin</snm><fnm>R</fnm></au><au><snm>Fern&#225;ndez-Suarez</snm><fnm>XM</fnm></au><au><snm>Herrero</snm><fnm>J</fnm></au><au><snm>Hubbard</snm><fnm>TJP</fnm></au><au><snm>Parker</snm><fnm>A</fnm></au><au><snm>Proctor</snm><fnm>G</fnm></au><au><snm>Vogel</snm><fnm>J</fnm></au><au><snm>Searle</snm><fnm>SMJ</fnm></au></aug><source>Nucleic Acids Research</source><pubdate>2011</pubdate><issue>39 Database</issue><fpage>D800</fpage><lpage>6</lpage></bibl><bibl id="B28"><title><p>Identification of novel transcripts in annotated genomes using RNA-Seq</p></title><aug><au><snm>Roberts</snm><fnm>A</fnm></au><au><snm>Pimentel</snm><fnm>H</fnm></au><au><snm>Trapnell</snm><fnm>C</fnm></au><au><snm>Pachter</snm><fnm>L</fnm></au></aug><source>Bioinformatics</source><pubdate>2011</pubdate><note>first published online June 21, 2011</note></bibl><bibl id="B29"><title><p>Ultrafast and memory-efficient alignment of short DNA sequences to the human genome</p></title><aug><au><snm>Langmead</snm><fnm>B</fnm></au><au><snm>Trapnell</snm><fnm>C</fnm></au><au><snm>Pop</snm><fnm>M</fnm></au><au><snm>Salzberg</snm><fnm>SL</fnm></au></aug><source>Genome Biology</source><pubdate>2009</pubdate><volume>10</volume><issue>3</issue><fpage>R25.</fpage><xrefbib><pubidlist><pubid idtype="pmcid">2690996</pubid><pubid idtype="pmpid" link="fulltext">19261174</pubid></pubidlist></xrefbib></bibl><bibl id="B30"><title><p>The Sequence Alignment/Map format and SAMtools</p></title><aug><au><snm>Li</snm><fnm>H</fnm></au><au><snm>Handsaker</snm><fnm>B</fnm></au><au><snm>Wysoker</snm><fnm>A</fnm></au><au><snm>Fennell</snm><fnm>T</fnm></au><au><snm>Ruan</snm><fnm>J</fnm></au><au><snm>Homer</snm><fnm>N</fnm></au><au><snm>Marth</snm><fnm>G</fnm></au><au><snm>Abecasis</snm><fnm>G</fnm></au><au><snm>Durbin</snm><fnm>R</fnm></au></aug><source>Bioinformatics</source><pubdate>2009</pubdate><volume>25</volume><issue>16</issue><fpage>2078</fpage><lpage>9</lpage><xrefbib><pubidlist><pubid idtype="doi">10.1093/bioinformatics/btp352</pubid><pubid idtype="pmcid">2723002</pubid><pubid idtype="pmpid" link="fulltext">19505943</pubid></pubidlist></xrefbib></bibl><bibl id="B31"><title><p>The Human Genome Browser at UCSC</p></title><aug><au><snm>Kent</snm><fnm>WJ</fnm></au><au><snm>Sugnet</snm><fnm>CW</fnm></au><au><snm>Furey</snm><fnm>TS</fnm></au><au><snm>Roskin</snm><fnm>KM</fnm></au><au><snm>Pringle</snm><fnm>TH</fnm></au><au><snm>Zahler</snm><fnm>AM</fnm></au><au><snm>Haussler</snm><fnm></fnm></au><au><snm>David</snm><fnm></fnm></au></aug><source>Genome Research</source><pubdate>2002</pubdate><volume>12</volume><issue>6</issue><fpage>996</fpage><lpage>1006</lpage><xrefbib><pubidlist><pubid idtype="pmcid">186604</pubid><pubid idtype="pmpid" link="fulltext">12045153</pubid></pubidlist></xrefbib></bibl><bibl id="B32"><title><p>Modeling non-uniformity in short-read rates in RNA-Seq data</p></title><aug><au><snm>Li</snm><fnm>J</fnm></au><au><snm>Jiang</snm><fnm>H</fnm></au><au><snm>Wong</snm><fnm>WH</fnm></au></aug><source>Genome Biology</source><pubdate>2010</pubdate><volume>11</volume><issue>5</issue><fpage>R50.</fpage><xrefbib><pubidlist><pubid idtype="pmcid">2898062</pubid><pubid idtype="pmpid" link="fulltext">20459815</pubid></pubidlist></xrefbib></bibl><bibl id="B33"><title><p>Flux Simulator</p></title><url>http://flux.sammeth.net/simulator.html</url></bibl><bibl id="B34"><title><p>NCBI Reference Sequences: current status, policy and new initiatives</p></title><aug><au><snm>Pruitt</snm><fnm>KD</fnm></au><au><snm>Tatusova</snm><fnm>T</fnm></au><au><snm>Klimke</snm><fnm>W</fnm></au><au><snm>Maglott</snm><fnm>DR</fnm></au></aug><source>Nucleic Acids Research</source><pubdate>2009</pubdate><issue>37 Database</issue><fpage>D32</fpage><lpage>6</lpage></bibl><bibl id="B35"><title><p>Why the need for qPCR publication guidelines?-The case for MIQE</p></title><aug><au><snm>Bustin</snm><fnm>SA</fnm></au></aug><source>Methods</source><pubdate>2010</pubdate><volume>50</volume><issue>4</issue><fpage>217</fpage><lpage>26</lpage><xrefbib><pubidlist><pubid idtype="doi">10.1016/j.ymeth.2009.12.006</pubid><pubid idtype="pmpid" link="fulltext">20025972</pubid></pubidlist></xrefbib></bibl><bibl id="B36"><title><p>The MicroArray Quality Control (MAQC) project shows inter- and intraplatform reproducibility of gene expression measurements</p></title><aug><au><snm>Shi</snm><fnm>L</fnm></au><au><snm>Reid</snm><fnm>LH</fnm></au><au><snm>Jones</snm><fnm>WD</fnm></au><au><snm>Shippy</snm><fnm>R</fnm></au><au><snm>Warrington</snm><fnm>JA</fnm></au><au><snm>Baker</snm><fnm>SC</fnm></au><au><snm>Collins</snm><fnm>PJ</fnm></au><au><snm>de Longueville</snm><fnm>F</fnm></au><au><snm>Kawasaki</snm><fnm>ES</fnm></au><au><snm>Lee</snm><fnm>KY</fnm></au><au><snm>Luo</snm><fnm>Y</fnm></au><au><snm>Sun</snm><fnm>YA</fnm></au><au><snm>Willey</snm><fnm>JC</fnm></au><au><snm>Setterquist</snm><fnm>RA</fnm></au><au><snm>Fischer</snm><fnm>GM</fnm></au><au><snm>Tong</snm><fnm>W</fnm></au><au><snm>Dragan</snm><fnm>YP</fnm></au><au><snm>Dix</snm><fnm>DJ</fnm></au><au><snm>Frueh</snm><fnm>FW</fnm></au><au><snm>Goodsaid</snm><fnm>FM</fnm></au><au><snm>Herman</snm><fnm>D</fnm></au><au><snm>Jensen</snm><fnm>RV</fnm></au><au><snm>Johnson</snm><fnm>CD</fnm></au><au><snm>Lobenhofer</snm><fnm>EK</fnm></au><au><snm>Puri</snm><fnm>RK</fnm></au><au><snm>Schrf</snm><fnm>U</fnm></au><au><snm>Thierry-Mieg</snm><fnm>J</fnm></au><au><snm>Wang</snm><fnm>C</fnm></au><au><snm>Wilson</snm><fnm>M</fnm></au><au><snm>Wolber</snm><fnm>PK</fnm></au><au><snm>Zhang</snm><fnm>L</fnm></au><au><snm>Amur</snm><fnm>S</fnm></au><au><snm>Bao</snm><fnm>W</fnm></au><au><snm>Barbacioru</snm><fnm>CC</fnm></au><au><snm>Lucas</snm><fnm>AB</fnm></au><au><snm>Bertholet</snm><fnm>V</fnm></au><au><snm>Boysen</snm><fnm>C</fnm></au><au><snm>Bromley</snm><fnm>B</fnm></au><au><snm>Brown</snm><fnm>D</fnm></au><au><snm>Brunner</snm><fnm>A</fnm></au><au><snm>Canales</snm><fnm>R</fnm></au><au><snm>Cao</snm><fnm>XM</fnm></au><au><snm>Cebula</snm><fnm>TA</fnm></au><au><snm>Chen</snm><fnm>JJ</fnm></au><au><snm>Cheng</snm><fnm>J</fnm></au><au><snm>Chu</snm><fnm>TM</fnm></au><au><snm>Chudin</snm><fnm>E</fnm></au><au><snm>Corson</snm><fnm>J</fnm></au><au><snm>Corton</snm><fnm>JC</fnm></au><au><snm>Croner</snm><fnm>LJ</fnm></au><au><snm>Davies</snm><fnm>C</fnm></au><au><snm>Davison</snm><fnm>TS</fnm></au><au><snm>Delenstarr</snm><fnm>G</fnm></au><au><snm>Deng</snm><fnm>X</fnm></au><au><snm>Dorris</snm><fnm>D</fnm></au><au><snm>Eklund</snm><fnm>AC</fnm></au><au><snm>Fan</snm><fnm>Xh</fnm></au><au><snm>Fang</snm><fnm>H</fnm></au><au><snm>Fulmer-Smentek</snm><fnm>S</fnm></au><au><snm>Fuscoe</snm><fnm>JC</fnm></au><au><snm>Gallagher</snm><fnm>K</fnm></au><au><snm>Ge</snm><fnm>W</fnm></au><au><snm>Guo</snm><fnm>L</fnm></au><au><snm>Guo</snm><fnm>X</fnm></au><au><snm>Hager</snm><fnm>J</fnm></au><au><snm>Haje</snm><fnm>PK</fnm></au><au><snm>Han</snm><fnm>J</fnm></au><au><snm>Han</snm><fnm>T</fnm></au><au><snm>Harbottle</snm><fnm>HC</fnm></au><au><snm>Harris</snm><fnm>SC</fnm></au><au><snm>Hatchwell</snm><fnm>E</fnm></au><au><snm>Hauser</snm><fnm>CA</fnm></au><au><snm>Hester</snm><fnm>S</fnm></au><au><snm>Hong</snm><fnm>H</fnm></au><au><snm>Hurban</snm><fnm>P</fnm></au><au><snm>Jackson</snm><fnm>SA</fnm></au><au><snm>Ji</snm><fnm>H</fnm></au><au><snm>Knight</snm><fnm>CR</fnm></au><au><snm>Kuo</snm><fnm>WP</fnm></au><au><snm>LeClerc</snm><fnm>JE</fnm></au><au><snm>Levy</snm><fnm>S</fnm></au><au><snm>Li</snm><fnm>QZ</fnm></au><au><snm>Liu</snm><fnm>C</fnm></au><au><snm>Liu</snm><fnm>Y</fnm></au><au><snm>Lombardi</snm><fnm>MJ</fnm></au><au><snm>Ma</snm><fnm>Y</fnm></au><au><snm>Magnuson</snm><fnm>SR</fnm></au><au><snm>Maqsodi</snm><fnm>B</fnm></au><au><snm>McDaniel</snm><fnm>T</fnm></au><au><snm>Mei</snm><fnm>N</fnm></au><au><snm>Myklebost</snm><fnm>O</fnm></au><au><snm>Ning</snm><fnm>B</fnm></au><au><snm>Novoradovskaya</snm><fnm>N</fnm></au><au><snm>Orr</snm><fnm>MS</fnm></au><au><snm>Osborn</snm><fnm>TW</fnm></au><au><snm>Papallo</snm><fnm>A</fnm></au><au><snm>Patterson</snm><fnm>T</fnm></au></aug><source>Nature Biotechnology</source><pubdate>2006</pubdate><volume>24</volume><issue>9</issue><fpage>1151</fpage><lpage>61</lpage><xrefbib><pubidlist><pubid idtype="doi">10.1038/nbt1239</pubid><pubid idtype="pmpid" link="fulltext">16964229</pubid></pubidlist></xrefbib></bibl><bibl id="B37"><title><p>Evaluation of statistical methods for normalization and differential expression in mRNA-Seq experiments</p></title><aug><au><snm>Bullard</snm><fnm>JH</fnm></au><au><snm>Purdom</snm><fnm>E</fnm></au><au><snm>Hansen</snm><fnm>KD</fnm></au><au><snm>Dudoit</snm><fnm>S</fnm></au></aug><source>BMC Bioinformatics</source><pubdate>2010</pubdate><volume>11</volume><fpage>94</fpage><xrefbib><pubidlist><pubid idtype="doi">10.1186/1471-2105-11-94</pubid><pubid idtype="pmcid">2838869</pubid><pubid idtype="pmpid" link="fulltext">20167110</pubid></pubidlist></xrefbib></bibl><bibl id="B38"><title><p>Improving RNA-Seq expression estimates by correcting for fragment bias</p></title><aug><au><snm>Roberts</snm><fnm>A</fnm></au><au><snm>Trapnell</snm><fnm>C</fnm></au><au><snm>Donaghey</snm><fnm>J</fnm></au><au><snm>Rinn</snm><fnm>JL</fnm></au><au><snm>Pachter</snm><fnm>L</fnm></au></aug><source>Genome Biology</source><pubdate>2011</pubdate><volume>12</volume><issue>3</issue><fpage>R22.</fpage><xrefbib><pubidlist><pubid idtype="pmcid">3129672</pubid><pubid idtype="pmpid" link="fulltext">21410973</pubid></pubidlist></xrefbib></bibl><bibl id="B39"><title><p>Alternative isoform regulation in human tissue transcriptomes</p></title><aug><au><snm>Wang</snm><fnm>ET</fnm></au><au><snm>Sandberg</snm><fnm>R</fnm></au><au><snm>Luo</snm><fnm>S</fnm></au><au><snm>Khrebtukova</snm><fnm>I</fnm></au><au><snm>Zhang</snm><fnm>L</fnm></au><au><snm>Mayr</snm><fnm>C</fnm></au><au><snm>Kingsmore</snm><fnm>SF</fnm></au><au><snm>Schroth</snm><fnm>GP</fnm></au><au><snm>Burge</snm><fnm>CB</fnm></au></aug><source>Nature</source><pubdate>2008</pubdate><volume>456</volume><issue>7221</issue><fpage>470</fpage><lpage>6</lpage><xrefbib><pubidlist><pubid idtype="doi">10.1038/nature07509</pubid><pubid idtype="pmcid">2593745</pubid><pubid idtype="pmpid" link="fulltext">18978772</pubid></pubidlist></xrefbib></bibl><bibl id="B40"><title><p>Biases in Illumina transcriptome sequencing caused by random hexamer priming</p></title><aug><au><snm>Hansen</snm><fnm>KD</fnm></au><au><snm>Brenner</snm><fnm>SE</fnm></au><au><snm>Dudoit</snm><fnm>S</fnm></au></aug><source>Nucleic Acids Research</source><pubdate>2010</pubdate><volume>38</volume><issue>12</issue><fpage>e131.</fpage><xrefbib><pubidlist><pubid idtype="pmcid">2896536</pubid><pubid idtype="pmpid" link="fulltext">20395217</pubid></pubidlist></xrefbib></bibl><bibl id="B41"><title><p>Using non-uniform read distribution models to improve isoform expression inference in RNA-Seq</p></title><aug><au><snm>Wu</snm><fnm>Z</fnm></au><au><snm>Wang</snm><fnm>X</fnm></au><au><snm>Zhang</snm><fnm>X</fnm></au></aug><source>Bioinformatics</source><pubdate>2011</pubdate><volume>27</volume><issue>4</issue><fpage>502</fpage><lpage>8</lpage><xrefbib><pubidlist><pubid idtype="doi">10.1093/bioinformatics/btq696</pubid><pubid idtype="pmpid" link="fulltext">21169371</pubid></pubidlist></xrefbib></bibl><bibl id="B42"><title><p>The Collapsed Gibbs Sampler in Bayesian Computations with Applications to a Gene Regulation Problem</p></title><aug><au><snm>Liu</snm><fnm>JS</fnm></au></aug><source>Journal of the American Statistical Association</source><pubdate>1994</pubdate><volume>89</volume><issue>427</issue><fpage>958</fpage><lpage>966</lpage><xrefbib><pubid idtype="doi">10.2307/2290921</pubid></xrefbib></bibl></refgrp>
+</bm></art>

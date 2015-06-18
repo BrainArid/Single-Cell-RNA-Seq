@@ -1,0 +1,55 @@
+This is BibTeX, Version 0.99d (TeX Live 2014)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: plos_latex_template.aux
+The style file: plos2015.bst
+Illegal, another \bibstyle command---line 47 of file plos_latex_template.aux
+ : \bibstyle
+ :          {plainnat}
+I'm skipping whatever remains of this command
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=20001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Database file #1: References.bib
+You've used 7 entries,
+            3170 wiz_defined-function locations,
+            712 strings with 7385 characters,
+and the built_in function-call counts, 20022 in all, are:
+= -- 2393
+> -- 140
+< -- 0
++ -- 81
+- -- 35
+* -- 1841
+:= -- 2196
+add.period$ -- 35
+call.type$ -- 7
+change.case$ -- 0
+chr.to.int$ -- 0
+cite$ -- 7
+duplicate$ -- 1115
+empty$ -- 2009
+format.name$ -- 42
+if$ -- 4615
+int.to.chr$ -- 0
+int.to.str$ -- 7
+missing$ -- 91
+newline$ -- 45
+num.names$ -- 7
+pop$ -- 138
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 151
+stack$ -- 0
+substring$ -- 4676
+swap$ -- 209
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 0
+while$ -- 80
+width$ -- 8
+write$ -- 93
+(There was 1 error message)
