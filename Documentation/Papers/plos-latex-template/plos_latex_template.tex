@@ -170,8 +170,8 @@
 % Insert author names, affiliations and corresponding author email (do not include titles, positions, or degrees).
 \\
 Brian Arand\textsuperscript{2},
-Raghu Machiraju Surname\textsuperscript{1, 2},
-Kun Huang Surname\textsuperscript{1, 2}
+Raghu Machiraju\textsuperscript{1, 2},
+Kun Huang\textsuperscript{1, 2}
 
 \bigskip
 \bf{1} Department of Biomedical Informatics, The Ohio State University, Columbus, Ohio, The United States of America
@@ -187,30 +187,30 @@ Kun Huang Surname\textsuperscript{1, 2}
 % Remove or comment out the author notes below if they aren't used.
 %
 % Primary Equal Contribution Note
-\Yinyang These authors contributed equally to this work.
+%\Yinyang These authors contributed equally to this work.
 
 % Additional Equal Contribution Note
 % Also use this double-dagger symbol for special authorship notes, such as senior authorship.
-\ddag These authors also contributed equally to this work.
+%\ddag These authors also contributed equally to this work.
 
 % Current address notes
-\textcurrency a Insert current address of first author with an address update
+%\textcurrency a Insert current address of first author with an address update
 % \textcurrency b Insert current address of second author with an address update
 % \textcurrency c Insert current address of third author with an address update
 
 % Deceased author note
-\dag Deceased
+%\dag Deceased
 
 % Group/Consortium Author Note
-\textpilcrow Membership list can be found in the Acknowledgments section.
+%\textpilcrow Membership list can be found in the Acknowledgments section.
 
 % Use the asterisk to denote corresponding authorship and provide email address in note below.
-* CorrespondingAuthor@institute.edu
+%* CorrespondingAuthor@institute.edu
 
 \end{flushleft}
 % Please keep the abstract below 300 words
 \section*{Abstract}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eget porta erat. Morbi consectetur est vel gravida pretium. Suspendisse ut dui eu ante cursus gravida non sed sem. Nullam sapien tellus, commodo id velit id, eleifend volutpat quam. Phasellus mauris velit, dapibus finibus elementum vel, pulvinar non tellus. Nunc pellentesque pretium diam, quis maximus dolor faucibus id. Nunc convallis sodales ante, ut ullamcorper est egestas vitae. Nam sit amet enim ultrices, ultrices elit pulvinar, volutpat risus.
+We compare our resulting networks both at the ontology enriched module level and at the gene level...
 
 
 % Please keep the Author Summary between 150 and 200 words
@@ -235,19 +235,19 @@ We analyzed two glioma datasets: GSE57872, the data presented in Single-cell RNA
 \begin{figure}[h]
 \centering
 \includegraphics[width=80mm]{Figures/Workflow}
-\caption{{\bf Network comparison workflow}}
+\caption{{\bf Network comparison workflow.} Note that there is no  partition nor aggregation step in the population RNASeq pipeline. Moreover, note that edges of the constructed population co-expression network are filtered to achieve the closest network density possible to that realized in the Single-Cell pipeline. }
 \label{fig:workflow}
 \end{figure}
 
 \subsection*{Single-Cell Data}
 \subsection*{Single-Cell RNASeq Samples }
 
-In this section, we discuss the handling of the GSE57872, single-cell data. This data set is comprised of normalized gene expression values for 5,948 genes for 430 single-cell samples selected by flow cytometry cell sorting and micromanipulation from 5 different primary glioblastomas labeled: MGH26, MGH28, MGH29, MGH30, and MGH31. Patel et al sequenced the cells using SMARTseq protocol \cite{Ramskold2012}. Alignment to hg19 was performed with Bowtie (version 1.1.1) \cite{Langmead2009} and the authors calculated TPM (transcripts per million) values using RSEM (version 1.2.3) \cite{Li2011}.The final reported values were log-transformed and mean-shifted per gene. More formally, let $x_{si}$ be the TPM enrichment value for the $i^{th}$ gene of sample $s$. And let $N_{t}$ be the sample size of tumor $t$, then the analogous, final reported value, $y_{si}$, would be: 
+In this section, we discuss the handling of the GSE57872, single-cell data. This data set is comprised of normalized gene expression values for 5,948 genes for 430 single-cell samples selected by flow cytometry cell sorting and micromanipulation from 5 different primary glioblastomas labeled: MGH26, MGH28, MGH29, MGH30, and MGH31. Patel et al sequenced the cells using SMARTseq protocol \cite{Ramskold2012}. Alignment to hg19 was performed with Bowtie (version 1.1.1) \cite{Langmead2009} and the authors calculated TPM (transcripts per million) values using RSEM (version 1.2.3) \cite{Li2011}.The final reported values were log-transformed and mean-shifted per gene. More formally, let $x_{si}$ be the TPM enrichment value for the $i^{th}$ gene of sample $s$. And let $N_{t}$ be the sample size of tumor $t$, then the analogous, final reported value, $y_{si}$, would be: %
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=80mm]{Figures/ParameterSpaceE=3}
-\caption{Parameterization space analysis}
+\caption{\textbf{Parameterization space analysis.} A comparison of module statistics (a) number of modules output (b) distribution statistics of module size in gene count for modules output in one run of CODENSE. Values of the selected parameterization are highlighted in yellow.}
 \label{Parameter Space Figure}
 \end{figure}
 
@@ -296,7 +296,7 @@ This is analogous to cutting a co-expression network at a given edge threshold. 
 The binary matrices were then aggregated into a single frequency matrix, F. This aggregation is performed in an attempt to attenuate patient-specific signals and focus, rather, on glioblastoma-specific patterns of gene co-expression.
 
 \begin{equation}\label{equation5}
-F = \left[ \begin{array}{ccc}
+F = \left[ \begin{array}{ccc}\sqsubset
 \sum_{t}b_{11t} & \ldots & \sum_{t}b_{1kt} \\
 \vdots & \ddots & \vdots \\
 \sum_{t}b_{k1t} & \ldots & \sum_{t}b_{kkt} \end{array} \right]
@@ -324,7 +324,7 @@ TPM values were adjusted again as in equation \ref{equation2}. Genes were then f
 \begin{figure}[h]
 \centering
 \includegraphics[width=80mm]{{Figures/GeneMembershipProfile}}
-\caption{Sample gene profile}
+\caption{\textbf{Sample gene profile.}}
 \label{fig:profile}
 \end{figure}
 
@@ -336,18 +336,20 @@ Modules were also found using the CODENSE algorithm using the same parameterizat
 
 \subsection{Enrichment}
 
-Module sets derived from both the single-cell network and population tissue sample network were then ontology enriched. Modules were enriched for all terms in Gene Ontology Consortium’s biological process (BP), cellular component (CC), and molecular function (MF) human ontologies using the David Bioinformatics Resources (version 6.7) Functional Annotation Tool \cite{Huang2008}.
+Module sets derived from both the single-cell network and population tissue sample network were then ontology enriched. Modules were enriched for all terms in Gene Ontology Consortium’s biological process (BP), cellular component (CC), and molecular function (MF) human ontologies using the David Bioinformatics Resources (version 6.7) Functional Annotation Tool \cite{Huang2008}. The most  significant (in terms of bonferroni adjusted p-value) ontology per category was reported for each module.
 
 % Results and Discussion can be combined.
-\section*{Results and Discussion}
+\section*{Results}
 
 Using the parameters described above, our workflow produced 21 modules for the single-cell data and 48 modules for the population data set. 
 
-We compared these output module sets at the module level and the gene level. A breakdown of these modules labeled with their most significant biological process ontology, cellular component ontology, and molecular function ontology. 
+We compared these output module sets at the module level and the gene level. A breakdown of these modules labeled with their most significant biological process ontology, cellular component ontology, and molecular function ontology is shown for the single-cell data in fig. \ref{fig:57872Clusts} and for the population data in fig. \ref{fig:48865Clusts}.
+
+We then profiled the two lists of output ontology enriched modules to find both consensus and marginal ontologies between the two data sets. Fig. \ref{fig:venn} illustrates this module level comparison. When using exact equality to define the intersection between the two sets of ontologies only find two ontologies were identified by both single-cell and population pipelines. However, many of the output modules share common ancestrial ontologies. To get a better understanding of the similarities of the pipelines' output, we report what we will be calling 'consolidated ontologies' in the intersection. Consolidated ontologies are ancestral ontologies from the Gene Ontology Consortium’s ontology hierarchy database that link at least one ontology reported by the single-cell workflow to at least one ontology reported by the population workflow that is no more than two generations ancestor to the output ontologies from which the consolodated ontology was inferred. If two consolodated ontologies were inferred from the same set of output ontologies, only the most specific consolidated ontology is reported.
 
 \begin{figure}[h]
 \includegraphics[width=120mm]{{Figures/toDavidGSE57872_freqNet_03_clusters}}
-\caption{\textbf{Single-cell network module ontology enrichment.}}
+\caption{\textbf{Single-cell network module ontology enrichment.} A list of the modules output from the CODENSE algorithm ordered by size, each enriched for BP, CC, and MC ontologies. Row color denotes a certain statistical significance as demarcated in the figure legend.}
 \label{fig:57872Clusts}
 \end{figure}
 
@@ -360,16 +362,18 @@ We compared these output module sets at the module level and the gene level. A b
 \begin{figure}[h]
 \centering
 \includegraphics[width=120mm]{Figures/moduleCompareStaryMap}
-\caption{Module starry map comparison}
+\caption{\textbf{Gene-level starry map comparison of output modules.} }
 \label{fig:starryMap2}
 \end{figure}
 
 \begin{sidewaysfigure}[h]
 \centering
 \includegraphics[width=180mm]{Figures/PopVsSCToCytoscape}
-\caption{Enriched module comparison}
+\caption{\textbf{Enriched module comparison}}
 \label{fig:venn}
 \end{sidewaysfigure}
+
+\section*{Discussion}
 
 \nolinenumbers
 
