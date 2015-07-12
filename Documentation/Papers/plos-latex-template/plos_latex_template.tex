@@ -34,7 +34,7 @@
 %
 % -- FIGURES AND TABLES
 %
-% Please include tables/figure captions directly after the paragraph where they are first cited in the text.
+% Please include tables/figure captions directly after the paragr 
 %
 % DO NOT INCLUDE GRAPHICS IN YOUR MANUSCRIPT
 % - Figures should be uploaded separately from your manuscript file. 
@@ -341,11 +341,7 @@ Module sets derived from both the single-cell network and population tissue samp
 % Results and Discussion can be combined.
 \section*{Results}
 
-Using the parameters described above, our workflow produced 21 modules for the single-cell data and 48 modules for the population data set. 
-
-We compared these output module sets at the module level and the gene level. A breakdown of these modules labeled with their most significant biological process ontology, cellular component ontology, and molecular function ontology is shown for the single-cell data in fig. \ref{fig:57872Clusts} and for the population data in fig. \ref{fig:48865Clusts}.
-
-We then profiled the two lists of output ontology enriched modules to find both consensus and marginal ontologies between the two data sets. Fig. \ref{fig:venn} illustrates this module level comparison. When using exact equality to define the intersection between the two sets of ontologies only find two ontologies were identified by both single-cell and population pipelines. However, many of the output modules share common ancestrial ontologies. To get a better understanding of the similarities of the pipelines' output, we report what we will be calling 'consolidated ontologies' in the intersection. Consolidated ontologies are ancestral ontologies from the Gene Ontology Consortium’s ontology hierarchy database that link at least one ontology reported by the single-cell workflow to at least one ontology reported by the population workflow that is no more than two generations ancestor to the output ontologies from which the consolodated ontology was inferred. If two consolodated ontologies were inferred from the same set of output ontologies, only the most specific consolidated ontology is reported.
+Using the parameters described above, our workflow produced 21 modules for the single-cell data and 48 modules for the population data set. A breakdown of these modules labeled with their most significant biological process ontology, cellular component ontology, and molecular function ontology is shown for the single-cell data in fig. \ref{fig:57872Clusts} and for the population data in fig. \ref{fig:48865Clusts}. 
 
 \begin{figure}[h]
 \includegraphics[width=120mm]{{Figures/toDavidGSE57872_freqNet_03_clusters}}
@@ -353,11 +349,19 @@ We then profiled the two lists of output ontology enriched modules to find both 
 \label{fig:57872Clusts}
 \end{figure}
 
+
+We compared these output module sets at the module-level and the gene-level. At the module-level, we find that the single-celled modules are enriched for translational elongation, and many other expected cell cycle and cellular process ontologies such as nuclear division, glycolysis, oxidative phosphorylation, protien folding, and DNA replication. Likewise, we find expected enriched ontologies reported by the population pipeline--namely: translational elongation, cell cycle, extracellular matrix organization, antigen processing, immune response, RNA splicing, and others. 
+
 \begin{figure}[h]
 \includegraphics[width=120mm]{{Figures/toDavidGSE48865_filt_0002_clusters}}
 \caption{\textbf{Population network module ontology enrichment.}}
 \label{fig:48865Clusts}
 \end{figure}
+
+Make note that one of the most significantly enriched ontolodies reported for the population modules was extracellular matrix organization. Single-cell modules did not enrich for this specific ontology. 
+
+We then profiled the two lists of output ontology enriched modules to find both consensus and marginal ontologies between the two data sets. When using exact equality to define the intersection between the two sets of ontologies, we find that only two ontologies were identified by both single-cell and population pipelines. To get a better understanding of the similarities of the pipelines' output, we report what we will be calling 'contextual ontologies' in the intersection. We aim to summaries ontologies reported by both pipelines by seeking close common ancestors within the GO hierarchical database of ontologies. More concretely, a contextual ontology is the root of the shortest possible subtree with height no greater than 2 that connects at least one ontology that was reported by the single-cell pipeline with at least one ontology that was reported by the population pipeline. These contextual ontologies, along with both the marginal and concensus ontologies are reported in fig. \ref{fig:venn}.
+
 
 \begin{figure}[h]
 \centering

@@ -1,0 +1,15 @@
+{
+    "contents" : "filename=\"Data/coexpressionNetworks/Average_spearman_int.txt\"\ndata <- as.matrix(read.table(file=filename))\nfilename=\"Data//coexpressionNetworks/GSE48865_norm_TPM_spearman_filt_0.041_double.txt\"\ndata <- as.matrix(read.table(file=filename,sep=\",\",header=TRUE))\nname<-basename(path=filename)\nname <- substr(name,start=0,stop=regexpr(\".txt\",text=name)[1]-1);\n\n#list of edges = 6\ndi<-which(data==3)\nedgeID1<-di%/%dim(data)[2]+1-1;\nedgeID2<-di%%dim(data)[2]-1;\n\n#geneMap <- read.table(file=\"Data//coexpressionNetworks//geneOrder.txt\")\n#genes<- geneMap[union(edgeID1,edgeID2)+1,1];\n#constantNet <- matrix(nrow=dim(geneMap)[1],ncol=dim(geneMap)[1]);\n#constantNet[is.na(constantNet)]<-0\n#constantNet[edgeID1+1,edgeID2+1]<-1\n\npng(filename=paste0(\"Figures/\",name,\"_distribution.png\"));\nmembershipCountDistribution <- hist(data[upper.tri(data)],xlab=\"Membership Count\", main=paste0(\"Frequency Net Distribution: \",name),breaks=seq(from=-1,to=1,by=0.01));\ndev.off();\n\nmembershipLogCountDistribution <- hist(x=data[upper.tri(data)],xlab=\"Membership Count\", main=paste0(\"Log Frequency Net Distribution: \",name),breaks=seq(from=-1,to=1,by=0.01));\npng(filename=paste0(\"Figures/\",name,\"_logDistribution.png\"));\nplot(log(membershipLogCountDistribution$counts),x=membershipLogCountDistribution$mids,xlab=\"Membership Count\", ylab=\"Log(frequency)\", type=\"h\",lwd=50, lend=1, main=paste0(\"Log Frequency Net Distribution: \",name))\ndev.off();\n\nnodeDegreeCounts <- apply(X=data,MARGIN=2,FUN=function(x){return(sum(x!=0))})-1;\npng(filename=paste0(\"Figures/\",name,\"_degreeDistribution.png\"));\nnodeDegreeDistribution <- hist(x=nodeDegreeCounts,xlab=\"node degree\",main=paste0(\"Node Degree Distribution: \",name),breaks=seq(from=min(nodeDegreeCounts)-0.5,to=max(nodeDegreeCounts)+0.5,by=1))\ndev.off();\n\n#density\nfor(cutoff in seq(from=0.01, to=0.4, by=0.01))\n{\n  numNodes<-dim(data)[1];\n  numEdges[cutoff]<-sum(data>=0.2) - numNodes;\n  density[cutoff]<-(numEdges)/(numNodes*(numNodes-1));\n  #numEdges<-sum(data[upper.tri(data)]>0);\n  #density<-(numEdges)/(numNodes*(numNodes-1) / 2);\n}\nnumEdges;\ndensity;\n\n#assuming binary matrix input x 0=no edge 1=edge\nplotNodeDegreeHist<-function(x)\n{\n  y<-colSums(x)-1;\n  hist(y[y>0],breaks=100,main=paste0(\"Degree distribution. |NonZero|=\",length(y[y>0])),xlab=\"Node Degree\");\n}\n\nplotNodeDegreeHist(x=((data>=2)+0))\nplotNodeDegreeHist(x=data2>=2)",
+    "created" : 1436190033857.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3188994141",
+    "id" : "DCD08128",
+    "lastKnownWriteTime" : 1436383521,
+    "path" : "C:/Users/Student/My Research/Single Cell RNA Seq/CODENSE/FrequencyNetwork/coexpressionNetworkStats.R",
+    "properties" : {
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}

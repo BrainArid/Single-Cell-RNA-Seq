@@ -282,8 +282,12 @@ for(method in c("spearman"))
   print("Constructing correlation matricies");
   
   density_data <- data.frame();
-  dataSets<-list(Data$MGH26,Data$MGH28,Data$MGH29,Data$MGH30,Data$MGH31, Data$Samples, Data$Population, Data$Average);
-  dataSetNames <- c("MGH26", "MGH28", "MGH29", "MGH30", "MGH31", "Samples", "Population", "Average");
+  dataSets<-list(Data$MGH26,Data$MGH28,Data$MGH29,Data$MGH30,Data$MGH31);#, Data$Samples, Data$Population, Data$Average);
+  dataSetNames <- c("MGH26", "MGH28", "MGH29", "MGH30", "MGH31");#, "Samples", "Population", "Average");
+  runningAvgCorMat <- matrix(0,nrow=dim(Data$MGH26)[1],ncol=dim(Data$MGH26)[1]);
+  rownames(x=runningAvgCorMat)<- rownames(Data$MGH26);
+  colnames(x=runningAvgCorMat)<- rownames(Data$MGH26);
+  
   for(i in 1:length(dataSets))
   {
     dataSet = dataSets[[i]];
@@ -293,7 +297,12 @@ for(method in c("spearman"))
     density_data <- data.frame(cor=c(density_data$cor, profile$hist$mids),
                                density=c(density_data$density, profile$hist$counts/sum(profile$hist$counts)),
                                method=c(density_data$method, rep(x = name, times=length(profile$hist$counts))),stringsAsFactors=FALSE);
+    
+    #update running Average
+    runningAvgCorMat <- runningAvgCorMat * (i-1)/i + profile$corrMat * (1/i);
+    
     profile$corrMat<-NULL;
+    
     print(paste0("\tTotal Hist counts: ", sum(profile$hist$counts)))
     print(paste0("\tNum genes: ", dim(Data[[i]])[1]))
   }
