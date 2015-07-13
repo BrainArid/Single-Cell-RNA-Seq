@@ -321,12 +321,12 @@ Our population-tissue control comes from GEO accession GSE48865. 274 glioma tiss
 Each filtered sample was then aligned to hg19 transcriptome (GRCh37) using bow-tie (version 1.1.1 with default parameters provided by RSEM) and TPM values per gene were estimated using RSEM (version 1.2.3). 73\% of the reads were aligned successfully either uniquely or multi-mapped. 
 TPM values were adjusted again as in equation \ref{equation2}. Genes were then filtered to retain only those that were highly expressed across the 59 samples. The $i^{th}$ gene was filtered out if $y_{i} <= 4.5$. We retained 6,932 genes after filtering, 3,927 of which had also been retained in the analogous steps of the single-cell workflow as illustrated in Fig. \ref{fig:profile}.
 
-\begin{figure}[h]
-\centering
-\includegraphics[width=80mm]{{Figures/GeneMembershipProfile}}
-\caption{\textbf{Sample gene profile.}}
-\label{fig:profile}
-\end{figure}
+%\begin{figure}[h]
+%\centering
+%\includegraphics[width=80mm]{{Figures/GeneMembershipProfile}}
+%\caption{\textbf{Sample gene profile.}}
+%\label{fig:profile}
+%\end{figure}
 
 \subsubsection{Network Construction and Module Detection}
 
@@ -345,16 +345,15 @@ Using the parameters described above, our workflow produced 21 modules for the s
 
 \begin{figure}[h]
 \includegraphics[width=120mm]{{Figures/toDavidGSE57872_freqNet_03_clusters}}
-\caption{\textbf{Single-cell network module ontology enrichment.} A list of the modules output from the CODENSE algorithm ordered by size, each enriched for BP, CC, and MC ontologies. Row color denotes a certain statistical significance as demarcated in the figure legend.}
+\caption{\textbf{Single-cell network module ontology enrichment.} A list of the modules output from the CODENSE algorithm ordered by module size, each enriched for BP, CC, and MC ontologies. Row color denotes a certain statistical significance as demarcated in the figure legend.}%
 \label{fig:57872Clusts}
 \end{figure}
-
 
 We compared these output module sets at the module-level and the gene-level. At the module-level, we find that the single-celled modules are enriched for translational elongation, and many other expected cell cycle and cellular process ontologies such as nuclear division, glycolysis, oxidative phosphorylation, protien folding, and DNA replication. Likewise, we find expected enriched ontologies reported by the population pipeline--namely: translational elongation, cell cycle, extracellular matrix organization, antigen processing, immune response, RNA splicing, and others. 
 
 \begin{figure}[h]
 \includegraphics[width=120mm]{{Figures/toDavidGSE48865_filt_0002_clusters}}
-\caption{\textbf{Population network module ontology enrichment.}}
+\caption{\textbf{Population network module ontology enrichment.}A list of the modules output from the CODENSE algorithm ordered by module size, each enriched for BP, CC, and MC ontologies. Row color denotes a certain statistical significance as demarcated in the figure legend.}%}
 \label{fig:48865Clusts}
 \end{figure}
 
@@ -366,7 +365,7 @@ We then profiled the two lists of output ontology enriched modules to find both 
 \begin{figure}[h]
 \centering
 \includegraphics[width=120mm]{Figures/moduleCompareStaryMap}
-\caption{\textbf{Gene-level starry map comparison of output modules.} }
+\caption{\textbf{Gene-level starry map comparison of output modules.} A small white box is placed in all module by module comparison that achieved a Fisher's exact significance of less than or equal to 0.05.}
 \label{fig:starryMap2}
 \end{figure}
 
@@ -379,10 +378,14 @@ We then profiled the two lists of output ontology enriched modules to find both 
 
 \section*{Discussion}
 
+Our analysis illustrates the potential of single-cell co-expression network module enrichment analysis as a potential tool for biological inquiry. We find that, when taking the contextual approach to comparing the sets of reported ontologies, most of the more significantly enriched ontologies reported by the population data were related to those reported by single-celled data. The single-celled approach to network module ontology enrichment may also prove to filter out biological signals like extracellular matrix and cell adhesion as our results suggest. This may be of particular interest to studies that are specifically interested in intracellular environments rather than entire microenvironments.
+
+Harsh filtering procedures in the single-cell workflow may have removed signals that were reported by the population workflow like cell cycle, RNA splicing.
 \nolinenumbers
 
 %\section*{References}
 % Either type in your references using
+
 % \begin{thebibliography}{}
 % \bibitem{}
 % Text

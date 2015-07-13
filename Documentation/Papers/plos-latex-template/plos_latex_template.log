@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2015.3.30)  12 JUL 2015 17:12
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2015.3.30)  13 JUL 2015 14:59
 entering extended mode
 **plos_latex_template.tex
 
@@ -1305,6 +1305,9 @@ e 297.
 
 [4 <C:/Users/Student/My Research/Single Cell RNA Seq/Single-Cell-RNA-Seq/Docume
 ntation/Papers/plos-latex-template/Figures/moduleStaryNight.pdf>]
+
+LaTeX Warning: Reference `fig:profile' on page 5 undefined on input line 322.
+
 Package epstopdf Info: Source file: <PLOS-submission.eps>
 (epstopdf)                    date: 2015-06-18 16:38:54
 (epstopdf)                    size: 283246 bytes
@@ -1316,27 +1319,63 @@ ed-to.pdf PLOS-submission.eps>
 (epstopdf)             \includegraphics on input line 323.
 Package epstopdf Info: Output file is already uptodate.
 File: PLOS-submission-eps-converted-to.pdf Graphic file (type pdf)
-
 <use PLOS-submission-eps-converted-to.pdf>
 Package pdftex.def Info: PLOS-submission-eps-converted-to.pdf used on input lin
 e 323.
 (pdftex.def)             Requested size: 144.54pt x 23.42201pt.
  [5]
-<Figures/GeneMembershipProfile.pdf, id=292, 242.43945pt x 244.69821pt>
-File: Figures/GeneMembershipProfile.pdf Graphic file (type pdf)
-
-<use Figures/GeneMembershipProfile.pdf>
-Package pdftex.def Info: Figures/GeneMembershipProfile.pdf used on input line 3
-26.
-(pdftex.def)             Requested size: 227.62204pt x 229.74377pt.
-
-<Figures/toDavidGSE57872_freqNet_03_clusters.pdf, id=298, 1199.68195pt x 676.44
+<Figures/toDavidGSE57872_freqNet_03_clusters.pdf, id=296, 1199.68195pt x 676.44
 719pt>
 File: Figures/toDavidGSE57872_freqNet_03_clusters.pdf Graphic file (type pdf)
  <use Figures/toDavidGSE57872_freqNet_03_clusters.pdf>
 Package pdftex.def Info: Figures/toDavidGSE57872_freqNet_03_clusters.pdf used o
 n input line 347.
 (pdftex.def)             Requested size: 341.43306pt x 192.52109pt.
+Package epstopdf Info: Source file: <PLOS-submission.eps>
+(epstopdf)                    date: 2015-06-18 16:38:54
+(epstopdf)                    size: 283246 bytes
+(epstopdf)             Output file: <PLOS-submission-eps-converted-to.pdf>
+(epstopdf)                    date: 2015-06-18 16:38:54
+(epstopdf)                    size: 15292 bytes
+(epstopdf)             Command: <epstopdf --outfile=PLOS-submission-eps-convert
+ed-to.pdf PLOS-submission.eps>
+(epstopdf)             \includegraphics on input line 354.
+Package epstopdf Info: Output file is already uptodate.
+File: PLOS-submission-eps-converted-to.pdf Graphic file (type pdf)
+
+<use PLOS-submission-eps-converted-to.pdf>
+Package pdftex.def Info: PLOS-submission-eps-converted-to.pdf used on input lin
+e 354.
+(pdftex.def)             Requested size: 144.54pt x 23.42201pt.
+ [6 <C:/Users/Student/My Research/Single Cell RNA Seq/Single-Cell-RNA-Seq/Docum
+entation/Papers/plos-latex-template/Figures/toDavidGSE57872_freqNet_03_clusters
+.pdf>]
+<Figures/toDavidGSE48865_filt_0002_clusters.pdf, id=315, 1234.37161pt x 1174.38
+75pt>
+File: Figures/toDavidGSE48865_filt_0002_clusters.pdf Graphic file (type pdf)
+ <use Figures/toDavidGSE48865_filt_0002_clusters.pdf>
+Package pdftex.def Info: Figures/toDavidGSE48865_filt_0002_clusters.pdf used on
+ input line 356.
+(pdftex.def)             Requested size: 341.43306pt x 324.83017pt.
+
+<Figures/moduleCompareStaryMap.pdf, id=317, 865.31453pt x 1048.39886pt>
+File: Figures/moduleCompareStaryMap.pdf Graphic file (type pdf)
+
+<use Figures/moduleCompareStaryMap.pdf>
+Package pdftex.def Info: Figures/moduleCompareStaryMap.pdf used on input line 3
+68.
+(pdftex.def)             Requested size: 341.43306pt x 413.6731pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<Figures/PopVsSCToCytoscape.pdf, id=318, 1707.74008pt x 1104.28563pt>
+File: Figures/PopVsSCToCytoscape.pdf Graphic file (type pdf)
+
+<use Figures/PopVsSCToCytoscape.pdf>
+Package pdftex.def Info: Figures/PopVsSCToCytoscape.pdf used on input line 375.
+
+(pdftex.def)             Requested size: 512.1496pt x 331.17029pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
@@ -1349,49 +1388,16 @@ Package epstopdf Info: Source file: <PLOS-submission.eps>
 (epstopdf)                    size: 15292 bytes
 (epstopdf)             Command: <epstopdf --outfile=PLOS-submission-eps-convert
 ed-to.pdf PLOS-submission.eps>
-(epstopdf)             \includegraphics on input line 354.
+(epstopdf)             \includegraphics on input line 380.
 Package epstopdf Info: Output file is already uptodate.
 File: PLOS-submission-eps-converted-to.pdf Graphic file (type pdf)
 <use PLOS-submission-eps-converted-to.pdf>
 Package pdftex.def Info: PLOS-submission-eps-converted-to.pdf used on input lin
-e 354.
+e 380.
 (pdftex.def)             Requested size: 144.54pt x 23.42201pt.
- [6 <C:/Users/Student/My Research/Single Cell RNA Seq/Single-Cell-RNA-Seq/Docum
-entation/Papers/plos-latex-template/Figures/GeneMembershipProfile.pdf>]
-<Figures/toDavidGSE48865_filt_0002_clusters.pdf, id=316, 1234.37161pt x 1174.38
-75pt>
-File: Figures/toDavidGSE48865_filt_0002_clusters.pdf Graphic file (type pdf)
- <use Figures/toDavidGSE48865_filt_0002_clusters.pdf>
-Package pdftex.def Info: Figures/toDavidGSE48865_filt_0002_clusters.pdf used on
- input line 356.
-(pdftex.def)             Requested size: 341.43306pt x 324.83017pt.
-
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-<Figures/moduleCompareStaryMap.pdf, id=318, 865.31453pt x 1048.39886pt>
-File: Figures/moduleCompareStaryMap.pdf Graphic file (type pdf)
-
-<use Figures/moduleCompareStaryMap.pdf>
-Package pdftex.def Info: Figures/moduleCompareStaryMap.pdf used on input line 3
-68.
-(pdftex.def)             Requested size: 341.43306pt x 413.6731pt.
-
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-<Figures/PopVsSCToCytoscape.pdf, id=319, 1707.74008pt x 1104.28563pt>
-File: Figures/PopVsSCToCytoscape.pdf Graphic file (type pdf)
-
-<use Figures/PopVsSCToCytoscape.pdf>
-Package pdftex.def Info: Figures/PopVsSCToCytoscape.pdf used on input line 375.
-
-(pdftex.def)             Requested size: 512.1496pt x 331.17029pt.
-
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-
+ [7 <C:/Users/Student/My Research/Single Cell RNA Seq/Single-Cell-RNA-Seq/Docum
+entation/Papers/plos-latex-template/Figures/toDavidGSE48865_filt_0002_clusters.
+pdf>]
 ("C:\Users\Student\My Research\Single Cell RNA Seq\Single-Cell-RNA-Seq\Document
 ation\Papers\plos-latex-template\plos_latex_template.bbl"
 Package microtype Info: Loading generic settings for font family
@@ -1406,37 +1412,16 @@ Package epstopdf Info: Source file: <PLOS-submission.eps>
 (epstopdf)                    size: 15292 bytes
 (epstopdf)             Command: <epstopdf --outfile=PLOS-submission-eps-convert
 ed-to.pdf PLOS-submission.eps>
-(epstopdf)             \includegraphics on input line 18.
+(epstopdf)             \includegraphics on input line 10.
 Package epstopdf Info: Output file is already uptodate.
 File: PLOS-submission-eps-converted-to.pdf Graphic file (type pdf)
 
 <use PLOS-submission-eps-converted-to.pdf>
 Package pdftex.def Info: PLOS-submission-eps-converted-to.pdf used on input lin
-e 18.
-(pdftex.def)             Requested size: 144.54pt x 23.42201pt.
- [7 <C:/Users/Student/My Research/Single Cell RNA Seq/Single-Cell-RNA-Seq/Docum
-entation/Papers/plos-latex-template/Figures/toDavidGSE57872_freqNet_03_clusters
-.pdf>]
-Package epstopdf Info: Source file: <PLOS-submission.eps>
-(epstopdf)                    date: 2015-06-18 16:38:54
-(epstopdf)                    size: 283246 bytes
-(epstopdf)             Output file: <PLOS-submission-eps-converted-to.pdf>
-(epstopdf)                    date: 2015-06-18 16:38:54
-(epstopdf)                    size: 15292 bytes
-(epstopdf)             Command: <epstopdf --outfile=PLOS-submission-eps-convert
-ed-to.pdf PLOS-submission.eps>
-(epstopdf)             \includegraphics on input line 55.
-Package epstopdf Info: Output file is already uptodate.
-File: PLOS-submission-eps-converted-to.pdf Graphic file (type pdf)
-
-<use PLOS-submission-eps-converted-to.pdf>
-Package pdftex.def Info: PLOS-submission-eps-converted-to.pdf used on input lin
-e 55.
+e 10.
 (pdftex.def)             Requested size: 144.54pt x 23.42201pt.
  [8 <C:/Users/Student/My Research/Single Cell RNA Seq/Single-Cell-RNA-Seq/Docum
-entation/Papers/plos-latex-template/Figures/toDavidGSE48865_filt_0002_clusters.
-pdf>])
-
+entation/Papers/plos-latex-template/Figures/moduleCompareStaryMap.pdf>]) 
 AED: lastpage setting LastPage
 Package epstopdf Info: Source file: <PLOS-submission.eps>
 (epstopdf)                    date: 2015-06-18 16:38:54
@@ -1446,15 +1431,14 @@ Package epstopdf Info: Source file: <PLOS-submission.eps>
 (epstopdf)                    size: 15292 bytes
 (epstopdf)             Command: <epstopdf --outfile=PLOS-submission-eps-convert
 ed-to.pdf PLOS-submission.eps>
-(epstopdf)             \includegraphics on input line 409.
+(epstopdf)             \includegraphics on input line 411.
 Package epstopdf Info: Output file is already uptodate.
 File: PLOS-submission-eps-converted-to.pdf Graphic file (type pdf)
 <use PLOS-submission-eps-converted-to.pdf>
 Package pdftex.def Info: PLOS-submission-eps-converted-to.pdf used on input lin
-e 409.
+e 411.
 (pdftex.def)             Requested size: 144.54pt x 23.42201pt.
- [9 <C:/Users/Student/My Research/Single Cell RNA Seq/Single-Cell-RNA-Seq/Docum
-entation/Papers/plos-latex-template/Figures/moduleCompareStaryMap.pdf>]
+ [9]
 Package epstopdf Info: Source file: <PLOS-submission.eps>
 (epstopdf)                    date: 2015-06-18 16:38:54
 (epstopdf)                    size: 283246 bytes
@@ -1463,35 +1447,42 @@ Package epstopdf Info: Source file: <PLOS-submission.eps>
 (epstopdf)                    size: 15292 bytes
 (epstopdf)             Command: <epstopdf --outfile=PLOS-submission-eps-convert
 ed-to.pdf PLOS-submission.eps>
-(epstopdf)             \includegraphics on input line 409.
+(epstopdf)             \includegraphics on input line 411.
 Package epstopdf Info: Output file is already uptodate.
 File: PLOS-submission-eps-converted-to.pdf Graphic file (type pdf)
- <use PLOS-submission-eps-converted-to.pdf>
-Package pdftex.def Info: PLOS-submission-eps-converted-to.pdf used on input lin
-e 409.
-(pdftex.def)             Requested size: 144.54pt x 23.42201pt.
 
-[10 <C:/Users/Student/My Research/Single Cell RNA Seq/Single-Cell-RNA-Seq/Docum
-entation/Papers/plos-latex-template/Figures/PopVsSCToCytoscape.pdf>]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 409.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 409.
+<use PLOS-submission-eps-converted-to.pdf>
+Package pdftex.def Info: PLOS-submission-eps-converted-to.pdf used on input lin
+e 411.
+(pdftex.def)             Requested size: 144.54pt x 23.42201pt.
+ [10 <C:/Users/Student/My Research/Single Cell RNA Seq/Single-Cell-RNA-Seq/Docu
+mentation/Papers/plos-latex-template/Figures/PopVsSCToCytoscape.pdf>]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 411.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 411.
 
 ("C:\Users\Student\My Research\Single Cell RNA Seq\Single-Cell-RNA-Seq\Document
 ation\Papers\plos-latex-template\plos_latex_template.aux")
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 409.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 409.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 411.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 411.
 Package rerunfilecheck Info: File `plos_latex_template.out' has not changed.
 (rerunfilecheck)             Checksum: 3A4201895B2E57B46B63546CB8083BB7;346.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 409.
+
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 411.
  ) 
 Here is how much of TeX's memory you used:
- 20300 strings out of 493921
- 369402 string characters out of 3144870
- 465522 words of memory out of 3000000
- 23127 multiletter control sequences out of 15000+200000
+ 20294 strings out of 493921
+ 369209 string characters out of 3144870
+ 465467 words of memory out of 3000000
+ 23123 multiletter control sequences out of 15000+200000
  8674 words of font info for 50 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 55i,15n,54p,1325b,461s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 55i,15n,54p,1325b,463s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb>
 <C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C
 :/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/
@@ -1505,9 +1496,9 @@ x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmss10.pfb><C:/Program Files (x8
 MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files (x86)/Mi
 KTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt10.pfb><C:/Program Files (x86)/MiKT
 eX 2.9/fonts/type1/public/amsfonts/symbols/msam10.pfb>
-Output written on plos_latex_template.pdf (10 pages, 2815763 bytes).
+Output written on plos_latex_template.pdf (10 pages, 2800674 bytes).
 PDF statistics:
- 491 PDF objects out of 1000 (max. 8388607)
- 46 named destinations out of 1000 (max. 500000)
- 10338 words of extra memory for PDF output out of 12000 (max. 10000000)
+ 481 PDF objects out of 1000 (max. 8388607)
+ 45 named destinations out of 1000 (max. 500000)
+ 10333 words of extra memory for PDF output out of 12000 (max. 10000000)
 
