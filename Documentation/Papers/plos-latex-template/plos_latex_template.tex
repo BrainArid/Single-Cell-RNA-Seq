@@ -210,8 +210,7 @@ Kun Huang\textsuperscript{1, 2}
 \end{flushleft}
 % Please keep the abstract below 300 words
 \section*{Abstract}
-We compare our resulting networks both at the ontology enriched module level and at the gene level...
-
+This work offers an initial glimpse at the potential of single-cell co-expression network module enrichment analysis. We run two primary glioblastoma transcriptome datasets, one single-celled and one bulk tissue sample, through analogous co-expression module analysis pipelines. We find that stringent filtering at multiple stages of the single-celled pipleine is vital to control for the noisy nature of single-celled data. We compare our resulting networks both at the ontology enriched module level and at the gene-level and find that the two pipelines produce comparable results for many expected modules. More interestingly, we find that single-celled lack modules with a strong signal for extracellular biological process ontologies like extracelluar matrix organization and cellular adhesion. 
 
 % Please keep the Author Summary between 150 and 200 words
 % Use first person. PLOS ONE authors please skip this step. 
@@ -222,26 +221,24 @@ We compare our resulting networks both at the ontology enriched module level and
 \linenumbers
 
 \section*{Introduction}
-The isolation of individual cells’ transcriptome profiles has been largely a theoretical concept to bioinformaticians. And accordingly, transcriptomic inquiry has been limited to those questions regarding tissues— potentially composed of a heterogeneous hodgepodge of cellular types, subtypes, and states. But with the advent of Single-Cell RNA sequencing (RNASeq) technology, comes the potential for refined resolution in transcriptomic datasets. And expectedly, recent publications suggest a peaking interest in this new landscape of informatics. It has been shown that many bioinformatics techniques that were developed for population-cell tissue samples can be effectively applied to single-cellular datasets. %REFERENCES HERE!!!!
-However, co-expression network analysis has largely been an unexplored area of analysis in regards to single-cell RNASeq data. To fill this gap, we leverage this new technology to construct and analyze gene co-expression networks for primary glioblastoma single-cell samples. Glioblastoma is widely known to be a heterogeneous cancer, making it a prime candidate for single-cellular inquiries. For instance, we hypothesized that the averaging of single-cells’ profiles within a tissue sample may mask or otherwise confound downstream gene correlations based analysis. Correlation between two genes may exist across tissue samples purely due to changing proportion of cellular subtypes within those samples. However, a single-cellular perspective, of the same tumors may theoretically filter out those artificial tissue-level correlations. And so correlation based analyses, like co-expression network analysis, require study. In our work, we begin this journey by looking at network mining, module detection, and gene enrichment analysis at both the single-cell and population of cell (tissue sample) levels. The final goal of this work is to shed light on the convoluted intricacies of inter-cellular genomic landscape of glioblastoma tissue from a single-cellular perspective.
+The isolation of individual cells’ transcriptome profiles has been largely a theoretical concept to bioinformaticians. And accordingly, transcriptomic inquiry has been limited to those questions regarding tissues, potentially composed of a heterogeneous hodgepodge of cellular types, subtypes, and states. But with the advent of Single-Cell RNA sequencing (RNASeq) technology, comes the potential for refined resolution in transcriptomic datasets. And expectedly, recent publications suggest a peaking interest in this new landscape of informatics. It has been shown that many bioinformatics techniques that were developed for bulk-cell tissue samples can be effectively applied to single-cellular datasets. %REFERENCES HERE!!!!
+However, co-expression network analysis has largely been an unexplored area of analysis in regards to single-cell RNASeq data. To fill this gap, we leverage this new technology to construct and analyze gene co-expression networks for primary glioblastoma single-cell samples. Glioblastoma is widely known to be a heterogeneous cancer, making it a prime candidate for single-cellular inquiries. For instance, we hypothesized that the averaging of single-cells’ profiles within a tissue sample may mask or otherwise confound downstream gene correlations based analysis. Correlation between two genes may exist across tissue samples purely due to changing proportion of cellular subtypes within those samples. However, a single-cellular perspective, of the same tumors may theoretically filter out those artificial tissue-level correlations. And so correlation based analyses, like co-expression network analysis, require study. In our work, we begin this journey by looking at network mining, module detection, and gene enrichment analysis at both the single-cell and bulk cell (tissue sample) levels. The final goal of this work is to shed light on the convoluted intricacies of inter-cellular genomic landscape of glioblastoma tissue from a single-cellular perspective.
 
 % You may title this section "Methods" or "Models". 
 % "Models" is not a valid title for PLoS ONE authors. However, PLoS ONE
 % authors may use "Analysis" 
 \section*{Materials and Methods}
-
-We analyzed two glioma datasets: GSE57872, the data presented in Single-cell RNA-seq highlights intratumoral heterogeneity in primary glioblastoma \cite{Patel20062014}, and GSE48865, the data presented in RNA-seq of 272 gliomas revealed a novel, recurrent PTPRZ1-MET fusion transcript in secondary glioblastomas \cite{Bao2014}. GSE57872 consists of single-cell samples whereas GSE48865 consists of more-traditional, population-of-cell (or tissue) samples. From here on, GSE57872 and GSE48865 samples will be referred to as 'single-cell' and 'population' samples respectively. After preprocessing each dataset independently (details explained in following sections), we step each dataset through a coexpression-network analysis workflow. An overview of this workflow is shown in Fig.~\ref{fig:workflow}. Details of and rational for data set dependent variations of this workflow are explained in the sections to follow.
+We analyzed two glioma datasets: GSE57872, the data presented in Single-cell RNA-seq highlights intratumoral heterogeneity in primary glioblastoma \cite{Patel20062014}, and GSE48865, the data presented in RNA-seq of 272 gliomas revealed a novel, recurrent PTPRZ1-MET fusion transcript in secondary glioblastomas \cite{Bao2014}. GSE57872 consists of single-cell samples whereas GSE48865 consists of more-traditional, bulk samples. From here on, GSE57872 and GSE48865 samples will be referred to as 'single-cell' and 'bulk' samples respectively. After preprocessing each dataset independently (details explained in following sections), we step each dataset through a coexpression-network analysis workflow. An overview of this workflow is shown in Fig.~\ref{fig:workflow}. Details of and rational for data set dependent variations of this workflow are explained in the sections to follow.
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=80mm]{Figures/Workflow}
-\caption{{\bf Network comparison workflow.} Note that there is no  partition nor aggregation step in the population RNASeq pipeline. Moreover, note that edges of the constructed population co-expression network are filtered to achieve the closest network density possible to that realized in the Single-Cell pipeline. }
+\caption{{\bf Network comparison workflow.} Note that there is no  partition nor aggregation step in the bulk RNASeq pipeline. Moreover, note that edges of the constructed bulk co-expression network are filtered to achieve the closest network density possible to that realized in the Single-Cell pipeline. }
 \label{fig:workflow}
 \end{figure}
 
 \subsection*{Single-Cell Data}
 \subsection*{Single-Cell RNASeq Samples }
-
 In this section, we discuss the handling of the GSE57872, single-cell data. This data set is comprised of normalized gene expression values for 5,948 genes for 430 single-cell samples selected by flow cytometry cell sorting and micromanipulation from 5 different primary glioblastomas labeled: MGH26, MGH28, MGH29, MGH30, and MGH31. Patel et al sequenced the cells using SMARTseq protocol \cite{Ramskold2012}. Alignment to hg19 was performed with Bowtie (version 1.1.1) \cite{Langmead2009} and the authors calculated TPM (transcripts per million) values using RSEM (version 1.2.3) \cite{Li2011}.The final reported values were log-transformed and mean-shifted per gene. More formally, let $x_{si}$ be the TPM enrichment value for the $i^{th}$ gene of sample $s$. And let $N_{t}$ be the sample size of tumor $t$, then the analogous, final reported value, $y_{si}$, would be: %
 
 \begin{figure}[h]
@@ -315,8 +312,8 @@ CODENSE then reported the modules that meet some minimum density threshold, $d$.
 \subsubsection*{CODENSE Parameterization Validation}
 We make a considerable effort to ensure that the resulting modules output by CODENCE at the selected parameterization are robust to change withing the algorithm's parameterization space. Fig. \ref{Parameter Space Figure} shows that the size and number of output modules are relatively stable at the selected values for $e$, $c$, and $d$ (highlighted in yellow). Furthermore, \ref{fig:starryNight1} is a custom visualization we developed to compare set-by-set co-enrichment. The central diagonal is visualized all in white, indicating that the sets compared with themselves ais all did not change the gene membership of the sets much. 
 
-\subsection{Population Tissue Samples}
-Our population-tissue control comes from GEO accession GSE48865. 274 glioma tissue samples make up this dataset, of which, 59 were identified as primary, stage-4 glioblastoma tissue samples. We filtered out any reads from the 59 samples with more than 10\% of its nucleotides designated as unknown bases, and any read with more than 50\% of its bases having Sanger phred+33 quality scores less than 5. After filtering, we retained 1,388,064,773 reads in total. 
+\subsection{Bulk Cell Samples}
+Our bulk cell sample control comes from GEO accession GSE48865. 274 glioma tissue samples make up this dataset, of which, 59 were identified as primary, stage-4 glioblastoma tissue samples. We filtered out any reads from the 59 samples with more than 10\% of its nucleotides designated as unknown bases, and any read with more than 50\% of its bases having Sanger phred+33 quality scores less than 5. After filtering, we retained 1,388,064,773 reads in total. 
 
 Each filtered sample was then aligned to hg19 transcriptome (GRCh37) using bow-tie (version 1.1.1 with default parameters provided by RSEM) and TPM values per gene were estimated using RSEM (version 1.2.3). 73\% of the reads were aligned successfully either uniquely or multi-mapped. 
 TPM values were adjusted again as in equation \ref{equation2}. Genes were then filtered to retain only those that were highly expressed across the 59 samples. The $i^{th}$ gene was filtered out if $y_{i} <= 4.5$. We retained 6,932 genes after filtering, 3,927 of which had also been retained in the analogous steps of the single-cell workflow as illustrated in Fig. \ref{fig:profile}.
@@ -336,12 +333,12 @@ Modules were also found using the CODENSE algorithm using the same parameterizat
 
 \subsection{Enrichment}
 
-Module sets derived from both the single-cell network and population tissue sample network were then ontology enriched. Modules were enriched for all terms in Gene Ontology Consortium’s biological process (BP), cellular component (CC), and molecular function (MF) human ontologies using the David Bioinformatics Resources (version 6.7) Functional Annotation Tool \cite{Huang2008}. The most  significant (in terms of bonferroni adjusted p-value) ontology per category was reported for each module.
+Module sets derived from both the single-cell network and bulk tissue sample network were then ontology enriched. Modules were enriched for all terms in Gene Ontology Consortium’s biological process (BP), cellular component (CC), and molecular function (MF) human ontologies using the David Bioinformatics Resources (version 6.7) Functional Annotation Tool \cite{Huang2008}. The most  significant (in terms of bonferroni adjusted p-value) ontology per category was reported for each module.
 
 % Results and Discussion can be combined.
 \section*{Results}
 
-Using the parameters described above, our workflow produced 21 modules for the single-cell data and 48 modules for the population data set. A breakdown of these modules labeled with their most significant biological process ontology, cellular component ontology, and molecular function ontology is shown for the single-cell data in fig. \ref{fig:57872Clusts} and for the population data in fig. \ref{fig:48865Clusts}. 
+Using the parameters described above, our workflow produced 21 modules for the single-cell data and 48 modules for the bulk data set. A breakdown of these modules labeled with their most significant biological process ontology, cellular component ontology, and molecular function ontology is shown for the single-cell data in fig. \ref{fig:57872Clusts} and for the bulk data in fig. \ref{fig:48865Clusts}. 
 
 \begin{figure}[h]
 \includegraphics[width=120mm]{{Figures/toDavidGSE57872_freqNet_03_clusters}}
@@ -349,18 +346,28 @@ Using the parameters described above, our workflow produced 21 modules for the s
 \label{fig:57872Clusts}
 \end{figure}
 
-We compared these output module sets at the module-level and the gene-level. At the module-level, we find that the single-celled modules are enriched for translational elongation, and many other expected cell cycle and cellular process ontologies such as nuclear division, glycolysis, oxidative phosphorylation, protien folding, and DNA replication. Likewise, we find expected enriched ontologies reported by the population pipeline--namely: translational elongation, cell cycle, extracellular matrix organization, antigen processing, immune response, RNA splicing, and others. 
-
 \begin{figure}[h]
 \includegraphics[width=120mm]{{Figures/toDavidGSE48865_filt_0002_clusters}}
-\caption{\textbf{Population network module ontology enrichment.}A list of the modules output from the CODENSE algorithm ordered by module size, each enriched for BP, CC, and MC ontologies. Row color denotes a certain statistical significance as demarcated in the figure legend.}%}
+\caption{\textbf{Bulk network module ontology enrichment.}A list of the modules output from the CODENSE algorithm ordered by module size, each enriched for BP, CC, and MC ontologies. Row color denotes a certain statistical significance as demarcated in the figure legend.}%}
 \label{fig:48865Clusts}
 \end{figure}
 
-Make note that one of the most significantly enriched ontolodies reported for the population modules was extracellular matrix organization. Single-cell modules did not enrich for this specific ontology. 
+We compared these output module sets at the module-level and the gene-level. At the module-level, we find that the single-celled modules are enriched for translational elongation, and many other expected cell cycle and cellular process ontologies such as nuclear division, glycolysis, oxidative phosphorylation, protien folding, and DNA replication. Likewise, we find expected enriched ontologies reported by the bulk pipeline--namely: translational elongation, cell cycle, extracellular matrix organization, antigen processing, immune response, RNA splicing, and others. 
 
-We then profiled the two lists of output ontology enriched modules to find both consensus and marginal ontologies between the two data sets. When using exact equality to define the intersection between the two sets of ontologies, we find that only two ontologies were identified by both single-cell and population pipelines. To get a better understanding of the similarities of the pipelines' output, we report what we will be calling 'contextual ontologies' in the intersection. We aim to summaries ontologies reported by both pipelines by seeking close common ancestors within the GO hierarchical database of ontologies. More concretely, a contextual ontology is the root of the shortest possible subtree with height no greater than 2 that connects at least one ontology that was reported by the single-cell pipeline with at least one ontology that was reported by the population pipeline. These contextual ontologies, along with both the marginal and concensus ontologies are reported in fig. \ref{fig:venn}.
+Make note that one of the most significantly enriched ontolodies reported for the bulk modules was extracellular matrix organization. Single-cell modules did not enrich for this specific ontology. 
 
+We then profiled the two lists of output ontology enriched modules to find both consensus and differing ontologies between the two data sets. When using exact equality to define the intersection between the two sets of ontologies, we find that only two ontologies were identified by both single-cell and bulk pipelines. To get a better understanding of the similarities of the pipelines' output, we report what we will be calling 'contextual ontologies' in the intersection. We aim to summaries ontologies reported by both pipelines by seeking close common ancestors within the GO hierarchical database of ontologies. More concretely, a contextual ontology is the root of the shortest possible subtree with height no greater than 2 that connects at least one ontology that was reported by the single-cell pipeline with at least one ontology that was reported by the bulk pipeline. These contextual ontologies, along with both the differing and consensus ontologies are reported in fig. \ref{fig:venn}.
+
+\begin{sidewaysfigure}[h]
+\centering
+\includegraphics[width=180mm]{Figures/PopVsSCToCytoscape}
+\caption{\textbf{Enriched module comparison}}
+\label{fig:venn}
+\end{sidewaysfigure}
+
+A gene-level comparison of the resulting modules of the two data sets is also provided in fig. \ref{fig:starryMap2}. We find 3 or 4 groups of modules within the bulk output that are co-enriched for each other. Meaning that a given subgroup of modules share a significant number of genes with each other. We hypothesis that this co-enrichment occurred as a result of the specific parameterization used to construct and mine the network for modules. By either raising the correlation threshold, $c$, or raising the minimum module density threshold, $d$, these co-enriched modules may fuse into a larger module. We further hypothesis, by taking cues from the ontology enrichment of the co-enriched modules, that the resulting larger modules would likely enrich for immune response, metabolic processes, and extracellular matrix ontologies. 
+
+At the gene level, we find significant co-enrichment between the module outputs of the two pipelines; 5 pairs of which are of interest. The breakdown of these 5 co-enrichments can be found in fig. \ref{fig:geneLevelChart}.
 
 \begin{figure}[h]
 \centering
@@ -371,16 +378,19 @@ We then profiled the two lists of output ontology enriched modules to find both 
 
 \begin{sidewaysfigure}[h]
 \centering
-\includegraphics[width=180mm]{Figures/PopVsSCToCytoscape}
-\caption{\textbf{Enriched module comparison}}
-\label{fig:venn}
+\includegraphics[width=180mm]{Figures/PopVsSCGeneLevel}
+\caption{\textbf{Interesting significant Gene-Level module comparisons.} This is a detailed look at 5 significant module co-enrichments between the bulk and single-cell output.}
+\label{fig:geneLevelChart}
 \end{sidewaysfigure}
 
 \section*{Discussion}
 
-Our analysis illustrates the potential of single-cell co-expression network module enrichment analysis as a potential tool for biological inquiry. We find that, when taking the contextual approach to comparing the sets of reported ontologies, most of the more significantly enriched ontologies reported by the population data were related to those reported by single-celled data. The single-celled approach to network module ontology enrichment may also prove to filter out biological signals like extracellular matrix and cell adhesion as our results suggest. This may be of particular interest to studies that are specifically interested in intracellular environments rather than entire microenvironments.
+Our analysis illustrates the potential of single-cell co-expression network module enrichment analysis as a potential tool for biological inquiry. We find that, when taking the contextual approach to comparing the sets of reported ontologies, most of the more significantly enriched ontologies reported by the bulk data were related to those reported by single-celled data. Furthermore, when taking a more refined, gene-level approach to this comparison a handful of modules are still in agreement.
 
-Harsh filtering procedures in the single-cell workflow may have removed signals that were reported by the population workflow like cell cycle, RNA splicing.
+Between the module and gene-level comparisons of the two workflows' outputs, we are confident that the single-cell data is picking up on the same biological signals as the traditional bulk cell pipeline. But, there were also noticable differences. Single-celled data innately lacks extracellular signals and this is evident in our analysis by the absence of extracellular matrix organization and cellular adhesion ontologies and genes from the single-celled output. This may be of particular interest to studies that are specifically interested in intracellular environments rather than entire microenvironments.
+
+Further comparisons and contrast may indeed be possible. Conservative filtering in the single-celled pipline may be limiting the results in this work. Accounting for noise in single-celled data could strengthen the claims possible in co-expression module enrichment comparisons in the future. 
+
 \nolinenumbers
 
 %\section*{References}

@@ -2,7 +2,7 @@ This is BibTeX, Version 0.99d (TeX Live 2014)
 Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: plos_latex_template.aux
 The style file: plos2015.bst
-Illegal, another \bibstyle command---line 49 of file plos_latex_template.aux
+Illegal, another \bibstyle command---line 47 of file plos_latex_template.aux
  : \bibstyle
  :          {plainnat}
 I'm skipping whatever remains of this command
