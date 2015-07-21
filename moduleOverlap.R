@@ -3,7 +3,7 @@
 moduleOverlap <- function(clustsFile1, clusts1Columned=FALSE, clusts1Names=FALSE, 
                           clustsFile2, clusts2Columned=FALSE, clusts2Names=FALSE, 
                           outDir, threshold, clustHeatMap=FALSE, fisherExact=FALSE, 
-                          histogram=FALSE, enrich=FALSE, totalGenes=22143)
+                          histogram=FALSE, enrich=FALSE, geneUniverse1, geneUniverse2)
 {
   #setwd(dir);#setwd("/Users/Brian/Documents/Research/microArray v RNA Seq/BRCA/")
   print("opening files");
@@ -41,17 +41,32 @@ moduleOverlap <- function(clustsFile1, clusts1Columned=FALSE, clusts1Names=FALSE
   clusts1 <- clusts1[,colSums(is.na(clusts1))==0]
   clusts2 <- clusts2[,colSums(is.na(clusts2))==0]
   
+  #get intersection of universes
+  geneUniverseIntersect<-intersect(x=geneUniverse1,y=geneUniverse2);
+  totalGenes<-length(geneUniverseIntersect);
+  
+  #intersect each clust with universe Intersection
+  
   lengths1<-vector(length = dim(clusts1)[1])
   for(i in 1:dim(clusts1)[1])
   {
-    lengths1[i]<-length(clusts1[i,][clusts1[i,]!=""])
+    temp <- intersect(x=clusts1[i,][clusts1[i,]!=""],
+                             y=geneUniverseIntersect);
+    clusts1[i,]<-"";
+    clusts1[i,1:length(temp)]<-temp;
+    lengths1[i]<-length(clusts1[i,][clusts1[i,]!=""]);
   }
   
   lengths2<-vector(length = dim(clusts2)[1])
   for(i in 1:dim(clusts2)[1])
   {
-    lengths2[i]<-length(clusts2[i,][clusts2[i,]!=""])
+    temp <- intersect(x=clusts2[i,][clusts2[i,]!=""],
+                      y=geneUniverseIntersect);
+    clusts2[i,]<-"";
+    clusts2[i,1:length(temp)]<-temp;
+    lengths2[i]<-length(clusts2[i,][clusts2[i,]!=""]);
   }
+  remove(temp);
   
   #sort clusters' modules by module length
   order1<- order(lengths1,decreasing=TRUE)
@@ -85,7 +100,7 @@ moduleOverlap <- function(clustsFile1, clusts1Columned=FALSE, clusts1Names=FALSE
     feMat[,]<-0;
   }
   
-  print("Processing Overlabs...")
+  print("Processing Overlaps...")
   for(i in 1:dim(clusts1)[1])
   {
     for(j in 1:dim(clusts2)[1])
@@ -395,6 +410,8 @@ args$clustHeatMap <- initializeBooleanArg(arg=args$clustHeatMap, default=TRUE);
 args$fisherExact <- initializeBooleanArg(arg=args$enrich, default=TRUE);
 args$histogram <- initializeBooleanArg(arg=args$histogram, default=TRUE);
 args$enrich <- initializeBooleanArg(arg=args$enrich, default=FALSE);
+args$geneUniverseFile1 <- initializeStringArg(arg=args$geneUniverseFile1, default="../../Data/coexpressionNetworks/geneOrder.txt");
+args$geneUniverseFile2 <- initializeStringArg(arg=args$geneUniverseFile2, default="../../Data/coexpressionNetworks/GSE48865_geneOrder.txt");
 
 if(DEBUG)
 {
@@ -414,6 +431,9 @@ if(DEBUG)
   enrich<-args$enrich
 }
 
+geneUniverse1 <- as.character(read.table(file=args$geneUniverseFile1,skip=1,header=FALSE)[,2]);
+geneUniverse2 <- as.character(read.table(file=args$geneUniverseFile2,skip=1,header=FALSE)[,2]);
+
 moduleFiles1 <- list.files(pattern="G=5_E=3_D=0\\.[6]_Q=0\\.4_B=0\\.4_S=80_C=0\\.6\\.modulesFO\\.hgnc\\.david\\.module$",path=args$dir1)
 moduleFiles2 <- list.files(pattern="G=5_E=1_D=0\\.[4-8]_Q=0\\.4_B=0\\.4_S=80_C=0\\.6\\.modulesFO\\.hgnc\\.david\\.module$",path=args$dir2)
 moduleFile1<-"../../Data/codensedModules/frequencyNetwork_0.3/G=5_E=3_D=0.6_Q=0.4_B=0.4_S=80_C=0.6.modulesFO.hgnc.david.module"
@@ -423,7 +443,7 @@ for(moduleFile1 in moduleFiles1)
 {
   for(moduleFile2 in moduleFiles2)
   {
-    commonModules <-moduleOverlap(paste0(args$dir1, moduleFile1), args$clusts1Columned, args$clusts1Names, paste0(args$dir2, moduleFile2), args$clusts2Columned, args$clusts2Names, args$outDir, args$threshold, args$clustHeatMap, args$histogram, args$enrich);
+    commonModules <-moduleOverlap(paste0(args$dir1, moduleFile1), args$clusts1Columned, args$clusts1Names, paste0(args$dir2, moduleFile2), args$clusts2Columned, args$clusts2Names, args$outDir, args$threshold, args$clustHeatMap, args$histogram, args$enrich, geneUniverse1, geneUniverse2);
   }
 }
 
