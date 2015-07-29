@@ -1,9 +1,11 @@
+source("SampleStarryStat.R");
+
 #input is expected to be module per row otherwise specify clusts#Columned=TRUE
 #totalGenes=22143 comes from GRCh37/hg19 annotation
 moduleOverlap <- function(clustsFile1, clusts1Columned=FALSE, clusts1Names=FALSE, 
                           clustsFile2, clusts2Columned=FALSE, clusts2Names=FALSE, 
                           outDir, threshold, clustHeatMap=FALSE, fisherExact=FALSE, 
-                          histogram=FALSE, enrich=FALSE, geneUniverse1, geneUniverse2)
+                          histogram=FALSE, geneUniverse1, geneUniverse2)
 {
   #setwd(dir);#setwd("/Users/Brian/Documents/Research/microArray v RNA Seq/BRCA/")
   print("opening files");
@@ -190,74 +192,14 @@ moduleOverlap <- function(clustsFile1, clusts1Columned=FALSE, clusts1Names=FALSE
 #     
 #   }
   
-#   if(enrich){
-#     topGo_get_geneID2GO <- function()
-#     {
-#       #source("http://bioconductor.org/biocLite.R")
-#       #biocLite("topGO")
-#       library("topGO")
-#       
-#       #read geneOntologyAnnotation
-#       # currently this list contains doubled-up genes like: UNQ5830/PRO19650/PRO19816 and MNB/DYRK
-#       # if you don't have this file get it here: http://geneontology.org/page/download-annotations
-#       print(getwd());
-#       temp <- read.table(file = "Data//Gene_GO_Annotation//gene_association.goa_human",blank.lines.skip = TRUE, comment.char = "!",header = FALSE,sep="\t",fill=TRUE)
-#       temp <- data.frame(Gene=temp[,3],GOTerm=temp[,5])
-#       allGenes <- unique(temp[,1])
-#       geneID2GO <- list()
-#       for(i in 1:length(allGenes))
-#         geneID2GO[[i]]<- as.character(temp[temp$Gene==allGenes[i],2]);
-#       names(geneID2GO)<-allGenes;
-#       rm(temp);
-#       rm(allGenes)
-#       return(geneID2GO);
-#     }
-#     
-#     topGOEnrich <- function(genesOfInterest, geneID2GO)
-#     { 
-#       #construct geneList contains 0 and 1 for not-interesting genes and interesting genes
-#       geneNames<-names(geneID2GO)
-#       geneList <- factor(as.integer(geneNames %in% genesOfInterest))
-#       names(geneList) <- geneNames
-#       str(geneList)
-#       rm(geneNames)
-#       
-#       #construct three part enrichment objects
-#       GO_BP <- new("topGOdata", description="Biological Process enrichment", 
-#                    ontology = "BP", allGenes = geneList,
-#                    annot = annFUN.gene2GO, gene2GO = geneID2GO)
-#       
-#       GO_MF <- new("topGOdata", description="Molecular Function enrichment", 
-#                    ontology = "MF", allGenes = geneList,
-#                    annot = annFUN.gene2GO, gene2GO = geneID2GO)
-#       
-#       GO_CC <- new("topGOdata", description="Cell Cycle enrichment", 
-#                    ontology = "CC", allGenes = geneList,
-#                    annot = annFUN.gene2GO, gene2GO = geneID2GO)
-#       
-#       GO_BP.results.cf <- runTest(GO_BP,algorithm="classic",statistic = "fisher");
-#       GO_MF.results.cf <- runTest(GO_MF,algorithm="classic",statistic = "fisher");
-#       GO_CC.results.cf <- runTest(GO_CC,algorithm="classic",statistic = "fisher");
-#       GO_BP.results.ct <- runTest(GO_BP,algorithm="classic",statistic = "t");
-#       GO_MF.results.ct <- runTest(GO_MF,algorithm="classic",statistic = "t");
-#       GO_CC.results.ct <- runTest(GO_CC,algorithm="classic",statistic = "t");
-#       GO_BP.results.w1f <- runTest(GO_BP,algorithm="weight01",statistic = "fisher");
-#       GO_MF.results.w1f <- runTest(GO_MF,algorithm="weight01",statistic = "fisher");
-#       GO_CC.results.w1f <- runTest(GO_CC,algorithm="weight01",statistic = "fisher");
-#       
-#       topGOsCount<-15;
-#       GO_BP.allRes <- GenTable(GO_BP, classicFisher=GO_BP.results.cf, classicT=GO_BP.results.ct, weight01Fisher=GO_BP.results.w1f, orderBy="weight01Fisher",topNodes=topGOsCount);
-#       GO_MF.allRes <- GenTable(GO_MF, classicFisher=GO_MF.results.cf, classicT=GO_MF.results.ct, weight01Fisher=GO_MF.results.w1f, orderBy="weight01Fisher",topNodes=topGOsCount);
-#       GO_CC.allRes <- GenTable(GO_CC, classicFisher=GO_CC.results.cf, classicT=GO_CC.results.ct, weight01Fisher=GO_CC.results.w1f, orderBy="weight01Fisher",topNodes=topGOsCount);
-#       
-#       return(list(BP=GO_BP.allRes,MF=GO_MF.allRes,CC=GO_CC.allRes));
-#     }
-#     print("Reading Ontology...")
-#     geneID2GO <- topGo_get_geneID2GO();
-#     print("...done.")
-#   }
-#   
-#   #list white tiles:
+
+  #permutation test for p-value
+  print("Permutation testing to estimate p-value...")
+  s<-sum(gMat)/length(lengths1)/length(lengths2);
+  permResults<-permutationTest(s,totalGenes,lengths1,lengths2,iterations=10000, drawHistogram = FALSE);
+  print("...done.");
+
+  #list white tiles:
   if(dim(colMat.m[colMat.m$fe<threshold,])[1]>0)
   {
     print(colMat.m[colMat.m$fe<threshold,]);
@@ -269,10 +211,6 @@ moduleOverlap <- function(clustsFile1, clusts1Columned=FALSE, clusts1Names=FALSE
     commonModules$profiles <- list();
     commonModules$clusts1 <- list();
     commonModules$clusts2 <- list();
-    if(enrich){
-      commonModules$clusts1GO <- list();
-      commonModules$clusts2GO <- list();
-    }
     
     relativeRank <- function(L1, L2)
     {      
@@ -317,12 +255,9 @@ moduleOverlap <- function(clustsFile1, clusts1Columned=FALSE, clusts1Names=FALSE
     gSortedOrder <- order(matrix(data=unlist(commonModules$profiles),nrow=length(commonModules$profiles),ncol=6,byrow=TRUE)[,6],decreasing=TRUE)
     commonModules <- list(profiles=commonModules$profiles[gSortedOrder],
                           clusts1=commonModules$clusts1[gSortedOrder],
-                          clusts2=commonModules$clusts2[gSortedOrder])
-    if(enrich){
-      commonModules <- c(commonModules,
-                         clusts1GO=commonModules$clusts1GO[gSortedOrder],
-                         clusts2GO=commonModules$clusts2GO[gSortedOrder]);
-    }
+                          clusts2=commonModules$clusts2[gSortedOrder],
+                          stat=s,
+                          pval=permResults$pval);
     return(commonModules);
   }
   return(NULL);
@@ -396,8 +331,8 @@ initializeIntArg <- function(arg, default){
   return(arg);
 }
 
-args$dir1 <- initializeStringArg(arg=args$dir1, default="../../Data/codensedModules/frequencyNetwork_0.3/");
-args$dir2 <- initializeStringArg(arg=args$dir2, default="../../Data/codensedModules/GSE48865_norm_TPM_spearman_filt_0.0002/");
+args$dir1 <- initializeStringArg(arg=args$dir1, default="../Data/codensedModules/frequencyNetwork_0.3/");
+args$dir2 <- initializeStringArg(arg=args$dir2, default="../Data/codensedModules/GSE48865_norm_TPM_spearman_filt_0.0002/");
 args$clustsFile1 <- initializeStringArg(arg=args$clustsFile1, default="GSE57872StarryMap.txt");
 args$clusts1Columned <- initializeBooleanArg(arg=args$clusts1Columned, default=TRUE);
 args$clusts1Names <- initializeBooleanArg(arg=args$clusts1Names, default=TRUE);
@@ -409,9 +344,8 @@ args$threshold <- initializeFloatArg(arg=args$threshold, default=0.001);
 args$clustHeatMap <- initializeBooleanArg(arg=args$clustHeatMap, default=TRUE);
 args$fisherExact <- initializeBooleanArg(arg=args$enrich, default=TRUE);
 args$histogram <- initializeBooleanArg(arg=args$histogram, default=TRUE);
-args$enrich <- initializeBooleanArg(arg=args$enrich, default=FALSE);
-args$geneUniverseFile1 <- initializeStringArg(arg=args$geneUniverseFile1, default="../../Data/coexpressionNetworks/geneOrder.txt");
-args$geneUniverseFile2 <- initializeStringArg(arg=args$geneUniverseFile2, default="../../Data/coexpressionNetworks/GSE48865_geneOrder.txt");
+args$geneUniverseFile1 <- initializeStringArg(arg=args$geneUniverseFile1, default="../Data/coexpressionNetworks/geneOrder.txt");
+args$geneUniverseFile2 <- initializeStringArg(arg=args$geneUniverseFile2, default="../Data/coexpressionNetworks/GSE48865_geneOrder.txt");
 
 if(DEBUG)
 {
@@ -428,7 +362,6 @@ if(DEBUG)
   clustHeatMap<-args$clustHeatMap
   fisherExact<-args$fisherExact
   histogram<-args$histogram
-  enrich<-args$enrich
 }
 
 geneUniverse1 <- as.character(read.table(file=args$geneUniverseFile1,skip=1,header=FALSE)[,2]);
@@ -436,14 +369,14 @@ geneUniverse2 <- as.character(read.table(file=args$geneUniverseFile2,skip=1,head
 
 moduleFiles1 <- list.files(pattern="G=5_E=3_D=0\\.[6]_Q=0\\.4_B=0\\.4_S=80_C=0\\.6\\.modulesFO\\.hgnc\\.david\\.module$",path=args$dir1)
 moduleFiles2 <- list.files(pattern="G=5_E=1_D=0\\.[4-8]_Q=0\\.4_B=0\\.4_S=80_C=0\\.6\\.modulesFO\\.hgnc\\.david\\.module$",path=args$dir2)
-moduleFile1<-"../../Data/codensedModules/frequencyNetwork_0.3/G=5_E=3_D=0.6_Q=0.4_B=0.4_S=80_C=0.6.modulesFO.hgnc.david.module"
-moduleFile2<-"../../Data/codensedModules/GSE48865_norm_TPM_spearman_filt_0.0002/G=5_E=1_D=0.6_Q=0.4_B=0.4_S=80_C=0.6.modulesFO.hgnc.david.module"
+moduleFile1<-"../Data/codensedModules/frequencyNetwork_0.3/G=5_E=3_D=0.6_Q=0.4_B=0.4_S=80_C=0.6.modulesFO.hgnc.david.module"
+moduleFile2<-"../Data/codensedModules/GSE48865_norm_TPM_spearman_filt_0.0002/G=5_E=1_D=0.6_Q=0.4_B=0.4_S=80_C=0.6.modulesFO.hgnc.david.module"
 
 for(moduleFile1 in moduleFiles1)
 {
   for(moduleFile2 in moduleFiles2)
   {
-    commonModules <-moduleOverlap(paste0(args$dir1, moduleFile1), args$clusts1Columned, args$clusts1Names, paste0(args$dir2, moduleFile2), args$clusts2Columned, args$clusts2Names, args$outDir, args$threshold, args$clustHeatMap, args$histogram, args$enrich, geneUniverse1, geneUniverse2);
+    commonModules <-moduleOverlap(paste0(args$dir1, moduleFile1), args$clusts1Columned, args$clusts1Names, paste0(args$dir2, moduleFile2), args$clusts2Columned, args$clusts2Names, args$outDir, args$threshold, args$clustHeatMap, args$histogram, geneUniverse1, geneUniverse2);
   }
 }
 
