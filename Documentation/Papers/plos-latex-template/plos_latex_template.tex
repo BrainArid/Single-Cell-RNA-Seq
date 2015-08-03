@@ -210,7 +210,7 @@ Kun Huang\textsuperscript{1, 2}
 \end{flushleft}
 % Please keep the abstract below 300 words
 \section*{Abstract}
-This work offers an initial glimpse at the potential of single-cell co-expression network module enrichment analysis. We run two primary glioblastoma transcriptome datasets, one single-celled and one bulk tissue sample, through analogous co-expression module analysis pipelines. We find that stringent filtering at multiple stages of the single-celled pipleine is vital to control for the noisy nature of single-celled data. Comparison of output modules at the module level and at the gene-level reveals that the two pipelines produce comparable results for many expected modules, as well as a number of notable differences that may illustrate key differences in the underlying technologies. More interestingly, we find that single-celled modules lack a strong signal for extracellular biological process ontologies and tumor microenvironment like extracelluar matrix organization, collagen fiber organization, immune response, cellular adhesion. Small signals for anti-apoptosis were only detected in the single-cell data, and a stronger  cell cycle/nuclear division signal was detected in the single-cell results than in the bulk cell results. These findings reinforce some assumptions about the domains specific to both RNA sequencing and single-cell RNA sequencing technologies.
+This work offers an initial glimpse at the potential of single-cell co-expression network module enrichment analysis. We run two primary glioblastoma transcriptome datasets, one single-celled and one bulk tissue sample, through analogous co-expression module analysis pipelines. We find that stringent filtering at multiple stages of the single-celled pipleine is vital to control for the noisy nature of single-celled data. We compare our resulting networks both at the ontology enriched module level and at the gene-level and find that the two pipelines produce comparable results for many expected modules. More interestingly, we find that single-celled lack modules with a strong signal for extracellular biological process ontologies like extracelluar matrix organization and cellular adhesion. 
 
 % Please keep the Author Summary between 150 and 200 words
 % Use first person. PLOS ONE authors please skip this step. 
@@ -250,9 +250,9 @@ In this section, we discuss the handling of the GSE57872, single-cell data. This
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=100mm]{Figures/moduleStaryNight}
-\caption{\textbf{Parameterization space starry night map.} Here we display the exhaustive gene-set by gene-set enrichment profiles for those modules output by 5 different runs of CODENSE for different values of the minimum density threshold $d$. The color of each square encodes the size of some gene set $A$, some gene set $B$, and the size of $A\cap{}B$ relative to $A\cup{}B$. These three values are encoded into the red, blue, and green channels of the square respectively. Thus, the whiter a square is the more similar $A$ and $B$ are. Furthermore, a Fisher's exact test was performed for significant enrichment per gene set pair. Placement of a small, white token indicates significant overlap between A and B. 
-Note that the central diagonal is all white. Which makes sense because this is the comparison of all sets with themselves. This diagonal pattern is most stable when comparing the selected characterization d=0.6 with each of it's neighboring parameterizations than between other neighboring steps shown above}
+\includegraphics[width=100mm]{Figures/moduleStaryNight2}
+\caption{\textbf{Parameterization space starry night map.} Here we display the exhaustive gene-set by gene-set enrichment profiles for those modules output by 5 different runs of CODENSE for different values of the minimum density threshold $d$. The color of each square encodes the size of some gene set $A$, some gene set $B$, and the size of $A\cap{}B$ relative to $A\cup{}B$. These three values are encoded into the red, blue, and green channels of the square respectively. Thus, the whiter a square is the more similar $A$ and $B$ are. Furthermore, a Fisher's exact test was performed for significant enrichment per gene set pair. Placement of a small, green token indicates significant overlap between modules. 
+Note that the central diagonal achieves perfect intersection. Which makes sense because this is the comparison of all sets with themselves. This diagonal pattern is most stable when comparing the selected characterization d=0.6 with each of it's neighboring parameterizations than between other neighboring steps shown above}
 \label{fig:starryNight1}
 \end{figure}
 
@@ -352,11 +352,11 @@ Using the parameters described above, our workflow produced 21 modules for the s
 \label{fig:48865Clusts}
 \end{figure}
 
-We compared these output module sets at the module-level and the gene-level. At the module-level, we find that the single-celled modules are enriched for many expected biological process ontologies such as translation elongation, nuclear division, glycolysis, oxidative phosphorylation, protien folding, and DNA replication. Likewise, we find expected enriched ontologies reported by the bulk pipeline--namely: translational elongation, cell cycle, extracellular matrix organization, antigen processing, immune response, RNA splicing, and others. 
+We compared these output module sets at the module-level and the gene-level. At the module-level, we find that the single-celled modules are enriched for translational elongation, and many other expected cell cycle and cellular process ontologies such as nuclear division, glycolysis, oxidative phosphorylation, protien folding, and DNA replication. Likewise, we find expected enriched ontologies reported by the bulk pipeline--namely: translational elongation, cell cycle, extracellular matrix organization, antigen processing, immune response, RNA splicing, and others. 
 
-Amid these expected ontologies, we found a number of enrichments that were exclusive to either one workflow or the other. Bulk modules enriched for several ontologies that single-cell modules did not--extracelluar matrix organization, collagen fiber organization, immune response, and cellular adhesion. These ontologies represent extracellular and/or tumor micro environments. Analogously there were also a couple of weaker ontology signals that only single-celled data reported that are worth mentioning-- nervous system development, and anti-apoptosis. These provide potential candidate genes that may be averaged out in the bulk cell data that only the resolution of single-celled data can obtain.
+Make note that one of the most significantly enriched ontolodies reported for the bulk modules was extracellular matrix organization. Single-cell modules did not enrich for this specific ontology. 
 
-We then profiled the two lists of output ontology-enriched modules to get another view of both the consensus and differing ontologies between the two data sets. When using exact equality to define the intersection between the two sets of ontologies, we find that only two ontologies were identified by both single-cell and bulk pipelines: translation elongation and cellular amino acid metabolic process. To get a better understanding of the similarities of the pipelines' output, we relax our definition of equality and report what we will be calling 'contextual ontologies' in the intersection. We aim to summaries ontologies reported by both pipelines by seeking close common ancestors within the GO hierarchical database of ontologies. More concretely, a contextual ontology is the root of the shortest possible subtree with height no greater than 2 that connects at least one ontology that was reported by the single-cell pipeline with at least one ontology that was reported by the bulk pipeline. These contextual ontologies, along with both the differing and consensus ontologies are reported in fig. \ref{fig:venn}.
+We then profiled the two lists of output ontology enriched modules to find both consensus and differing ontologies between the two data sets. When using exact equality to define the intersection between the two sets of ontologies, we find that only two ontologies were identified by both single-cell and bulk pipelines. To get a better understanding of the similarities of the pipelines' output, we report what we will be calling 'contextual ontologies' in the intersection. We aim to summaries ontologies reported by both pipelines by seeking close common ancestors within the GO hierarchical database of ontologies. More concretely, a contextual ontology is the root of the shortest possible subtree with height no greater than 2 that connects at least one ontology that was reported by the single-cell pipeline with at least one ontology that was reported by the bulk pipeline. These contextual ontologies, along with both the differing and consensus ontologies are reported in fig. \ref{fig:venn}.
 
 \begin{sidewaysfigure}[h]
 \centering
@@ -367,19 +367,19 @@ We then profiled the two lists of output ontology-enriched modules to get anothe
 
 A gene-level comparison of the resulting modules of the two data sets is also provided in fig. \ref{fig:starryMap2}. We find 3 or 4 groups of modules within the bulk output that are co-enriched for each other. Meaning that a given subgroup of modules share a significant number of genes with each other. We hypothesis that this co-enrichment occurred as a result of the specific parameterization used to construct and mine the network for modules. By either raising the correlation threshold, $c$, or raising the minimum module density threshold, $d$, these co-enriched modules may fuse into a larger module. We further hypothesis, by taking cues from the ontology enrichment of the co-enriched modules, that the resulting larger modules would likely enrich for immune response, metabolic processes, and extracellular matrix ontologies. 
 
-At the gene level, we find significant co-enrichment between the module outputs of the two pipelines; 5 pairs of which are of interest. The breakdown of these 5 co-enrichments can be found in fig. \ref{fig:geneLevelChart}. Note that there was a drop in p-value between the the cell cycle enriched ontology from the bulk cell dataset compared to the nuclear division enriched ontology from the single-cell dataset (co-enrichment 1). It is possible that this washing out may be due to the averaging out of gene signals when measuring at the tissue-level. This same phenomenon may explain the even more extreme drop seen in co-enrichment 2, transnational elongation. Classically, these two signals are dominant among transcriptomic signals. These two co-enrichment comparisons give us additional candidate genes to investigate for signs of this averaging phenomenon aforementioned.
+At the gene level, we find significant co-enrichment between the module outputs of the two pipelines; 5 pairs of which are of interest. The breakdown of these 5 co-enrichments can be found in fig. \ref{fig:geneLevelChart}.
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=120mm]{Figures/moduleCompareStaryMap}
-\caption{\textbf{Gene-level starry map comparison of output modules.} A small white box is placed in all module by module comparison that achieved a Fisher's exact significance of less than or equal to 0.05.}
+\includegraphics[width=125mm]{Figures/moduleCompareStaryMap2}
+\caption{\textbf{Gene-level starry map comparison of output modules.} This image retains the same visual encodings as those seen in Fig. \ref{fig:starryNight1}. In addition, output modules have been annotated with their most significantly enriched biological process.}
 \label{fig:starryMap2}
 \end{figure}
 
 \begin{sidewaysfigure}[h]
 \centering
 \includegraphics[width=180mm]{Figures/PopVsSCGeneLevel}
-\caption{\textbf{Interesting significant Gene-Level module comparisons.} This is a detailed look at 5 significant module co-enrichments between the bulk and single-cell output. Co-enrichemnt was calculated with the fisher's exact score using only the genes present in the intersection of both bulk and single-cell co-expression networks.}
+\caption{\textbf{Interesting significant Gene-Level module comparisons.} This is a detailed look at 5 significant module co-enrichments between the bulk and single-cell output.}
 \label{fig:geneLevelChart}
 \end{sidewaysfigure}
 
@@ -389,7 +389,7 @@ Our analysis illustrates the potential of single-cell co-expression network modu
 
 Between the module and gene-level comparisons of the two workflows' outputs, we are confident that the single-cell data is picking up on the same biological signals as the traditional bulk cell pipeline. But, there were also noticable differences. Single-celled data innately lacks extracellular signals and this is evident in our analysis by the absence of extracellular matrix organization and cellular adhesion ontologies and genes from the single-celled output. This may be of particular interest to studies that are specifically interested in intracellular environments rather than entire microenvironments.
 
-Further comparisons and contrast may indeed be possible. Conservative filtering in the single-celled pipline may be limiting the results in this work. Accounting for noise in single-celled data could strengthen the claims possible in co-expression module enrichment comparisons in the future.
+Further comparisons and contrast may indeed be possible. Conservative filtering in the single-celled pipline may be limiting the results in this work. Accounting for noise in single-celled data could strengthen the claims possible in co-expression module enrichment comparisons in the future. 
 
 \nolinenumbers
 

@@ -1,12 +1,15 @@
 source("SampleStarryStat.R");
 
+ 
 #input is expected to be module per row otherwise specify clusts#Columned=TRUE
 #totalGenes=22143 comes from GRCh37/hg19 annotation
 moduleOverlap <- function(clustsFile1, clusts1Columned=FALSE, clusts1Names=FALSE, 
                           clustsFile2, clusts2Columned=FALSE, clusts2Names=FALSE, 
-                          outDir, threshold, clustHeatMap=FALSE, fisherExact=FALSE, 
-                          histogram=FALSE, geneUniverse1, geneUniverse2)
+                          outDir, threshold, clustHeatMap=FALSE, fisherExact=FALSE, permutationTest=FALSE,
+                          histogram=FALSE, geneUniverse1, geneUniverse2, sort1=TRUE, sort2=TRUE)
 {
+  output<-list();
+  
   #setwd(dir);#setwd("/Users/Brian/Documents/Research/microArray v RNA Seq/BRCA/")
   print("opening files");
   clusts1 <- read.table(file=clustsFile1,sep = "\t",stringsAsFactors = FALSE,fill = TRUE)
@@ -71,12 +74,30 @@ moduleOverlap <- function(clustsFile1, clusts1Columned=FALSE, clusts1Names=FALSE
   remove(temp);
   
   #sort clusters' modules by module length
-  order1<- order(lengths1,decreasing=TRUE)
-  order2<- order(lengths2,decreasing=TRUE)
-  clusts1 <- clusts1[order1, ]
-  clusts2 <- clusts2[order2, ]
-  lengths1<- lengths1[order1]
-  lengths2<- lengths2[order2]
+  if(class(sort1)=="numeric" || sort1!=FALSE)
+  {
+    if(class(sort1)=="numeric"){
+      order1<- sort1;
+    }
+    else
+    {
+      order1<- order(lengths1,decreasing=TRUE);
+    }
+    clusts1 <- clusts1[order1, ];
+    lengths1<- lengths1[order1];
+  }
+  if(class(sort2)=="numeric" || sort2!=FALSE)
+  {
+    if(class(sort2)=="numeric"){
+      order2<- sort2;
+    }
+    else
+    {
+      order2<- order(lengths2,decreasing=TRUE);
+    }
+    clusts2 <- clusts2[order2, ];
+    lengths2<- lengths2[order2];
+  }
   
   countsMat <- matrix(nrow = dim(clusts1)[1], ncol= dim(clusts2)[1]);
   row.names(countsMat)<-row.names(clusts1)
@@ -177,9 +198,10 @@ moduleOverlap <- function(clustsFile1, clusts1Columned=FALSE, clusts1Names=FALSE
       theme(axis.text=element_text(size=9),axis.text.x=element_text(angle=-90,hjust=0,vjust=0.5));
     if(fisherExact)
     {
-      p <- p + geom_tile(aes(y=X1,x=X2,fill = rgb(red = 1,green=1,blue=1),width=feSize,height=feSize), colour = "black");
+      p <- p + geom_tile(aes(y=X1,x=X2,fill = rgb(red = 0,green=1,blue=0),width=feSize,height=feSize), colour = "black");
     }
     ggsave(filename = paste0(outDir, basename(clustsFile1), "_VS_", basename(clustsFile2), "_COMPOSITE.png"),plot = p,width=7,height=7)
+    output$fig <- p;
   }
 
 #   if(histogram)
@@ -192,12 +214,16 @@ moduleOverlap <- function(clustsFile1, clusts1Columned=FALSE, clusts1Names=FALSE
 #     
 #   }
   
-
   #permutation test for p-value
-  print("Permutation testing to estimate p-value...")
   s<-sum(gMat)/length(lengths1)/length(lengths2);
-  permResults<-permutationTest(s,totalGenes,lengths1,lengths2,iterations=10000, drawHistogram = FALSE);
-  print("...done.");
+  output$stat<-s;
+  if(permutationTest)
+  {
+    print("Permutation testing to estimate p-value...")
+    permResults<-permutationTest(s,totalGenes,lengths1,lengths2,iterations=10000, drawHistogram = FALSE);
+    output$permResults<-permResults;
+    print("...done.");
+  }
 
   #list white tiles:
   if(dim(colMat.m[colMat.m$fe<threshold,])[1]>0)
@@ -233,34 +259,16 @@ moduleOverlap <- function(clustsFile1, clusts1Columned=FALSE, clusts1Names=FALSE
       #}
       commonModules$clusts1[i] <- list(clusts1[x[i],clusts1[x[i],]!=""]);
       commonModules$clusts2[i] <- list(clusts2[y[i],clusts2[y[i],]!=""]);
-      if(enrich)
-      {
-        print(paste0("Calculating enrichment ", i, " of ", length(x)) )
-        commonModules$clusts1GO[i] <- list(topGOEnrich(genesOfInterest = commonModules$clusts1[[i]],geneID2GO = geneID2GO));
-        commonModules$clusts2GO[i] <- list(topGOEnrich(genesOfInterest = commonModules$clusts2[[i]],geneID2GO = geneID2GO));
-      
-        relativeClustsLocs <- relativeRank(L1 <- commonModules$clusts1GO[[i]]$BP[,1], L2 <- commonModules$clusts2GO[[i]]$BP[,1])
-        commonModules$clusts1GO[[i]]$BP <- cbind(commonModules$clusts1GO[[i]]$BP, relativeRank=relativeClustsLocs$r1);
-        commonModules$clusts2GO[[i]]$BP <- cbind(commonModules$clusts2GO[[i]]$BP, relativeRank=relativeClustsLocs$r2);
-        relativeClustsLocs <- relativeRank(L1 <- commonModules$clusts1GO[[i]]$MF[,1], L2 <- commonModules$clusts2GO[[i]]$MF[,1])
-        commonModules$clusts1GO[[i]]$MF <- cbind(commonModules$clusts1GO[[i]]$MF, relativeRank=relativeClustsLocs$r1);
-        commonModules$clusts2GO[[i]]$MF <- cbind(commonModules$clusts2GO[[i]]$MF, relativeRank=relativeClustsLocs$r2);
-        relativeClustsLocs <- relativeRank(L1 <- commonModules$clusts1GO[[i]]$CC[,1], L2 <- commonModules$clusts2GO[[i]]$CC[,1])
-        commonModules$clusts1GO[[i]]$CC <- cbind(commonModules$clusts1GO[[i]]$CC, relativeRank=relativeClustsLocs$r1);
-        commonModules$clusts2GO[[i]]$CC <- cbind(commonModules$clusts2GO[[i]]$CC, relativeRank=relativeClustsLocs$r2);
-      }
     }
     
     #and thier profiles:
     gSortedOrder <- order(matrix(data=unlist(commonModules$profiles),nrow=length(commonModules$profiles),ncol=6,byrow=TRUE)[,6],decreasing=TRUE)
     commonModules <- list(profiles=commonModules$profiles[gSortedOrder],
                           clusts1=commonModules$clusts1[gSortedOrder],
-                          clusts2=commonModules$clusts2[gSortedOrder],
-                          stat=s,
-                          pval=permResults$pval);
-    return(commonModules);
+                          clusts2=commonModules$clusts2[gSortedOrder]);
+    output$commonModules<-commonModules;
   }
-  return(NULL);
+  return(output);
 }
 
 print("Reading in command line arguments.");
@@ -342,7 +350,8 @@ args$clusts2Names <- initializeBooleanArg(arg=args$clusts2Names, default=TRUE);
 args$outDir <- initializeStringArg(arg=args$outDir, default="../../Figures");
 args$threshold <- initializeFloatArg(arg=args$threshold, default=0.001);
 args$clustHeatMap <- initializeBooleanArg(arg=args$clustHeatMap, default=TRUE);
-args$fisherExact <- initializeBooleanArg(arg=args$enrich, default=TRUE);
+args$fisherExact <- initializeBooleanArg(arg=args$fisherExact, default=TRUE);
+args$permutationTest <- initializeBooleanArg(arg=args$permutationTest, default=FALSE);
 args$histogram <- initializeBooleanArg(arg=args$histogram, default=TRUE);
 args$geneUniverseFile1 <- initializeStringArg(arg=args$geneUniverseFile1, default="../Data/coexpressionNetworks/geneOrder.txt");
 args$geneUniverseFile2 <- initializeStringArg(arg=args$geneUniverseFile2, default="../Data/coexpressionNetworks/GSE48865_geneOrder.txt");
@@ -359,29 +368,69 @@ if(DEBUG)
   clusts2Names<-args$clusts2Names
   outDir<-args$outDir
   threshold<-args$threshold
+  permutationTest<-args$permutationTest
   clustHeatMap<-args$clustHeatMap
   fisherExact<-args$fisherExact
   histogram<-args$histogram
 }
 
+#compute single-cell vs bulk sample gene-level comparison figure
 geneUniverse1 <- as.character(read.table(file=args$geneUniverseFile1,skip=1,header=FALSE)[,2]);
 geneUniverse2 <- as.character(read.table(file=args$geneUniverseFile2,skip=1,header=FALSE)[,2]);
 
-moduleFiles1 <- list.files(pattern="G=5_E=3_D=0\\.[6]_Q=0\\.4_B=0\\.4_S=80_C=0\\.6\\.modulesFO\\.hgnc\\.david\\.module$",path=args$dir1)
-moduleFiles2 <- list.files(pattern="G=5_E=1_D=0\\.[4-8]_Q=0\\.4_B=0\\.4_S=80_C=0\\.6\\.modulesFO\\.hgnc\\.david\\.module$",path=args$dir2)
-moduleFile1<-"../Data/codensedModules/frequencyNetwork_0.3/G=5_E=3_D=0.6_Q=0.4_B=0.4_S=80_C=0.6.modulesFO.hgnc.david.module"
-moduleFile2<-"../Data/codensedModules/GSE48865_norm_TPM_spearman_filt_0.0002/G=5_E=1_D=0.6_Q=0.4_B=0.4_S=80_C=0.6.modulesFO.hgnc.david.module"
+output <-moduleOverlap(paste0(args$dir1, args$clustsFile1),args$clusts1Columned, 
+                              args$clusts1Names, paste0(args$dir2, args$clustsFile2), args$clusts2Columned, 
+                              args$clusts2Names, args$outDir, args$threshold, args$clustHeatMap, 
+                              args$fisherExact, args$permutationTest, args$histogram, 
+                              geneUniverse1=geneUniverse1, geneUniverse2=geneUniverse2,
+                       sort1=c(20,3,12,13,15,10,7,11,1,2,5,6,9,16,4,8,19,21,14,17,18),
+                       sort2=c(24,37,34,1,22,23,46,26,4,39,43,10,21,18,38,11,17,25,2,3,13,29,40,5,7,47,6,16,19,20,27,30,41,44,8,9,14,15,28,31,32,33,35,36,42,45,48,12));
+p3<-output$fig;
+output <-moduleOverlap(paste0(args$dir1, args$clustsFile1),args$clusts1Columned, 
+                       args$clusts1Names, paste0(args$dir1, args$clustsFile1),args$clusts1Columned, 
+                       args$clusts1Names, args$outDir, args$threshold, args$clustHeatMap, 
+                       args$fisherExact, args$permutationTest, args$histogram, 
+                       geneUniverse1=geneUniverse1, geneUniverse2=geneUniverse1);
+p1<-output$fig;
+output <-moduleOverlap(paste0(args$dir2, args$clustsFile2),args$clusts2Columned, 
+                       args$clusts2Names, paste0(args$dir2, args$clustsFile2), args$clusts2Columned, 
+                       args$clusts2Names, args$outDir, args$threshold, args$clustHeatMap, 
+                       args$fisherExact, args$permutationTest, args$histogram, 
+                       geneUniverse1=geneUniverse2, geneUniverse2=geneUniverse2);
+p2<-output$fig;
 
+#compute pairwise single-cell CODENSE output comparisons 
+moduleFiles1 <- list.files(pattern="G=5_E=3_D=0\\.[4-8]_Q=0\\.4_B=0\\.4_S=80_C=0\\.6\\.modulesFO\\.hgnc\\.david\\.module$",path=args$dir1)
+moduleFiles2 <- moduleFiles1;#list.files(pattern="G=5_E=1_D=0\\.[4-8]_Q=0\\.4_B=0\\.4_S=80_C=0\\.6\\.modulesFO\\.hgnc\\.david\\.module$",path=args$dir2)
+
+stats <- matrix(data=0,nrow=length(moduleFiles1),ncol=length(moduleFiles2));
+orders<-list(d4=c(16,3,12,15,13,10,7,1,9,6,2,11,5,8,14,4,17,18,19),
+             d5=c(20,3,12,22,13,15,10,7,1,11,17,6,9,2,5,23,4,8,18,21,14,16,19),
+             d6=c(20,3,12,13,15,10,7,11,1,2,5,6,9,16,4,8,19,21,14,17,18),
+             d7=c(16,3,12,14,20,17,22,10,18,7,11,5,6,9,1,2,4,15,8,13,19,21),
+             d8=c(18,3,14,16,11,13,15,20,24,9,10,22,5,7,8,21,23,2,1,4,6,12,17,19)
+             )
+i<-1;
+j<-1;
 for(moduleFile1 in moduleFiles1)
 {
   for(moduleFile2 in moduleFiles2)
   {
-    commonModules <-moduleOverlap(paste0(args$dir1, moduleFile1), args$clusts1Columned, args$clusts1Names, paste0(args$dir2, moduleFile2), args$clusts2Columned, args$clusts2Names, args$outDir, args$threshold, args$clustHeatMap, args$histogram, geneUniverse1, geneUniverse2);
+    output <-moduleOverlap(paste0(args$dir1, moduleFile1), args$clusts1Columned, 
+                                  args$clusts1Names, paste0(args$dir1, moduleFile2), args$clusts1Columned, 
+                                  args$clusts1Names, args$outDir, args$threshold, args$clustHeatMap, 
+                                  args$fisherExact, args$permutationTest, args$histogram,
+                                  geneUniverse1=geneUniverse1, geneUniverse2=geneUniverse1,
+                                  sort1=orders[[i]],sort2=orders[[j]]);
+    stats[i,j]<-output$stat;
+    j<-j+1;
   }
+  j<-1;
+  i<-i+1;
 }
 
 #...
-commonModules <-moduleOverlap(paste0(args$dir1, args$clustsFile1),args$clusts1Columned, args$clusts1Names, paste0(args$dir2, args$clustsFile2), args$clusts2Columned, args$clusts2Names, args$outDir, args$threshold, args$clustHeatMap, args$histogram, args$enrich);
+
 
 fileName<-paste0(args$outDir, basename(args$clustsFile1), "_VS_", basename(args$clustsFile2), "_MATCHING_MODULES.csv");
 if(is.null(commonModules))
@@ -394,13 +443,13 @@ if(is.null(commonModules))
       write(unlist(x[[index]]),file,ncolumns=ncolumns,append = TRUE, sep=sep);
   }
   
-  if(args$enrich)
-  {
-    GOCharts1 <- commonModules$clusts1GO
-    GOCharts2 <- commonModules$clusts2GO
-    commonModules$clusts1GO <- NULL;
-    commonModules$clusts2GO <- NULL;
-  }
+  #if(args$enrich)
+  #{
+  #  GOCharts1 <- commonModules$clusts1GO
+  #  GOCharts2 <- commonModules$clusts2GO
+  #  commonModules$clusts1GO <- NULL;
+  #  commonModules$clusts2GO <- NULL;
+  #}
   
   write(paste0(basename(args$clustsFile1), ";", basename(args$clustsFile2)),fileName,append=FALSE);#FALSE to clear file contents
   write(paste0("number of matching modules:,",length(commonModules[[1]])),fileName,append=TRUE);
@@ -410,15 +459,15 @@ if(is.null(commonModules))
     {
       lapply(commonModules, unlistAndWrite, i, fileName);
       write(x = paste("\n",args$clustsFile1,";;;;;;;;;;",args$clustsFile2,"\n"),fileName,append = TRUE);
-      if(args$enrich)
-      {
-        write(x = "BIOLOGICAL PROCESS",fileName,append = TRUE);
-        write.table(x=cbind(GOCharts1[[i]]$BP,x=rep(x="",times = length(GOCharts1[[i]]$BP[,1])),GOCharts2[[i]]$BP),file = fileName,append = TRUE,sep = ";",quote = FALSE,row.names = FALSE,col.names = TRUE);
-        write(x = "MOLECULAR FUNCTION",fileName,append = TRUE);
-        write.table(x=cbind(GOCharts1[[i]]$MF,x=rep(x="",times = length(GOCharts1[[i]]$MF[,1])),GOCharts2[[i]]$MF),file = fileName,append = TRUE,sep = ";",quote = FALSE,row.names = FALSE,col.names = TRUE);
-        write(x = "CELL CYCLE",fileName,append = TRUE);
-        write.table(x=cbind(GOCharts1[[i]]$CC,x=rep(x="",times = length(GOCharts1[[i]]$CC[,1])),GOCharts2[[i]]$CC),file = fileName,append = TRUE,sep = ";",quote = FALSE,row.names = FALSE,col.names = TRUE);
-        write(x = "\n",fileName,append = TRUE);
-      }
+#       if(args$enrich)
+#       {
+#         write(x = "BIOLOGICAL PROCESS",fileName,append = TRUE);
+#         write.table(x=cbind(GOCharts1[[i]]$BP,x=rep(x="",times = length(GOCharts1[[i]]$BP[,1])),GOCharts2[[i]]$BP),file = fileName,append = TRUE,sep = ";",quote = FALSE,row.names = FALSE,col.names = TRUE);
+#         write(x = "MOLECULAR FUNCTION",fileName,append = TRUE);
+#         write.table(x=cbind(GOCharts1[[i]]$MF,x=rep(x="",times = length(GOCharts1[[i]]$MF[,1])),GOCharts2[[i]]$MF),file = fileName,append = TRUE,sep = ";",quote = FALSE,row.names = FALSE,col.names = TRUE);
+#         write(x = "CELL CYCLE",fileName,append = TRUE);
+#         write.table(x=cbind(GOCharts1[[i]]$CC,x=rep(x="",times = length(GOCharts1[[i]]$CC[,1])),GOCharts2[[i]]$CC),file = fileName,append = TRUE,sep = ";",quote = FALSE,row.names = FALSE,col.names = TRUE);
+#         write(x = "\n",fileName,append = TRUE);
+#       }
   }
 }

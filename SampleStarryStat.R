@@ -48,17 +48,18 @@ permutationTest<-function(s,intersectedUniverseSize,lengths1,lengths2,iterations
   {
     h<-hist(sampleStarryStat);
     lh<-hist(log(sampleStarryStat))
-    out <- c(out, hist=h, lhist=lh);
+    out <- list(pval<-out$pval, 
+                summary<-out$summary, hist=h, lhist=lh);
   }
   return(out);
 }
 
-universeSize<-5948;
-M <- c(76,49,42,26,26,14,13,12,11,11,11,11,11,10,9,8,8,8,7,7,7);
-N <- c(76,49,42,26,26,14,13,12,11,11,11,11,11,10,9,8,8,8,7,7,7);
-#N <- c(51,48,46,34,34,31,26,24,21,17,16,15,15,13,13,12,12,12,12,11,11,11,11,10,10,10,10,10,9,9,9,9,9,9,8,8,8,8,8,8,8,8,8,8,8,8,8,8);
-s = 0.8;
-
-results<-permutationTest(s,universeSize,lengths1 = M,lengths2=N,drawHistogram = TRUE);
-plot(x=results$hist.mids,y=results$hist.counts,type = "b");
-plot(x=results$lhist.mids,y=results$lhist.counts,type = "b");
+# universeSize<-5948;
+# M <- c(76,49,42,26,26,14,13,12,11,11,11,11,11,10,9,8,8,8,7,7,7);
+# N <- c(76,49,42,26,26,14,13,12,11,11,11,11,11,10,9,8,8,8,7,7,7);
+# #N <- c(51,48,46,34,34,31,26,24,21,17,16,15,15,13,13,12,12,12,12,11,11,11,11,10,10,10,10,10,9,9,9,9,9,9,8,8,8,8,8,8,8,8,8,8,8,8,8,8);
+# s = 0.8;
+# 
+# results<-permutationTest(s,universeSize,lengths1 = M,lengths2=N,drawHistogram = TRUE);
+# plot(x=results$hist.mids,y=results$hist.counts,type = "b");
+# plot(x=results$lhist.mids,y=results$lhist.counts,type = "b");
