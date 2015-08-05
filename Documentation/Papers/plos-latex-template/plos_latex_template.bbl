@@ -37,6 +37,12 @@ Li B, Dewey C.
 \newblock BMC Bioinformatics. 2011;12(1):323.
 \newblock Available from: \url{http://www.biomedcentral.com/1471-2105/12/323}.
 
+\bibitem{GK}
+GK M, Williams BA FAU~McCue K, McCue K FAU~Schroth GP, Schroth GP FAU~Gertz J,
+  Gertz J FAU~Myers RM, Myers RM FAU~Wold BJ, et~al.
+\newblock From single-cell to cell-pool transcriptomes: stochasticity in gene
+  expression and RNA splicing.;(1088-9051 (Linking)):--.
+
 \bibitem{Hu2005}
 Hu H, Yan X, Huang Y, Han J, Zhou XJ.
 \newblock Mining coherent dense subgraphs across massive biological networks

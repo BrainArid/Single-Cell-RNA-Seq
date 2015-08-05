@@ -2,6 +2,27 @@
 % Encoding: MacRoman
 
 
+@Article{Bao2014,
+  Title                    = {RNA-seq of 272 gliomas revealed a novel, recurrent PTPRZ1-MET fusion transcript in secondary glioblastomas},
+  Author                   = {Bao, Zhao-Shi and Chen, Hui-Min and Yang, Ming-Yu and Zhang, Chuan-Bao and Yu, Kai and Ye, Wan-Lu and Hu, Bo-Qiang and Yan, Wei and Zhang, Wei and Akers, Johnny and Ramakrishnan, Valya and Li, Jie and Carter, Bob and Liu, Yan-Wei and Hu, Hui-Min and Wang, Zheng and Li, Ming-Yang and Yao, Kun and Qiu, Xiao-Guang and Kang, Chun-Sheng and You, Yong-Ping and Fan, Xiao-Long and Song, Wei Sonya and Li, Rui-Qiang and Su, Xiao-Dong and Chen, Clark C and Jiang, Tao},
+  Journal                  = {Genome Research},
+  Year                     = {2014},
+
+  Month                    = aug,
+  Number                   = {11},
+  Pages                    = {1765--1773},
+  Volume                   = {24},
+
+  __markedentry            = {[Brian:6]},
+  Abstract                 = {Studies of gene rearrangements and the consequent oncogenic fusion proteins have laid the foundation for targeted cancer therapy. To identify oncogenic fusions associated with glioma progression, we catalogued fusion transcripts by RNA-seq of 272 gliomas. Fusion transcripts were more frequently found in high-grade gliomas, in the classical subtype of gliomas, and in gliomas treated with radiation/temozolomide. Sixty-seven in-frame fusion transcripts were identified, including three recurrent fusion transcripts: FGFR3-TACC3, RNF213-SLC26A11, and PTPRZ1-MET (ZM). Interestingly, the ZM fusion was found only in grade III astrocytomas (1/13; 7.7%) or secondary GBMs (sGBMs, 3/20; 15.0%). In an independent cohort of sGBMs, the ZM fusion was found in three of 20 (15%) specimens. Genomic analysis revealed that the fusion arose from translocation events involving introns 3 or 8 of PTPRZ and intron 1 of MET. ZM fusion transcripts were found in GBMs irrespective of isocitrate dehydrogenase 1 (IDH1) mutation status. sGBMs harboring ZM fusion showed higher expression of genes required for PIK3CA signaling and lowered expression of genes that suppressed RB1 or TP53 function. Expression of the ZM fusion was mutually exclusive with EGFR overexpression in sGBMs. Exogenous expression of the ZM fusion in the U87MG glioblastoma line enhanced cell migration and invasion. Clinically, patients afflicted with ZM fusion harboring glioblastomas survived poorly relative to those afflicted with non-ZM-harboring sGBMs (P < 0.001). Our study profiles the shifting RNA landscape of gliomas during progression and reveled ZM as a novel, recurrent fusion transcript in sGBMs.},
+  Comment                  = {25135958[pmid]},
+  ISSN                     = {1549-5469},
+  Owner                    = {Brian},
+  Publisher                = {Cold Spring Harbor Laboratory Press},
+  Timestamp                = {2015.06.04},
+  Url                      = {http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4216918/}
+}
+
 @Article{Hu2005,
   Title                    = {Mining coherent dense subgraphs across massive biological networks for functional discovery},
   Author                   = {Hu, Haiyan and Yan, Xifeng and Huang, Yu and Han, Jiawei and Zhou, Xianghong Jasmine},
@@ -20,7 +41,6 @@
 
 @Other{HuangDWFAUHuang,
   Title                    = {Bioinformatics enrichment tools: paths toward the comprehensive functional analysis of large gene lists},
-  __markedentry            = {[Brian:]},
   Abstract                 = {Functional analysis of large gene lists, derived in most cases from emerging high-throughput genomic, proteomic and bioinformatics scanning approaches, is still a challenging and daunting task. The gene-annotation enrichment analysis is a promising high-throughput strategy that increases the likelihood for investigators to identify biological processes most pertinent to their study. Approximately 68 bioinformatics enrichment tools that are currently available in the community are collected in this survey. Tools are uniquely categorized into three major classes, according to their underlying enrichment algorithms. The comprehensive collections, unique tool classifications and associated questions/issues will provide a more comprehensive and up-to-date view regarding the advantages, pitfalls and recent trends in a simpler tool-class level rather than by a tool-by-tool approach. Thus, the survey will help tool designers/developers and experienced end users understand the underlying algorithms and pertinent details of particular tool categories/tools, enabling them to make the best choices for their particular research interests.},
   Author                   = {Huang DW FAU Huang, Da Wei and Sherman BT FAU Sherman, Brad T and Lempicki RA FAU Lempicki, Richard A},
   Number                   = {1362-4962 (Electronic)},
@@ -116,7 +136,7 @@
 
 @Other{XiangYFAUXiang,
   Title                    = {Predicting glioblastoma prognosis networks using weighted gene co-expression network analysis on TCGA data},
-  __markedentry            = {[Brian:6]},
+  __markedentry            = {[Brian:]},
   Abstract                 = {BACKGROUND: Using gene co-expression analysis, researchers were able to predict clusters of genes with consistent functions that are relevant to cancer development and prognosis. We applied a weighted gene co-expression network (WGCN) analysis algorithm on glioblastoma multiforme (GBM) data obtained from the TCGA project and predicted a set of gene co-expression networks which are related to GBM prognosis. METHODS: We modified the Quasi-Clique Merger algorithm (QCM algorithm) into edge-covering Quasi-Clique Merger algorithm (eQCM) for mining weighted sub-network in WGCN. Each sub-network is considered a set of features to separate patients into two groups using K-means algorithm. Survival times of the two groups are compared using log-rank test and Kaplan-Meier curves. Simulations using random sets of genes are carried out to determine the thresholds for log-rank test p-values for network selection. Sub-networks with p-values less than their corresponding thresholds were further merged into clusters based on overlap ratios (>50%). The functions for each cluster are analyzed using gene ontology enrichment analysis. RESULTS: Using the eQCM algorithm, we identified 8,124 sub-networks in the WGCN, out of which 170 sub-networks show p-values less than their corresponding thresholds. They were then merged into 16 clusters. CONCLUSIONS: We identified 16 gene clusters associated with GBM prognosis using the eQCM algorithm. Our results not only confirmed previous findings including the importance of cell cycle and immune response in GBM, but also suggested important epigenetic events in GBM development and prognosis.},
   Address                  = {The Comprehensive Cancer Center Biomedical Informatics Shared Resource, The Ohio State University, Columbus, USA},
   Author                   = {Xiang Y FAU Xiang, Yang and Zhang CQ FAU Zhang, Cun-Quan and Huang K FAU Huang, Kun},

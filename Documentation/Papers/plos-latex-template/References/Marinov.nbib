@@ -1,0 +1,87 @@
+
+PMID- 24299736
+OWN - NLM
+STAT- MEDLINE
+DA  - 20140303
+DCOM- 20141103
+LR  - 20150602
+IS  - 1549-5469 (Electronic)
+IS  - 1088-9051 (Linking)
+VI  - 24
+IP  - 3
+DP  - 2014 Mar
+TI  - From single-cell to cell-pool transcriptomes: stochasticity in gene expression
+      and RNA splicing.
+PG  - 496-510
+LID - 10.1101/gr.161034.113 [doi]
+AB  - Single-cell RNA-seq mammalian transcriptome studies are at an early stage in
+      uncovering cell-to-cell variation in gene expression, transcript processing and
+      editing, and regulatory module activity. Despite great progress recently,
+      substantial challenges remain, including discriminating biological variation from
+      technical noise. Here we apply the SMART-seq single-cell RNA-seq protocol to
+      study the reference lymphoblastoid cell line GM12878. By using spike-in
+      quantification standards, we estimate the absolute number of RNA molecules per
+      cell for each gene and find significant variation in total mRNA content: between 
+      50,000 and 300,000 transcripts per cell. We directly measure technical
+      stochasticity by a pool/split design and find that there are significant
+      differences in expression between individual cells, over and above technical
+      variation. Specific gene coexpression modules were preferentially expressed in
+      subsets of individual cells, including one enriched for mRNA processing and
+      splicing factors. We assess cell-to-cell variation in alternative splicing and
+      allelic bias and report evidence of significant differences in splice site usage 
+      that exceed splice variation in the pool/split comparison. Finally, we show that 
+      transcriptomes from small pools of 30-100 cells approach the information content 
+      and reproducibility of contemporary RNA-seq from large amounts of input material.
+      Together, our results define an experimental and computational path forward for
+      analyzing gene expression in rare cell types and cell states.
+FAU - Marinov, Georgi K
+AU  - Marinov GK
+AD  - Division of Biology, California Institute of Technology, Pasadena, California
+      91125, USA;
+FAU - Williams, Brian A
+AU  - Williams BA
+FAU - McCue, Ken
+AU  - McCue K
+FAU - Schroth, Gary P
+AU  - Schroth GP
+FAU - Gertz, Jason
+AU  - Gertz J
+FAU - Myers, Richard M
+AU  - Myers RM
+FAU - Wold, Barbara J
+AU  - Wold BJ
+LA  - eng
+SI  - GEO/GSE44618
+GR  - U54 HG004576/HG/NHGRI NIH HHS/United States
+GR  - U54 HG006998/HG/NHGRI NIH HHS/United States
+PT  - Journal Article
+PT  - Research Support, N.I.H., Extramural
+PT  - Research Support, Non-U.S. Gov't
+DEP - 20131203
+PL  - United States
+TA  - Genome Res
+JT  - Genome research
+JID - 9518021
+RN  - 63231-63-0 (RNA)
+SB  - IM
+MH  - Cell Line, Tumor
+MH  - Gene Expression Profiling/*methods
+MH  - *Genes
+MH  - Genome, Human
+MH  - Humans
+MH  - RNA/*analysis/genetics
+MH  - *RNA Splicing
+MH  - Reproducibility of Results
+MH  - Sequence Analysis, RNA
+MH  - Transcriptome
+PMC - PMC3941114
+OID - NLM: PMC3941114
+EDAT- 2013/12/05 06:00
+MHDA- 2014/11/05 06:00
+CRDT- 2013/12/05 06:00
+PHST- 2013/12/03 [aheadofprint]
+PHST- 2014/01/31 [aheadofprint]
+AID - gr.161034.113 [pii]
+AID - 10.1101/gr.161034.113 [doi]
+PST - ppublish
+SO  - Genome Res. 2014 Mar;24(3):496-510. doi: 10.1101/gr.161034.113. Epub 2013 Dec 3.
