@@ -212,6 +212,7 @@ Kun Huang\textsuperscript{1, 2}
 \end{flushleft}
 % Please keep the abstract below 300 words
 \section*{Abstract}
+This work offers an initial glimpse at the potential of single-cell co-expression network module enrichment analysis. We run two primary glioblaestoma transcriptome datasets, one single-celled and one bulk tissue sample, through analogous co-expression module analysis pipelines. It was necessary to stringently filter the single-celled data at multiple stages of this pipeline to adequately counter the effects of technical stochasticity. We compare our resulting networks both at the ontology enriched module level and at the gene-level and find that the two pipelines produce comparable results for many expected modules. More interestingly, we find that the single-celled network lack modules with a strong signal for extracellular biological process ontologies like extracelluar matrix organization, cellular adhesion, and collagen fibril organization as well as immune responce which is known to be associated with tumor microenvironments. The single-celled results did, however, show faint signals for glioblastoma-specific biological functions that were not found in the bulk tissue output including anti-apoptosis, response to DNA damage stimulus, and nervous system development.
 
 % Please keep the Author Summary between 150 and 200 words
 % Use first person. PLOS ONE authors please skip this step. 
@@ -229,6 +230,7 @@ However, co-expression network analysis has largely been an unexplored area of a
 % "Models" is not a valid title for PLoS ONE authors. However, PLoS ONE
 % authors may use "Analysis" 
 \section*{Materials and Methods}
+We analyzed two glioma datasets: GSE57872, the data presented in Single-cell RNA-seq highlights intratumoral heterogeneity in primary glioblastoma \cite{Patel20062014}, and GSE48865, the data presented in RNA-seq of 272 gliomas revealed a novel, recurrent PTPRZ1-MET fusion transcript in secondary glioblastomas \cite{Bao2014}. GSE57872 consists of single-cell samples whereas GSE48865 consists of more-traditional, bulk samples. From here on, GSE57872 and GSE48865 samples will be referred to as 'single-cell' and 'bulk' samples respectively. After preprocessing each dataset independently (details explained in following sections), we step each dataset through a coexpression-network analysis workflow (Fig.~\ref{fig:workflow}).
 
 \begin{figure}[h]
 \centering
@@ -239,10 +241,12 @@ However, co-expression network analysis has largely been an unexplored area of a
 
 \subsection*{Single-Cell Data}
 \subsection*{Single-Cell RNASeq Samples }
+In this section, we discuss the handling of the GSE57872, single-cell data. This data set is comprised of normalized gene expression values for 5,948 genes for 430 single-cell samples selected by flow cytometry cell sorting and micromanipulation from 5 different primary glioblastomas labeled: MGH26, MGH28, MGH29, MGH30, and MGH31. Patel et al sequenced the cells using SMART-seq protocol \cite{Ramskold2012}. Alignment to hg19 was performed with Bowtie (version 1.1.1) \cite{Langmead2009} and the authors calculated TPM (transcripts per million) values using RSEM (version 1.2.3) \cite{Li2011}.The final reported values were log-transformed and mean-shifted per gene. More formally, let $x_{si}$ be the TPM enrichment value for the $i^{th}$ gene of sample $s$. And let $N_{t}$ be the sample size of tumor $t$, then the analogous, final reported value, $y_{si}$, is calculated as in Eq. \ref{equation2}.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=80mm]{Figures/ParameterSpaceE=3}
+\caption{\textbf{Parameterization space analysis.} A comparison the number of modules output and the distribution statistics of module size in gene count for modules output in one run of CODENSE. Values of the selected parameterization are highlighted in yellow.}
 \label{Parameter Space Figure}
 \end{figure}
 
@@ -250,6 +254,7 @@ However, co-expression network analysis has largely been an unexplored area of a
 \centering
 \includegraphics[width=100mm]{Figures/moduleStaryNight2}
 \caption{\textbf{Parameterization space starry map.} Here we display the exhaustive gene-set by gene-set enrichment profiles for those modules output by 5 different runs of CODENSE for different values of the minimum density threshold $d$. The color of each square encodes the size of some gene set $A$, some gene set $B$, and the size of $A\cap{}B$ relative to $A\cup{}B$. These three values are encoded into the red, blue, and green channels of the square respectively. Thus, the whiter a square is the more similar $A$ and $B$ are. Furthermore, a Fisher's exact test was performed for significant enrichment per gene set pair. Placement of a small, green token indicates significant overlap between modules. 
+Note that the central diagonal achieves perfect intersection. Which makes sense because this is the comparison of all sets with themselves.}
 \label{fig:starryNight1}
 \end{figure}
 
@@ -284,12 +289,15 @@ b_{k1t} & \ldots & b_{kkt}i \end{array}
 \end{cases}
 \end{equation}
 
+This is analogous to cutting a co-expression network at a given edge threshold. After analyzing the distribution of resulting networks’ densities \ref{Parameter Space Figure} we settled on a threshold of 0.3 with an associated frequency network density of 0.04. We point out that this threshold is low, but we argue that it is a necessary trade-off given the distribution of correlations. \cite{GK} quantifies the technical stochasticity of SMART-seq technology and finds that this technology has a single molecule capture efficiency of only around 0.1. This low rate may help explain the muted co-expressions found in our single-cell analysis relative to what might be expected in a traditional bulk analysis.
 
 The binary matrices were then aggregated into a single frequency matrix, $F$. This aggregation is performed in an attempt to attenuate patient-specific signals and focus, rather, on glioblastoma-specific patterns of gene co-expression.
 
 \begin{equation}\label{equation5}
 F = \left[ \begin{array}{ccc}
+f_{11} & \ldots & f_{1k} \\
 \vdots & \ddots & \vdots \\
+f_{k1} & \ldots & f_{kk} \end{array} \right], f_{ij} = \sum_{t}b_{ijt}
 \end{equation}
 
 \subsubsection{Module Detection}
@@ -299,13 +307,20 @@ It is this matrix $F$ that is fed into the CODENSE software to be converted into
 S=(V,E), \text{ where } v_i,v_j \in V \text{ and } (v_i,v_j) \in E \leftrightarrow f_{ij} \ge e
 \end{equation}
 Frequency threshold threshold $e$ was set to be 3 meaning that in order for a given'
+representing a gene-gene correlation to appear in the final summary network $S$, that same pair of genes had to appear in a majority of the individual $B_t$ networks. 
 
+CODENSE reports modules that meet some minimum density threshold, $d$. At the suggestion of the CODENSE authors and after analyzing the effect perturbing $d$ has on the number and size of the resulting modules, we chose a minimum density threshold of 0.6. We wanted to maximize $d$ to ensure dense modules to ensure their biological significance. However, heightened values of $d$ can drastically affect the output number and size of modules (Fig. ref{Parameter Space Figure}). Our selection of $d = 0.6$ marks the upper limit of where this non-robust behavior starts in our selected parameter space sampling resolution. At the selected parameterization, CODENSE reported 21 dense, first-order modules. These relatively high thresholds  guarantee that our resulting modules will be dense and therefore will capture only the strongest signals found in the data.
 
+\subsubsection*{CODENSE Parameterization Selection}
+We make a considerable effort to ensure that the resulting modules output by CODENCE at the selected parameterization are robust to change within the algorithm's parameterization space. The number of output modules are relatively stable around the selected value for d. However, the size of these modules begins to sharply decline as d reaches 0.7 and 0.8. This drop in module size is due to the splintering of larger modules. This splintering effect could be beneficial if it provides new, informative modules. To examine this possibility, we developed a novel visualization technique to compare set-by-set co-enrichment space of our output modules (Fig. \ref{fig:starryNight1}).
+From this visualization we can easily see that a couple of modules are breaking apart into many, highly-co-enriched modules. Although we admit that it is still possible that these new smaller modules are informative in spite of their high degree of overlap, given the context of the high value of d for which they appear (d = 0.7, and d = 0.8), we conclude that this splintering is likely non-informative. Moreover, it is likely that this splintering only serves to weaken the biological signature represented by the larger modules. For all these reasons, we are validated in our choice to cap the module density requirement at 0.6.
+It is also worth noting that by comparing $d = 0.4$ to $d = 0.8$, we find a large amount of re-associations of genes in and between modules, illustrating the importance of this analysis of module robustness within this parameterization range.  
 
 \subsection{Bulk Cell Samples}
 Our bulk cell sample control comes from GEO accession GSE48865. 274 glioma tissue samples make up this dataset, of which, 59 were identified as primary, stage-4 glioblastoma tissue samples. We filtered out any reads from the 59 samples with more than 10\% of its nucleotides designated as unknown bases, and any read with more than 50\% of its bases having Sanger phred+33 quality scores less than 5. After filtering, we retained 1,388,064,773 reads in total. 
 
 Each filtered sample was then aligned to hg19 transcriptome (GRCh37) using bow-tie (version 1.1.1 with default parameters provided by RSEM) and TPM values per gene were estimated using RSEM (version 1.2.3). 73\% of the reads were aligned successfully either uniquely or multi-mapped. 
+TPM values were adjusted again as in Eq. \ref{equation2}. Genes were then filtered to retain only those that were highly expressed across the 59 samples. The $i^{th}$ gene was filtered out if $y_{i} <= 4.5$. We retained 6,932 genes after filtering, 3,927 of which had also been retained in the analogous steps of the single-cell workflow.
 
 %\begin{figure}[h]
 %\centering
@@ -316,15 +331,18 @@ Each filtered sample was then aligned to hg19 transcriptome (GRCh37) using bow-t
 
 \subsubsection{Network Construction and Module Detection}
 
+Again, as in Eq. \ref{equation3}, Spearman’s Rank correlation was calculated for all genes pair-wise. The Spearman's Rank threshold, $c$, from Eq. \ref{equation4}, was set to 0.02 so as to achieve the same density as the single-cell network. No further network aggregation step was required for this data set. 
 
 Modules were also found using the CODENSE algorithm using the same parameterization used in the single-cell workflow described above.
 
 \subsection{Enrichment}
 
+Module sets derived from both the single-cell network and bulk tissue sample network were then ontology enriched. Modules were enriched for all terms in Gene Ontology Consortium’s biological process (BP), cellular component (CC), and molecular function (MF) human ontologies using the David Bioinformatics Resources (version 6.7) Functional Annotation Tool \cite{Huang2008}. The most significant (in terms of bonferroni adjusted p-value) ontology per category was reported for each module.
 
 % Results and Discussion can be combined.
 \section*{Results}
 
+Using the parameters described above, our workflow produced 21 modules for the single-cell data and 48 modules for the bulk data set. We provide a breakdown of these modules labeled with their most significant biological process ontology, cellular component ontology, and molecular function ontology for both single-cell data (Fig. \ref{fig:57872Clusts}) and for the bulk data (Fig. \ref{fig:48865Clusts}). 
 
 \begin{figure}[h]
 \includegraphics[width=120mm]{{Figures/toDavidGSE57872_freqNet_03_clusters}}
@@ -334,31 +352,39 @@ Modules were also found using the CODENSE algorithm using the same parameterizat
 
 \begin{figure}[h]
 \includegraphics[width=120mm]{{Figures/toDavidGSE48865_filt_0002_clusters}}
+\caption{\textbf{Bulk network module ontology enrichment.}A list of the modules output from the CODENSE algorithm ordered by module size, each enriched for BP, CC, and MC ontologies. Row color retain the same ontology significance color encoding as found in Fig. \ref{fig:57872Clusts}}
 \label{fig:48865Clusts}
 \end{figure}
 
+We compared these output module sets at the module-level and the gene-level. At the module-level, we find that the single-celled modules are enriched for many expected biological process ontologies such as translation elongation, nuclear division, glycolysis, oxidative phosphorylation, protien folding, and DNA replication. Likewise, we find expected enriched ontologies reported by the bulk pipeline--namely: translational elongation, cell cycle, extracellular matrix organization, antigen processing, immune response, RNA splicing, and others.
 
-Make note that one of the most significantly enriched ontolodies reported for the bulk modules was extracellular matrix organization. Single-cell modules did not enrich for this specific ontology. 
+Amid these expected ontologies, we found a number of enrichments that were exclusive to either one workflow or the other. Bulk modules enriched for several ontologies that single-cell modules did not--extracelluar matrix organization, collagen fibril organization, immune response, and cellular adhesion. These ontologies represent extracellular and/or tumor micro environments. These signatures makes sense because they are all hallmarks of the tumor micro environment which would be picked up in a bulk cell sample. Analogously there were also a couple of weaker ontology signals that only single-celled data reported that are worth mentioning-- nervous system development, and anti-apoptosis. It is possible that the averaging effect of individual cells' signals inside a bulk tissue sample may have hidden the correlations of these ontologies in the bulk pipeline result.
 
+We then profiled the two lists of output ontology enriched modules to find both consensus and differing ontologies between the two data sets. When using exact equality to define the intersection between the two sets of ontologies, we find that only two ontologies were identified by both single-cell and bulk pipelines. To get a better understanding of the similarities of the pipelines' output, we report what we will be calling 'contextual ontologies' in the intersection. We aim to summaries ontologies reported by both pipelines by seeking close common ancestors within the GO hierarchical database of ontologies. More concretely, a contextual ontology is the root of the shortest possible subtree with height no greater than 2 that connects at least one ontology that was reported by the single-cell pipeline with at least one ontology that was reported by the bulk pipeline. These contextual ontologies, along with both the differing and consensus ontologies are reported (Fig. \ref{fig:venn}). 
+Additionally, it should be noted that by this definition of contextual ontology, the very-general ontologies cellular component organization or biogenesis, cellular process, and anatomical structure development would also be included in our intersection. However, the authors of this paper felt that these ontologies were too general to be informative and did not include them in the results.
 
 \begin{sidewaysfigure}[h]
 \centering
 \includegraphics[width=180mm]{Figures/PopVsSCToCytoscape}
+\caption{\textbf{Single-cell vs. bulk sample ontology enrichment comparison Venn diagram.} This Venn diagram of output modules ontologies enrichments contains both the original ontologies from either data set pipeline as well as the contextual ontologies inferred from GO's ontology hierarchy included in the intersection. Each contextual ontology is linked via an edge to all the original ontologies from either data set from which it was derived.}
 \label{fig:venn}
 \end{sidewaysfigure}
 
 A gene-level comparison of the resulting modules of the two data sets is also provided in fig. \ref{fig:starryMap2}. We find 3 or 4 groups of modules within the bulk output that are co-enriched for each other. Meaning that a given subgroup of modules share a significant number of genes with each other. We hypothesis that this co-enrichment occurred as a result of the specific parameterization used to construct and mine the network for modules. By either raising the correlation threshold, $c$, or raising the minimum module density threshold, $d$, these co-enriched modules may fuse into a larger module. We further hypothesis, by taking cues from the ontology enrichment of the co-enriched modules, that the resulting larger modules would likely enrich for immune response, metabolic processes, and extracellular matrix ontologies. 
 
+At the gene level, we find significant co-enrichment between the module outputs of the two pipelines; 5 pairs of which are of interest. The breakdown of these 5 co-enrichments can be found in fig. \ref{fig:geneLevelChart}. Note that there was a drop in p-value between the the cell cycle enriched ontology from the bulk cell dataset compared to the nuclear division enriched ontology from the single-cell dataset (co-enrichment 1). It is possible that this washing out may be due to the averaging out of gene signals when measuring at the tissue-level. This same phenomenon may explain the even more extreme drop seen in co-enrichment 2, transnational elongation. Classically, these two signals are dominant among transcriptomic signals. These two co-enrichment comparisons give us additional candidate genes to investigate for signs of this averaging phenomenon aforementioned.
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=125mm]{Figures/moduleCompareStaryMap2}
+\caption{\textbf{Single-cell vs. bulk sample gene-level starry map comparison of output modules.} This image retains the same visual encodings as those seen in Fig. \ref{fig:starryNight1}. In addition, output modules have been annotated with their most significantly enriched biological process.}
 \label{fig:starryMap2}
 \end{figure}
 
 \begin{sidewaysfigure}[h]
 \centering
 \includegraphics[width=180mm]{Figures/PopVsSCGeneLevel}
+\caption{\textbf{Interesting significant gene-level module comparisons.} This is a detailed look at 5 significant module co-enrichments between the bulk and single-cell output. Note that the Fisher's p-value was calculated using the 3,927 genes found in the intersection of the two workflows' networks. And accordingly, the genes that are found in original modules, but were not counted towards this significance score due to this intersection consideration are highlighted in red. Row colors retain the same ontology significance color coding as found in Fig. \ref{fig:57872Clusts}.}
 \label{fig:geneLevelChart}
 \end{sidewaysfigure}
 
@@ -368,6 +394,8 @@ A gene-level comparison of the resulting modules of the two data sets is also pr
 
 Our analysis illustrates the potential of single-cell co-expression network module enrichment analysis as a potential tool for biological inquiry. We find that, when taking the contextual approach to comparing the sets of reported ontologies, most of the more significantly enriched ontologies reported by the bulk data were related to those reported by single-celled data. Furthermore, when taking a more refined, gene-level approach to this comparison a handful of modules are still in agreement.
 
+Between the module and gene-level comparisons of the two workflows' outputs, we are confident that the single-cell data is picking up on the same biological signals as the traditional bulk cell pipeline. But, there were also noticable differences. Single-celled data innately lacks extracellular signals and this is evident in our analysis by the weakening or total absence of biological process ontology enrichment signals pertaining to processes in the tumor microenvironment from the single-celled output. This may be of particular interest to further studies 
+ are specifically interested in intracellular environments rather than entire microenvironments.
 
 Further comparisons and contrast may indeed be possible. Conservative filtering in the single-celled pipline may be limiting the results in this work. Accounting for noise in single-celled data could strengthen the claims possible in co-expression module enrichment comparisons in the future. 
 
